@@ -4,7 +4,8 @@ export type FestivalCategory =
   | "음식"
   | "자연"
   | "불꽃"
-  | "예술";
+  | "예술"
+  | "기타";
 
 export interface Festival {
   id: string;

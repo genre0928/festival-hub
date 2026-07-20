@@ -1,4 +1,6 @@
-import { FESTIVALS, type Festival } from "~/lib/data/festivals.mock";
+import { FESTIVALS, type Festival, type FestivalCategory } from "~/lib/data/festivals.mock";
+import { supabase } from "~/lib/supabase/client";
+import type { FestivalRow } from "~/lib/supabase/types";
 
 export type FestivalStatus = "ongoing" | "upcoming" | "ended";
 
@@ -8,8 +10,44 @@ export const STATUS_LABELS: Record<FestivalStatus, string> = {
   ended: "종료",
 };
 
-/** 데이터 접근 seam. 지금은 mock 배열을 반환하지만, 추후 Supabase 쿼리로 교체될 지점. */
-export function getFestivals(): Festival[] {
+const VALID_CATEGORIES = new Set<string>(["전통", "음악", "음식", "자연", "불꽃", "예술", "기타"]);
+
+function normalizeCategory(value: string): FestivalCategory {
+  return VALID_CATEGORIES.has(value) ? (value as FestivalCategory) : "기타";
+}
+
+function mapRowToFestival(row: FestivalRow): Festival {
+  return {
+    id: row.id,
+    name: row.name,
+    description: row.description,
+    regionCode: row.region_code,
+    address: row.address,
+    startDate: row.start_date,
+    endDate: row.end_date,
+    category: normalizeCategory(row.category),
+    tags: row.tags ?? [],
+  };
+}
+
+/**
+ * 데이터 접근 seam. Supabase가 설정돼 있으면 실제 DB를 조회하고,
+ * 설정이 없거나 조회에 실패하면 mock 데이터로 대체한다.
+ */
+export async function getFestivals(): Promise<Festival[]> {
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("festivals")
+      .select("*")
+      .order("start_date", { ascending: true });
+
+    if (error) {
+      console.error("Supabase festivals 조회 실패, mock 데이터로 대체합니다:", error.message);
+    } else if (data) {
+      return data.map(mapRowToFestival);
+    }
+  }
+
   return FESTIVALS;
 }
 

@@ -32,9 +32,41 @@ npm run dev
 
 ## Supabase 연동
 
-- 스키마: [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql) — `regions`, `festivals` 테이블과 `festivals_with_status` 뷰(진행중/예정/종료 계산) 포함.
+- 스키마: [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql) — `regions`, `festivals` 테이블과 `festivals_with_status` 뷰(진행중/예정/종료 계산). [`0002_festival_sync.sql`](supabase/migrations/0002_festival_sync.sql) — 외부 데이터 동기화용 `external_id`/`source` 컬럼과 `(source, external_id)` 유니크 인덱스 추가.
 - Supabase CLI로 마이그레이션 적용: `supabase db push` (프로젝트 링크 후)
-- 클라이언트: [`app/lib/supabase/client.ts`](app/lib/supabase/client.ts) — env가 없으면 `null`을 반환하며, 현재는 [`app/lib/festivals.ts`](app/lib/festivals.ts)의 mock 데이터 seam을 통해 화면에 데이터를 공급한다. 실제 연동 시 이 seam 내부만 Supabase 쿼리로 교체하면 됨.
+- 클라이언트: [`app/lib/supabase/client.ts`](app/lib/supabase/client.ts) — `.env`가 없으면 `null`을 반환하며, 이 경우 [`app/lib/festivals.ts`](app/lib/festivals.ts)가 자동으로 mock 데이터로 대체한다. `.env`에 Supabase 정보를 채우고 `festivals` 테이블에 데이터가 있으면 실제 DB에서 조회한다.
+
+## TourAPI 연동 (한국관광공사 축제 정보 자동 수집)
+
+[`supabase/functions/sync-festivals`](supabase/functions/sync-festivals/index.ts) Edge Function이 한국관광공사 TourAPI(`searchFestival2`)에서 축제 목록을 가져와 `festivals` 테이블에 `upsert` 한다. `external_id`(TourAPI `contentid`) 기준으로 중복 없이 반복 실행 가능하며, 지역은 TourAPI `areacode` → 없으면 주소 텍스트로 보조 매칭, 카테고리는 제목 키워드로 대략 분류한다(정밀도가 필요하면 `guessCategory` 함수를 다듬을 것).
+
+1. data.go.kr에서 **한국관광공사_국문 관광정보 서비스_GW** API를 활용신청하고 인증키(인코딩 값)를 발급받는다.
+2. Supabase 프로젝트를 CLI로 링크: `supabase link --project-ref <project-ref>`
+3. TourAPI 키를 Edge Function 시크릿으로 등록 (프론트 `.env`에는 절대 넣지 않는다):
+   ```bash
+   supabase secrets set TOUR_API_KEY="<발급받은 인코딩 키>"
+   ```
+4. 함수 배포:
+   ```bash
+   supabase functions deploy sync-festivals
+   ```
+5. 수동 실행(테스트):
+   ```bash
+   supabase functions invoke sync-festivals
+   ```
+6. 주기적 자동 실행이 필요하면 `pg_cron` + `pg_net` 확장을 켠 뒤, 아래처럼 매일 함수를 호출하도록 예약한다 (Supabase 대시보드 SQL Editor에서 실행, `<project-ref>`/`<anon-or-service-key>`는 실제 값으로 교체):
+   ```sql
+   select cron.schedule(
+     'sync-festivals-daily',
+     '0 18 * * *', -- UTC 18:00 = KST 03:00
+     $$
+     select net.http_post(
+       url := 'https://<project-ref>.supabase.co/functions/v1/sync-festivals',
+       headers := jsonb_build_object('Authorization', 'Bearer <anon-or-service-key>')
+     );
+     $$
+   );
+   ```
 
 ## 빌드 / 타입체크
 

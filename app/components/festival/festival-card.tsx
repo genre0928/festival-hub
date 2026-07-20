@@ -4,24 +4,26 @@ import {
   MapPin,
   Music,
   Palette,
+  PartyPopper,
   Sparkles,
   UtensilsCrossed,
 } from "lucide-react";
-import type { Festival } from "~/lib/data/festivals.mock";
+import type { Festival, FestivalCategory } from "~/lib/data/festivals.mock";
 import { getFestivalStatus, STATUS_LABELS, type FestivalStatus } from "~/lib/festivals";
 import { getRegionByCode } from "~/components/map/region-data";
 import { formatDateRange, cn } from "~/lib/utils";
 import { Card } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 
-const CATEGORY_ICONS = {
+const CATEGORY_ICONS: Record<FestivalCategory, typeof Landmark> = {
   전통: Landmark,
   음악: Music,
   음식: UtensilsCrossed,
   자연: Leaf,
   불꽃: Sparkles,
   예술: Palette,
-} as const;
+  기타: PartyPopper,
+};
 
 const STATUS_BADGE_VARIANT: Record<FestivalStatus, "solid" | "outline" | "soft"> = {
   ongoing: "solid",
@@ -62,7 +64,9 @@ export function FestivalCard({ festival, selected, onSelectRegion }: FestivalCar
           </Badge>
         </div>
 
-        <p className="mt-1 line-clamp-2 text-sm text-season-muted">{festival.description}</p>
+        {festival.description && (
+          <p className="mt-1 line-clamp-2 text-sm text-season-muted">{festival.description}</p>
+        )}
 
         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-season-muted">
           <span className="inline-flex items-center gap-1">

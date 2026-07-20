@@ -45,6 +45,14 @@ export default function App() {
   return <Outlet />;
 }
 
+export function HydrateFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center text-gray-500">
+      축제 정보를 불러오는 중...
+    </div>
+  );
+}
+
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let message = "Oops!";
   let details = "An unexpected error occurred.";

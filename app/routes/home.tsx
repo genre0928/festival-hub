@@ -28,10 +28,15 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function Home() {
+export async function clientLoader() {
+  const festivals = await getFestivals();
+  return { festivals };
+}
+
+export default function Home({ loaderData }: Route.ComponentProps) {
   const { filters, setQuery, setRegionCode, setDate, setStatus } = useFestivalFilters();
 
-  const allFestivals = useMemo(() => getFestivals(), []);
+  const allFestivals = loaderData.festivals;
 
   const ongoingFestivals = useMemo(
     () => allFestivals.filter((f) => getFestivalStatus(f) === "ongoing"),

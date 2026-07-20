@@ -19,6 +19,8 @@ export interface FestivalRow {
   latitude: number | null;
   longitude: number | null;
   source_url: string | null;
+  external_id: string | null;
+  source: string;
   created_at: string;
   updated_at: string;
 }
