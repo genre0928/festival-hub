@@ -7,9 +7,10 @@ interface FestivalListProps {
   festivals: Festival[];
   selectedRegion: string | null;
   onSelectRegion: (regionCode: string) => void;
+  onOpenDetail: (festival: Festival) => void;
 }
 
-export function FestivalList({ festivals, selectedRegion, onSelectRegion }: FestivalListProps) {
+export function FestivalList({ festivals, selectedRegion, onSelectRegion, onOpenDetail }: FestivalListProps) {
   if (festivals.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-season-border py-16 text-center text-season-muted">
@@ -27,6 +28,7 @@ export function FestivalList({ festivals, selectedRegion, onSelectRegion }: Fest
             festival={festival}
             selected={selectedRegion === festival.regionCode}
             onSelectRegion={onSelectRegion}
+            onOpenDetail={onOpenDetail}
           />
         </BlurFade>
       ))}

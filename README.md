@@ -2,6 +2,8 @@
 
 국내에서 개최되는 축제 정보를 지역·기간별로 모아 보여주는 웹사이트.
 
+**배포**: https://festival-hub-iota.vercel.app (Vercel, `main` 브랜치 자동 배포)
+
 ## 기술 스택
 
 - React Router v7 (framework mode, SPA)
@@ -38,7 +40,7 @@ npm run dev
 
 ## TourAPI 연동 (한국관광공사 축제 정보 자동 수집)
 
-[`supabase/functions/sync-festivals`](supabase/functions/sync-festivals/index.ts) Edge Function이 한국관광공사 TourAPI(`searchFestival2`)에서 축제 목록을 가져와 `festivals` 테이블에 `upsert` 한다. `external_id`(TourAPI `contentid`) 기준으로 중복 없이 반복 실행 가능하며, 지역은 TourAPI `areacode` → 없으면 주소 텍스트로 보조 매칭, 카테고리는 제목 키워드로 대략 분류한다(정밀도가 필요하면 `guessCategory` 함수를 다듬을 것).
+[`supabase/functions/sync-festivals`](supabase/functions/sync-festivals/index.ts) Edge Function이 한국관광공사 TourAPI(`searchFestival2`)에서 축제 목록을 가져와 `festivals` 테이블에 `upsert` 한다. `external_id`(TourAPI `contentid`) 기준으로 중복 없이 반복 실행 가능하며, 지역은 `lDongRegnCd`(법정동 시도코드) 우선 매칭 → 실패 시 주소 텍스트 보조 매칭(`areacode`는 실제 응답에서 거의 항상 비어있어 최후 fallback으로만 사용), 카테고리는 제목 키워드로 대략 분류한다(정밀도가 필요하면 `guessCategory` 함수를 다듬을 것).
 
 1. data.go.kr에서 **한국관광공사_국문 관광정보 서비스_GW** API를 활용신청하고 인증키(인코딩 값)를 발급받는다.
 2. Supabase 프로젝트를 CLI로 링크: `supabase link --project-ref <project-ref>`
@@ -67,6 +69,19 @@ npm run dev
      $$
    );
    ```
+
+## 축제 상세 모달 (주변 관광지·음식점·숙소)
+
+축제 카드를 클릭하면 상세 모달이 열린다([`app/components/festival/festival-detail-modal.tsx`](app/components/festival/festival-detail-modal.tsx)):
+
+- 상단: 축제 상세 정보(이미지, 상태, 카테고리, 설명, 주소, 기간, 태그)
+- 하단: "같이 가면 좋은 주변 관광지", 주변 음식점, 주변 숙소 — 축제의 위경도 기준 반경 5km 이내 정보를 가로 스크롤 카드로 표시
+
+주변 정보는 [`supabase/functions/nearby-info`](supabase/functions/nearby-info/index.ts) Edge Function이 **한국관광공사_무장애 여행 정보_GW**(`KorWithService2`, `locationBasedList2`) API를 호출해서 가져온다(관광지=contentTypeId 12, 음식점=39, 숙박=32). `apis.data.go.kr`는 브라우저에서 직접 호출하면 CORS로 막히기 때문에 프론트는 이 Edge Function만 호출한다(`app/lib/nearby.ts`).
+
+- 이 API는 TourAPI(`KorService2`)와 별도로 활용신청이 필요하다 — [무장애 여행 정보_GW 신청 페이지](https://www.data.go.kr/data/15101897/openapi.do)에서 활용신청 후 `TOUR_API_KEY` 시크릿을 그대로 재사용하면 된다.
+- 배포: `supabase functions deploy nearby-info`
+- 축제에 좌표(`latitude`/`longitude`)가 없으면 주변 정보 섹션 대신 안내 문구만 표시한다.
 
 ## 카카오톡 알림 (진행 중)
 

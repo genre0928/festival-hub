@@ -36,9 +36,10 @@ interface FestivalCardProps {
   festival: Festival;
   selected?: boolean;
   onSelectRegion?: (regionCode: string) => void;
+  onOpenDetail?: (festival: Festival) => void;
 }
 
-export function FestivalCard({ festival, selected, onSelectRegion }: FestivalCardProps) {
+export function FestivalCard({ festival, selected, onSelectRegion, onOpenDetail }: FestivalCardProps) {
   const status = getFestivalStatus(festival);
   const region = getRegionByCode(festival.regionCode);
   const Icon = CATEGORY_ICONS[festival.category];
@@ -47,8 +48,18 @@ export function FestivalCard({ festival, selected, onSelectRegion }: FestivalCar
 
   return (
     <Card
+      role={onOpenDetail ? "button" : undefined}
+      tabIndex={onOpenDetail ? 0 : undefined}
+      onClick={() => onOpenDetail?.(festival)}
+      onKeyDown={(e) => {
+        if (onOpenDetail && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          onOpenDetail(festival);
+        }
+      }}
       className={cn(
         "flex gap-3 p-4 transition-colors duration-300",
+        onOpenDetail && "cursor-pointer hover:border-season-primary/50",
         selected && "ring-2 ring-season-ring",
         status === "ended" && "opacity-70",
       )}
@@ -86,7 +97,10 @@ export function FestivalCard({ festival, selected, onSelectRegion }: FestivalCar
             {region ? (
               <button
                 type="button"
-                onClick={() => onSelectRegion?.(festival.regionCode)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelectRegion?.(festival.regionCode);
+                }}
                 className="hover:text-season-primary hover:underline"
               >
                 {region.name}

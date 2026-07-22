@@ -148,6 +148,8 @@ while (pageNo <= MAX_PAGES && (pageNo - 1) * ROWS_PER_PAGE < totalCount) {
       category: guessCategory(item.title ?? ""),
       tags: [],
       ...(item.firstimage ? { imageUrl: item.firstimage } : {}),
+      ...(item.mapy ? { latitude: Number(item.mapy) } : {}),
+      ...(item.mapx ? { longitude: Number(item.mapx) } : {}),
     });
   }
 
@@ -183,6 +185,8 @@ export interface Festival {
   category: FestivalCategory;
   tags: string[];
   imageUrl?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export const FESTIVALS: Festival[] = ${JSON.stringify(rows, null, 2)};
