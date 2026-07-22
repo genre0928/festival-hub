@@ -3,9 +3,107 @@
 @theme {
   --font-sans: "Noto Sans KR", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --animate-marquee: marquee linear infinite;
+
+  /* 계절 테마 토큰 - 기본값은 봄(벚꽃). data-season 속성에 따라 :root 아래에서 오버라이드됨 */
+  --color-season-primary: #db2777;
+  --color-season-primary-foreground: #ffffff;
+  --color-season-secondary: #fce7f3;
+  --color-season-accent: #22c55e;
+  --color-season-bg-from: #fff1f5;
+  --color-season-bg-via: #ffe4ee;
+  --color-season-bg-to: #eef6ff;
+  --color-season-surface: #ffffff;
+  --color-season-surface-foreground: #1f2937;
+  --color-season-muted: #6b7280;
+  --color-season-border: #fbcfe8;
+  --color-season-ring: #ec4899;
+}
+
+:root[data-season="spring"] {
+  --color-season-primary: #db2777;
+  --color-season-primary-foreground: #ffffff;
+  --color-season-secondary: #fce7f3;
+  --color-season-accent: #22c55e;
+  --color-season-bg-from: #fff1f5;
+  --color-season-bg-via: #ffe4ee;
+  --color-season-bg-to: #eef6ff;
+  --color-season-surface: #ffffff;
+  --color-season-surface-foreground: #1f2937;
+  --color-season-muted: #6b7280;
+  --color-season-border: #fbcfe8;
+  --color-season-ring: #ec4899;
+}
+
+:root[data-season="summer"] {
+  --color-season-primary: #0284c7;
+  --color-season-primary-foreground: #ffffff;
+  --color-season-secondary: #e0f2fe;
+  --color-season-accent: #06b6d4;
+  --color-season-bg-from: #ecfeff;
+  --color-season-bg-via: #cffafe;
+  --color-season-bg-to: #e0f2fe;
+  --color-season-surface: #ffffff;
+  --color-season-surface-foreground: #0c2436;
+  --color-season-muted: #47708a;
+  --color-season-border: #bae6fd;
+  --color-season-ring: #0ea5e9;
+}
+
+:root[data-season="autumn"] {
+  --color-season-primary: #c2410c;
+  --color-season-primary-foreground: #ffffff;
+  --color-season-secondary: #ffedd5;
+  --color-season-accent: #b45309;
+  --color-season-bg-from: #fff7ed;
+  --color-season-bg-via: #ffedd5;
+  --color-season-bg-to: #fef3c7;
+  --color-season-surface: #fffaf5;
+  --color-season-surface-foreground: #431407;
+  --color-season-muted: #92603f;
+  --color-season-border: #fed7aa;
+  --color-season-ring: #ea580c;
+}
+
+:root[data-season="winter"] {
+  --color-season-primary: #4f46e5;
+  --color-season-primary-foreground: #ffffff;
+  --color-season-secondary: #e0e7ff;
+  --color-season-accent: #38bdf8;
+  --color-season-bg-from: #f8fafc;
+  --color-season-bg-via: #eef2ff;
+  --color-season-bg-to: #e0f2fe;
+  --color-season-surface: #ffffff;
+  --color-season-surface-foreground: #1e293b;
+  --color-season-muted: #64748b;
+  --color-season-border: #e2e8f0;
+  --color-season-ring: #6366f1;
 }
 
 html,
 body {
-  @apply bg-white text-gray-900;
+  @apply bg-season-bg-from text-season-surface-foreground;
+  transition: background-color 0.6s ease;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes wave {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+* {
+  scrollbar-color: var(--color-season-primary) transparent;
 }
