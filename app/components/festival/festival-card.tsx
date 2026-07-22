@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Landmark,
   Leaf,
@@ -41,6 +42,8 @@ export function FestivalCard({ festival, selected, onSelectRegion }: FestivalCar
   const status = getFestivalStatus(festival);
   const region = getRegionByCode(festival.regionCode);
   const Icon = CATEGORY_ICONS[festival.category];
+  const [imageFailed, setImageFailed] = useState(false);
+  const showImage = festival.imageUrl && !imageFailed;
 
   return (
     <Card
@@ -50,9 +53,18 @@ export function FestivalCard({ festival, selected, onSelectRegion }: FestivalCar
         status === "ended" && "opacity-70",
       )}
     >
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-season-secondary text-season-primary">
-        <Icon className="h-5 w-5" />
-      </div>
+      {showImage ? (
+        <img
+          src={festival.imageUrl}
+          alt=""
+          onError={() => setImageFailed(true)}
+          className="h-11 w-11 shrink-0 rounded-xl object-cover"
+        />
+      ) : (
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-season-secondary text-season-primary">
+          <Icon className="h-5 w-5" />
+        </div>
+      )}
 
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-2">

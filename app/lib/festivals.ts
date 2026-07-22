@@ -27,6 +27,7 @@ function mapRowToFestival(row: FestivalRow): Festival {
     endDate: row.end_date,
     category: normalizeCategory(row.category),
     tags: row.tags ?? [],
+    imageUrl: row.image_url ?? undefined,
   };
 }
 

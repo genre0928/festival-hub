@@ -17,6 +17,7 @@ export interface Festival {
   endDate: string;
   category: FestivalCategory;
   tags: string[];
+  imageUrl?: string;
 }
 
 export const FESTIVALS: Festival[] = [
@@ -294,5 +295,19 @@ export const FESTIVALS: Festival[] = [
     endDate: "2026-05-17",
     category: "예술",
     tags: ["거리공연", "예술", "자유"],
+  },
+  // 아래는 TourAPI 실제 응답을 그대로 반영한 테스트용 항목 (설명 없음/카테고리 "기타"/이미지 있음 —
+  // 동기화 데이터가 카드에서 어떻게 보이는지 확인하기 위한 용도. 실제 연동 확인 후 제거해도 됨.
+  {
+    id: "tourapi-sample-ulsan-market",
+    name: "가든 나이트 마켓",
+    description: "",
+    regionCode: "ulsan",
+    address: "울산광역시 남구 대공원로 94 (옥동)",
+    startDate: "2026-07-29",
+    endDate: "2026-08-29",
+    category: "기타",
+    tags: [],
+    imageUrl: "https://tong.visitkorea.or.kr/cms/resource/02/4090202_image2_1.jpg",
   },
 ];

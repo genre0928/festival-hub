@@ -16,28 +16,39 @@ const TOUR_API_BASE = "https://apis.data.go.kr/B551011/KorService2/searchFestiva
 const MAX_PAGES = 10;
 const ROWS_PER_PAGE = 100;
 
-/** TourAPI 지역코드 -> 이 프로젝트의 내부 지역 코드 */
-const AREA_CODE_MAP: Record<string, string> = {
-  "1": "seoul",
-  "2": "incheon",
-  "3": "daejeon",
-  "4": "daegu",
-  "5": "gwangju",
-  "6": "busan",
-  "7": "ulsan",
-  "8": "sejong",
-  "31": "gyeonggi",
-  "32": "gangwon",
-  "33": "chungbuk",
-  "34": "chungnam",
-  "35": "gyeongbuk",
-  "36": "gyeongnam",
-  "37": "jeonbuk",
-  "38": "jeonnam",
-  "39": "jeju",
+/**
+ * 법정동 시도코드(lDongRegnCd, 행정안전부 표준) -> 이 프로젝트의 내부 지역 코드.
+ * 실제 응답 표본 확인 결과 areacode/cat1~3는 항상 비어있고 lDongRegnCd는 100% 채워져 있어
+ * 이걸 1순위 매칭 키로 쓴다. 세종은 하위 시군구가 없어 5자리 전체 코드("36110")로 오는 경우가 있어
+ * 앞 2자리만 잘라서(slice(0,2)) 비교한다.
+ * 2023~2024년 행정구역 개편으로 강원(42->51), 전북(45->52) 코드가 바뀐 것도 반영.
+ */
+const L_DONG_REGN_MAP: Record<string, string> = {
+  "11": "seoul",
+  "26": "busan",
+  "27": "daegu",
+  "28": "incheon",
+  "29": "gwangju",
+  "30": "daejeon",
+  "31": "ulsan",
+  "36": "sejong",
+  "41": "gyeonggi",
+  "42": "gangwon", // 개편 이전 강원도 코드(과거 데이터 호환용)
+  "43": "chungbuk",
+  "44": "chungnam",
+  "45": "jeonbuk", // 개편 이전 전라북도 코드(과거 데이터 호환용)
+  "46": "jeonnam",
+  "47": "gyeongbuk",
+  "48": "gyeongnam",
+  "50": "jeju",
+  "51": "gangwon", // 강원특별자치도 개편 코드
+  "52": "jeonbuk", // 전북특별자치도 개편 코드
 };
 
-/** areacode가 비어있는 응답이 많아 주소 텍스트로도 보조 매칭 */
+/** 광주광역시 산하 구 이름(전남/광주 통합코드 "12" 구분용) */
+const GWANGJU_GU_NAMES = ["동구", "서구", "남구", "북구", "광산구"];
+
+/** lDongRegnCd가 없거나 매핑에 실패했을 때만 쓰는 보조 매칭 (주소 텍스트 키워드) */
 const ADDRESS_KEYWORD_MAP: [string, string][] = [
   ["서울", "seoul"],
   ["인천", "incheon"],
@@ -80,6 +91,7 @@ interface TourApiItem {
   addr1?: string;
   addr2?: string;
   areacode?: string;
+  lDongRegnCd?: string;
   eventstartdate?: string;
   eventenddate?: string;
   mapx?: string;
@@ -87,13 +99,34 @@ interface TourApiItem {
   firstimage?: string;
 }
 
-function resolveRegionCode(areacode: string | undefined, addr1: string | undefined): string | null {
-  if (areacode && AREA_CODE_MAP[areacode]) return AREA_CODE_MAP[areacode];
+function resolveRegionCode(item: Pick<TourApiItem, "areacode" | "lDongRegnCd" | "addr1">): string | null {
+  const { lDongRegnCd, addr1, areacode } = item;
+
+  if (lDongRegnCd) {
+    const prefix = lDongRegnCd.slice(0, 2);
+    // "12" = TourAPI 표본에서 확인된 전남/광주 통합 placeholder 코드. 주소의 구/시군 이름으로 구분.
+    if (prefix === "12" && addr1) {
+      const isGwangjuGu = GWANGJU_GU_NAMES.some((gu) => addr1.includes(gu));
+      return isGwangjuGu ? "gwangju" : "jeonnam";
+    }
+    if (L_DONG_REGN_MAP[prefix]) return L_DONG_REGN_MAP[prefix];
+  }
+
   if (addr1) {
     for (const [keyword, code] of ADDRESS_KEYWORD_MAP) {
       if (addr1.includes(keyword)) return code;
     }
   }
+
+  // TourAPI 자체 areacode는 현재 거의 항상 비어있지만, 혹시 채워진 응답을 위한 최후 fallback
+  const legacyAreaCodeMap: Record<string, string> = {
+    "1": "seoul", "2": "incheon", "3": "daejeon", "4": "daegu", "5": "gwangju",
+    "6": "busan", "7": "ulsan", "8": "sejong", "31": "gyeonggi", "32": "gangwon",
+    "33": "chungbuk", "34": "chungnam", "35": "gyeongbuk", "36": "gyeongnam",
+    "37": "jeonbuk", "38": "jeonnam", "39": "jeju",
+  };
+  if (areacode && legacyAreaCodeMap[areacode]) return legacyAreaCodeMap[areacode];
+
   return null;
 }
 
@@ -178,7 +211,7 @@ Deno.serve(async (req) => {
       fetched += page.items.length;
 
       for (const item of page.items) {
-        const regionCode = resolveRegionCode(item.areacode, item.addr1);
+        const regionCode = resolveRegionCode(item);
         if (!regionCode) {
           skippedNoRegion += 1;
           continue;
