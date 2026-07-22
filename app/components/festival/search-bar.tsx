@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { CalendarDays, MapPinned, Search, X } from "lucide-react";
+import { MapPinned, Search, X } from "lucide-react";
 import { REGIONS } from "~/components/map/region-data";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import { DatePicker } from "~/components/ui/date-picker";
+
+const ALL_REGIONS_VALUE = "all";
 
 interface SearchBarProps {
   query: string;
@@ -64,30 +68,26 @@ export function SearchBar({
       </div>
 
       <div className="relative sm:w-44">
-        <MapPinned className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-season-muted" />
-        <select
-          value={regionCode ?? ""}
-          onChange={(e) => onRegionChange(e.target.value || null)}
-          className="h-10 w-full appearance-none rounded-full border border-season-border bg-season-surface pl-9 pr-4 text-sm text-season-surface-foreground outline-none focus-visible:ring-2 focus-visible:ring-season-ring/60"
+        <MapPinned className="pointer-events-none absolute left-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-season-muted" />
+        <Select
+          value={regionCode ?? ALL_REGIONS_VALUE}
+          onValueChange={(value) => onRegionChange(value === ALL_REGIONS_VALUE ? null : value)}
         >
-          <option value="">전체 지역</option>
-          {REGIONS.map((region) => (
-            <option key={region.code} value={region.code}>
-              {region.name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="pl-9">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ALL_REGIONS_VALUE}>전체 지역</SelectItem>
+            {REGIONS.map((region) => (
+              <SelectItem key={region.code} value={region.code}>
+                {region.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
-      <div className="relative sm:w-44">
-        <CalendarDays className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-season-muted" />
-        <input
-          type="date"
-          value={date ?? ""}
-          onChange={(e) => onDateChange(e.target.value || null)}
-          className="h-10 w-full rounded-full border border-season-border bg-season-surface pl-9 pr-4 text-sm text-season-surface-foreground outline-none focus-visible:ring-2 focus-visible:ring-season-ring/60"
-        />
-      </div>
+      <DatePicker value={date} onChange={onDateChange} placeholder="날짜 선택" className="sm:w-44" />
 
       {hasActiveFilters && (
         <Button
