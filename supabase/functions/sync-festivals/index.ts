@@ -1,5 +1,7 @@
 // Supabase Edge Function: 한국관광공사 TourAPI(searchFestival2)에서 축제 정보를 가져와
 // festivals 테이블에 upsert 한다. (source='tourapi', external_id=contentid 기준 idempotent)
+// 이전에 없던 external_id가 새로 들어오면 festival_new_detections에 기록해
+// "신규 축제 카카오톡 알림"을 위한 발송 대상 트래킹까지 처리한다 (발송 자체는 별도 구현 예정).
 //
 // 필요한 시크릿:
 //   TOUR_API_KEY           data.go.kr에서 발급받은 서비스키(인코딩된 값 그대로)
@@ -199,11 +201,21 @@ Deno.serve(async (req) => {
     const eventStartDate = toYyyymmdd(windowStart);
     const eventEndDate = toYyyymmdd(windowEnd);
 
+    // upsert 전에 이미 존재하는 TourAPI 축제의 external_id를 조회해둔다.
+    // 여기 없는데 이번에 들어오는 항목 = 신규 축제 -> festival_new_detections에 기록할 대상.
+    const { data: existingRows, error: existingError } = await supabase
+      .from("festivals")
+      .select("external_id")
+      .eq("source", "tourapi");
+    if (existingError) throw new Error(`기존 축제 조회 실패: ${existingError.message}`);
+    const existingExternalIds = new Set((existingRows ?? []).map((r) => r.external_id));
+
     let pageNo = 1;
     let totalCount = Infinity;
     let fetched = 0;
     let skippedNoRegion = 0;
     const rows: Record<string, unknown>[] = [];
+    const newExternalIds: string[] = [];
 
     while (pageNo <= MAX_PAGES && (pageNo - 1) * ROWS_PER_PAGE < totalCount) {
       const page = await fetchFestivalPage(tourApiKey, pageNo, eventStartDate, eventEndDate);
@@ -219,6 +231,10 @@ Deno.serve(async (req) => {
 
         const startDate = formatDate(item.eventstartdate, eventStartDate.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"));
         const endDate = formatDate(item.eventenddate, startDate);
+
+        if (!existingExternalIds.has(item.contentid)) {
+          newExternalIds.push(item.contentid);
+        }
 
         rows.push({
           name: item.title,
@@ -249,8 +265,30 @@ Deno.serve(async (req) => {
       upserted += batch.length;
     }
 
+    // 신규 축제로 판별된 항목들의 festivals.id를 조회해 festival_new_detections에 기록.
+    // (카카오톡 신규 축제 알림 발송 대상 트래킹용 - 발송 로직은 별도 Edge Function에서 처리)
+    let newlyDetected = 0;
+    for (let i = 0; i < newExternalIds.length; i += batchSize) {
+      const batchIds = newExternalIds.slice(i, i + batchSize);
+      const { data: insertedRows, error: lookupError } = await supabase
+        .from("festivals")
+        .select("id")
+        .eq("source", "tourapi")
+        .in("external_id", batchIds);
+      if (lookupError) throw new Error(`신규 축제 id 조회 실패: ${lookupError.message}`);
+
+      const detections = (insertedRows ?? []).map((r) => ({ festival_id: r.id }));
+      if (detections.length > 0) {
+        const { error: detectionError } = await supabase
+          .from("festival_new_detections")
+          .insert(detections);
+        if (detectionError) throw new Error(`신규 축제 기록 실패: ${detectionError.message}`);
+        newlyDetected += detections.length;
+      }
+    }
+
     return new Response(
-      JSON.stringify({ totalCount, fetched, upserted, skippedNoRegion }),
+      JSON.stringify({ totalCount, fetched, upserted, skippedNoRegion, newlyDetected }),
       { status: 200, headers: { "Content-Type": "application/json" } },
     );
   } catch (err) {

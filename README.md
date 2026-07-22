@@ -18,7 +18,7 @@
 - 검색(축제명/태그), 지역, 날짜, 진행 상태(진행중/예정/종료)별 필터
 - URL 쿼리 파라미터와 필터 상태 동기화 (검색 결과 링크 공유 가능)
 
-카카오맵 API 연동, 카카오톡 신규 축제 알림 발송 기능은 API 키/사업자 계정 확보 후 별도로 추가 예정.
+카카오맵 API 연동, 카카오톡 메시지 발송(정기 알림/신규 축제 알림)은 API 키·발송 방식 확정 후 별도로 추가 예정. 다만 신규 축제 감지 트래킹과 구독자 스키마는 미리 구축해둠 (아래 "카카오톡 알림" 절 참고).
 
 ## 시작하기
 
@@ -32,7 +32,7 @@ npm run dev
 
 ## Supabase 연동
 
-- 스키마: [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql) — `regions`, `festivals` 테이블과 `festivals_with_status` 뷰(진행중/예정/종료 계산). [`0002_festival_sync.sql`](supabase/migrations/0002_festival_sync.sql) — 외부 데이터 동기화용 `external_id`/`source` 컬럼과 `(source, external_id)` 유니크 인덱스 추가.
+- 스키마: [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql) — `regions`, `festivals` 테이블과 `festivals_with_status` 뷰(진행중/예정/종료 계산). [`0002_festival_sync.sql`](supabase/migrations/0002_festival_sync.sql) — 외부 데이터 동기화용 `external_id`/`source` 컬럼과 `(source, external_id)` 유니크 인덱스 추가. [`0003_notifications.sql`](supabase/migrations/0003_notifications.sql) — 카카오톡 알림용 `subscribers`(구독자), `festival_new_detections`(신규 축제 감지 기록) 테이블과 `pending_new_festival_notifications` 뷰.
 - Supabase CLI로 마이그레이션 적용: `supabase db push` (프로젝트 링크 후)
 - 클라이언트: [`app/lib/supabase/client.ts`](app/lib/supabase/client.ts) — `.env`가 없으면 `null`을 반환하며, 이 경우 [`app/lib/festivals.ts`](app/lib/festivals.ts)가 자동으로 mock 데이터로 대체한다. `.env`에 Supabase 정보를 채우고 `festivals` 테이블에 데이터가 있으면 실제 DB에서 조회한다.
 
@@ -67,6 +67,21 @@ npm run dev
      $$
    );
    ```
+
+## 카카오톡 알림 (진행 중)
+
+계획 중인 기능은 두 가지:
+
+1. **정기 알림** — 구독자가 설정한 주기(주간/월간)·관심 지역 기준으로 축제 정보를 요약해 보냄
+2. **신규 축제 알림** — 동기화 과정에서 새로 발견된 축제를 바로 알려줌
+
+카카오톡 메시지 발송 방식은 아직 정하지 않았고(카카오로그인 "나에게 보내기" vs 알림톡/친구톡 비즈메시지 — 방식마다 사전 준비물이 다름), 그래서 **발송 로직 없이 스키마와 트래킹만 먼저 구축**해뒀다:
+
+- `subscribers` 테이블: `channel_type`("kakao_login" | "phone")과 `channel_identifier`로 발송 방식이 정해지면 그대로 확장 가능. `frequency`(weekly/monthly), `regions`(관심 지역 코드 배열, 빈 배열=전체)를 저장.
+- `festival_new_detections` 테이블: [`sync-festivals`](supabase/functions/sync-festivals/index.ts)가 매 실행마다 이전에 없던 `external_id`를 판별해 자동으로 기록한다(`notified_at`이 `null`이면 미발송). 응답 JSON에도 `newlyDetected` 건수가 포함됨.
+- `pending_new_festival_notifications` 뷰: 아직 알림을 안 보낸 신규 축제 + 축제 정보를 한 번에 조회. 발송 Edge Function을 만들 때 이 뷰만 읽고, 보낸 뒤 해당 `detection_id`로 `notified_at`을 채우면 됨.
+
+발송 방식이 정해지면 `subscribers`를 조회해 대상자를 추리고, 카카오 API를 호출하는 Edge Function(`send-new-festival-alerts`, `send-digest` 등)을 추가하는 순서로 이어가면 된다.
 
 ## 빌드 / 타입체크
 
