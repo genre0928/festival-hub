@@ -46,6 +46,17 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     [allFestivals],
   );
 
+  // "인기" 축제를 가릴 방문자수 데이터가 아직 없어서, 우선 곧 끝나는 순으로 상위 10개만
+  // 골라 천천히 보여준다. 방문자수 API가 붙으면 이 정렬 기준만 바꾸면 됨.
+  const popularOngoingFestivals = useMemo(
+    () =>
+      [...ongoingFestivals]
+        .sort((a, b) => a.endDate.localeCompare(b.endDate))
+        .slice(0, 10),
+    [ongoingFestivals],
+  );
+  const tickerDurationSeconds = Math.max(30, popularOngoingFestivals.length * 5);
+
   const filteredFestivals = useMemo(
     () => filterFestivals(allFestivals, filters),
     [allFestivals, filters],
@@ -59,14 +70,14 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   return (
     <AppLayout>
       <div className="flex flex-col gap-6">
-        {ongoingFestivals.length > 0 && (
+        {popularOngoingFestivals.length > 0 && (
           <Card className="flex items-center gap-3 px-4 py-2.5">
             <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-season-primary">
               <PlayCircle className="h-4 w-4" />
               지금 진행중
             </span>
-            <Marquee className="flex-1" durationSeconds={22}>
-              {ongoingFestivals.map((f) => (
+            <Marquee className="flex-1" durationSeconds={tickerDurationSeconds}>
+              {popularOngoingFestivals.map((f) => (
                 <button
                   key={f.id}
                   onClick={() => setRegionCode(f.regionCode)}
