@@ -6,7 +6,7 @@ import { SearchBar } from "~/components/festival/search-bar";
 import { FestivalFilters } from "~/components/festival/festival-filters";
 import { FestivalList } from "~/components/festival/festival-list";
 import { FestivalDetailModal } from "~/components/festival/festival-detail-modal";
-import { DotMap } from "~/components/map/dot-map";
+import { RegionMap } from "~/components/map/region-map";
 import { Card } from "~/components/ui/card";
 import { Marquee } from "~/components/magicui/marquee";
 import { Badge } from "~/components/ui/badge";
@@ -116,14 +116,14 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               )}
             </div>
             <div className="min-h-[320px] flex-1 lg:min-h-0">
-              <DotMap
+              <RegionMap
                 regionCounts={regionCounts}
                 selectedRegion={filters.regionCode}
                 onSelectRegion={setRegionCode}
               />
             </div>
             <p className="text-center text-xs text-season-muted">
-              도트를 클릭하면 해당 지역의 축제만 볼 수 있어요
+              지역을 클릭하면 해당 지역의 축제만 볼 수 있어요
             </p>
           </Card>
 
