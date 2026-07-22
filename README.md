@@ -83,13 +83,15 @@ npm run dev
 축제 카드를 클릭하면 상세 모달이 열린다([`app/components/festival/festival-detail-modal.tsx`](app/components/festival/festival-detail-modal.tsx)):
 
 - 상단: 축제 상세 정보(이미지, 상태, 카테고리, 설명, 주소, 기간, 태그)
-- 하단: "같이 가면 좋은 주변 관광지", 주변 음식점, 주변 숙소 — 축제의 위경도 기준 반경 5km 이내 정보를 가로 스크롤 카드로 표시
+- 하단 "주변 정보": 전체/관광지/음식점/숙소 필터 탭 → 왼쪽엔 축제 위치를 중심으로 한 상대 위치 지도([`nearby-map.tsx`](app/components/festival/nearby-map.tsx), 실제 위경도 차이를 반경 원 위에 투영한 SVG, 카카오맵 연동 전 임시), 오른쪽엔 같은 목록을 스크롤 리스트로 표시. 지도 점 클릭 ↔ 목록 항목이 서로 선택 동기화됨.
 
 주변 정보는 [`supabase/functions/nearby-info`](supabase/functions/nearby-info/index.ts) Edge Function이 **한국관광공사_무장애 여행 정보_GW**(`KorWithService2`, `locationBasedList2`) API를 호출해서 가져온다(관광지=contentTypeId 12, 음식점=39, 숙박=32). `apis.data.go.kr`는 브라우저에서 직접 호출하면 CORS로 막히기 때문에 프론트는 이 Edge Function만 호출한다(`app/lib/nearby.ts`).
 
 - 이 API는 TourAPI(`KorService2`)와 별도로 활용신청이 필요하다 — [무장애 여행 정보_GW 신청 페이지](https://www.data.go.kr/data/15101897/openapi.do)에서 활용신청 후 `TOUR_API_KEY` 시크릿을 그대로 재사용하면 된다.
 - 배포: `supabase functions deploy nearby-info`
 - 축제에 좌표(`latitude`/`longitude`)가 없으면 주변 정보 섹션 대신 안내 문구만 표시한다.
+- **반경 자동 확장**: 기본 5km에서 카테고리별 결과가 4건 미만이면 10km → 20km로 넓혀 재시도한다. 확장된 카테고리는 모달에 "숙소는 반경 10km까지 찾았어요" 식으로 안내 문구가 뜬다.
+- **더 많은 숙소 정보 확보 방법 검토 결과**: 여기어때·야놀자(NOL) 모두 공개 셀프서비스 API가 없고(네이버/아고다/카카오 등과의 비공개 B2B 제휴만 존재), 개인/소규모 개발자가 붙일 방법이 사실상 없음. TourAPI의 일반 서비스(`KorService2`)와 무장애 서비스(`KorWithService2`)는 같은 숙박 데이터베이스를 참조하므로 서비스를 바꿔도 결과 수는 동일함(직접 확인함 — 두 API가 동일 좌표에서 동일한 2건을 반환). 실제로 유효했던 건 반경 확장뿐이었음. 향후 커버리지를 더 늘리려면 Booking.com/Agoda 같은 해외 OTA의 제휴사 프로그램(Affiliate/Partner API, 커미션 기반, 심사 필요)을 검토할 수 있음.
 
 ## 카카오톡 알림 (진행 중)
 

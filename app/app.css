@@ -100,6 +100,16 @@ html[data-text-size="large"] {
   font-size: 120%;
 }
 
+/*
+ * Noto Sans KR 등 한글 폰트는 라틴 폰트 기준으로 설계된 line-height의 상/하 여백이
+ * 비대칭이라, flex(items-center)로 줄박스를 정확히 중앙 정렬해도 실제 글자 잉크는
+ * 살짝 아래로 처져 보인다(글자 크기가 클수록 더 두드러짐). em 단위라 폰트 크기가
+ * 커져도 비율이 유지된다. 원, 알약 모양처럼 텍스트만 딱 채워 넣는 버튼/배지에 사용.
+ */
+.optical-center {
+  transform: translateY(-0.06em);
+}
+
 @keyframes marquee {
   from {
     transform: translateX(0);

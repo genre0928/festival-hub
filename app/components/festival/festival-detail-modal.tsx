@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Hotel,
+  LayoutGrid,
   Landmark,
   Loader2,
   MapPin,
@@ -9,10 +10,18 @@ import {
 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "~/components/ui/dialog";
 import { Badge } from "~/components/ui/badge";
+import { Tabs, type TabItem } from "~/components/ui/tabs";
+import { NearbyMap } from "~/components/festival/nearby-map";
 import type { Festival } from "~/lib/data/festivals.mock";
 import { getFestivalStatus, STATUS_LABELS, type FestivalStatus } from "~/lib/festivals";
 import { getRegionByCode } from "~/components/map/region-data";
-import { getNearbyInfo, type NearbyInfo, type NearbyPlace } from "~/lib/nearby";
+import {
+  flattenNearbyInfo,
+  getNearbyInfo,
+  type NearbyCategory,
+  type NearbyInfo,
+  type NearbyPlaceWithCategory,
+} from "~/lib/nearby";
 import { formatDateRange, cn } from "~/lib/utils";
 
 const STATUS_BADGE_VARIANT: Record<FestivalStatus, "solid" | "outline" | "soft"> = {
@@ -20,6 +29,29 @@ const STATUS_BADGE_VARIANT: Record<FestivalStatus, "solid" | "outline" | "soft">
   upcoming: "outline",
   ended: "soft",
 };
+
+const CATEGORY_ICONS: Record<NearbyCategory, typeof Landmark> = {
+  attraction: Landmark,
+  restaurant: Utensils,
+  lodging: Hotel,
+};
+
+const CATEGORY_LABELS: Record<NearbyCategory, string> = {
+  attraction: "관광지",
+  restaurant: "음식점",
+  lodging: "숙소",
+};
+
+const DEFAULT_RADIUS_METERS = 5000;
+
+type CategoryFilter = "all" | NearbyCategory;
+
+const FILTER_ITEMS: TabItem<CategoryFilter>[] = [
+  { value: "all", label: "전체", icon: <LayoutGrid className="h-3.5 w-3.5" /> },
+  { value: "attraction", label: "관광지", icon: <Landmark className="h-3.5 w-3.5" /> },
+  { value: "restaurant", label: "음식점", icon: <Utensils className="h-3.5 w-3.5" /> },
+  { value: "lodging", label: "숙소", icon: <Hotel className="h-3.5 w-3.5" /> },
+];
 
 interface FestivalDetailModalProps {
   festival: Festival | null;
@@ -30,8 +62,14 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
   const [nearby, setNearby] = useState<NearbyInfo | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
+  const listItemRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
+    setCategoryFilter("all");
+    setSelectedPlaceId(null);
+
     if (!festival || festival.latitude == null || festival.longitude == null) {
       setNearby(null);
       setError(null);
@@ -61,13 +99,35 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
     };
   }, [festival]);
 
+  const allPlaces = useMemo(() => (nearby ? flattenNearbyInfo(nearby) : []), [nearby]);
+  const filteredPlaces = useMemo(
+    () => (categoryFilter === "all" ? allPlaces : allPlaces.filter((p) => p.category === categoryFilter)),
+    [allPlaces, categoryFilter],
+  );
+
+  const expandedRadiusNotes = useMemo(() => {
+    if (!nearby) return [];
+    return (Object.entries(nearby) as [keyof NearbyInfo, NearbyInfo[keyof NearbyInfo]][])
+      .filter(([, result]) => result.radiusMeters > DEFAULT_RADIUS_METERS && result.places.length > 0)
+      .map(([key, result]) => {
+        const category: NearbyCategory =
+          key === "attractions" ? "attraction" : key === "restaurants" ? "restaurant" : "lodging";
+        return `${CATEGORY_LABELS[category]}은 주변에 적어 반경 ${(result.radiusMeters / 1000).toFixed(0)}km까지 찾았어요`;
+      });
+  }, [nearby]);
+
+  function handleSelectPlace(contentId: string) {
+    setSelectedPlaceId(contentId);
+    listItemRefs.current[contentId]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
   const status = festival ? getFestivalStatus(festival) : null;
   const region = festival ? getRegionByCode(festival.regionCode) : null;
   const hasCoords = festival?.latitude != null && festival?.longitude != null;
 
   return (
     <Dialog open={!!festival} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-h-[85vh] overflow-hidden p-0">
+      <DialogContent className="max-h-[85vh] max-w-3xl overflow-hidden p-0">
         {festival && (
           <div className="max-h-[85vh] overflow-y-auto p-6">
             <DialogTitle className="pr-8 text-lg font-bold text-season-surface-foreground">
@@ -117,7 +177,7 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
             )}
 
             {/* 하단: 주변 정보 */}
-            <div className="mt-6 space-y-6 border-t border-season-border pt-5">
+            <div className="mt-6 border-t border-season-border pt-5">
               {!hasCoords ? (
                 <p className="py-4 text-center text-sm text-season-muted">
                   이 축제는 좌표 정보가 없어 주변 정보를 보여드릴 수 없어요.
@@ -129,16 +189,54 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
                 </div>
               ) : error ? (
                 <p className="py-4 text-center text-sm text-season-muted">{error}</p>
-              ) : nearby ? (
-                <>
-                  <NearbySection
-                    title="같이 가면 좋은 주변 관광지"
-                    icon={Landmark}
-                    places={nearby.attractions}
-                  />
-                  <NearbySection title="주변 음식점" icon={Utensils} places={nearby.restaurants} />
-                  <NearbySection title="주변 숙소" icon={Hotel} places={nearby.lodgings} />
-                </>
+              ) : nearby && festival.latitude != null && festival.longitude != null ? (
+                allPlaces.length === 0 ? (
+                  <p className="py-4 text-center text-sm text-season-muted">
+                    주변 20km 이내에서 관광지·음식점·숙소 정보를 찾지 못했어요.
+                  </p>
+                ) : (
+                  <>
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="font-semibold text-season-surface-foreground">주변 정보</h3>
+                      <Tabs items={FILTER_ITEMS} value={categoryFilter} onChange={setCategoryFilter} />
+                    </div>
+
+                    {expandedRadiusNotes.length > 0 && (
+                      <p className="mt-2 text-[11px] text-season-muted">{expandedRadiusNotes.join(" · ")}</p>
+                    )}
+
+                    <div className="mt-3 grid gap-4 sm:grid-cols-2">
+                      <NearbyMap
+                        festivalLat={festival.latitude}
+                        festivalLng={festival.longitude}
+                        places={filteredPlaces}
+                        selectedPlaceId={selectedPlaceId}
+                        onSelectPlace={handleSelectPlace}
+                        className="aspect-square w-full"
+                      />
+
+                      <div className="flex max-h-80 flex-col gap-2 overflow-y-auto pr-1 sm:max-h-none">
+                        {filteredPlaces.length === 0 ? (
+                          <p className="py-6 text-center text-xs text-season-muted">
+                            이 카테고리에는 주변 정보가 없어요.
+                          </p>
+                        ) : (
+                          filteredPlaces.map((place) => (
+                            <NearbyListItem
+                              key={place.contentId}
+                              place={place}
+                              selected={place.contentId === selectedPlaceId}
+                              onSelect={() => handleSelectPlace(place.contentId)}
+                              itemRef={(el) => {
+                                listItemRefs.current[place.contentId] = el;
+                              }}
+                            />
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )
               ) : null}
             </div>
           </div>
@@ -148,58 +246,59 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
   );
 }
 
-function NearbySection({
-  title,
-  icon: Icon,
-  places,
+function NearbyListItem({
+  place,
+  selected,
+  onSelect,
+  itemRef,
 }: {
-  title: string;
-  icon: typeof Landmark;
-  places: NearbyPlace[];
+  place: NearbyPlaceWithCategory;
+  selected: boolean;
+  onSelect: () => void;
+  itemRef: (el: HTMLDivElement | null) => void;
 }) {
-  return (
-    <div>
-      <h3 className="flex items-center gap-1.5 text-sm font-semibold text-season-surface-foreground">
-        <Icon className="h-4 w-4 text-season-primary" />
-        {title}
-      </h3>
+  const Icon = CATEGORY_ICONS[place.category];
 
-      {places.length === 0 ? (
-        <p className="mt-2 text-xs text-season-muted">주변 5km 이내에 정보가 없어요.</p>
+  return (
+    <div
+      ref={itemRef}
+      role="button"
+      tabIndex={0}
+      onClick={onSelect}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSelect();
+        }
+      }}
+      className={cn(
+        "flex cursor-pointer items-center gap-3 rounded-xl border border-season-border bg-season-surface p-2 transition-colors",
+        selected && "ring-2 ring-season-ring",
+      )}
+    >
+      {place.imageUrl ? (
+        <img src={place.imageUrl} alt="" className="h-14 w-14 shrink-0 rounded-lg object-cover" />
       ) : (
-        <div className="mt-2 flex gap-3 overflow-x-auto pb-1">
-          {places.map((place) => (
-            <div
-              key={place.contentId}
-              className="w-40 shrink-0 rounded-xl border border-season-border bg-season-surface p-2"
-            >
-              {place.imageUrl ? (
-                <img
-                  src={place.imageUrl}
-                  alt=""
-                  className="h-24 w-full rounded-lg object-cover"
-                />
-              ) : (
-                <div className="flex h-24 w-full items-center justify-center rounded-lg bg-season-secondary text-season-muted">
-                  <Icon className="h-6 w-6" />
-                </div>
-              )}
-              <p className="mt-1.5 truncate text-xs font-medium text-season-surface-foreground">
-                {place.title}
-              </p>
-              <div className="flex items-center justify-between text-[11px] text-season-muted">
-                <span>{place.distanceMeters != null ? `${(place.distanceMeters / 1000).toFixed(1)}km` : ""}</span>
-                {place.tel && (
-                  <span className={cn("flex items-center gap-0.5 truncate")}>
-                    <Phone className="h-2.5 w-2.5 shrink-0" />
-                    {place.tel}
-                  </span>
-                )}
-              </div>
-            </div>
-          ))}
+        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-season-secondary text-season-muted">
+          <Icon className="h-5 w-5" />
         </div>
       )}
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-1 text-[11px] text-season-muted">
+          <Icon className="h-3 w-3 shrink-0" />
+          {CATEGORY_LABELS[place.category]}
+        </div>
+        <p className="truncate text-sm font-medium text-season-surface-foreground">{place.title}</p>
+        <div className="flex items-center gap-2 text-[11px] text-season-muted">
+          {place.distanceMeters != null && <span>{(place.distanceMeters / 1000).toFixed(1)}km</span>}
+          {place.tel && (
+            <span className="flex min-w-0 items-center gap-0.5 truncate">
+              <Phone className="h-2.5 w-2.5 shrink-0" />
+              {place.tel}
+            </span>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
