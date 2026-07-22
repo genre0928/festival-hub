@@ -17,7 +17,7 @@ export function TextSizeToggle() {
         title="보통 크기"
         onClick={() => setTextSize("normal")}
         className={cn(
-          "flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold transition-colors duration-200",
+          "optical-center flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold transition-colors duration-200",
           textSize === "normal"
             ? "bg-season-primary text-season-primary-foreground"
             : "text-season-muted hover:bg-season-secondary hover:text-season-surface-foreground",
@@ -32,7 +32,7 @@ export function TextSizeToggle() {
         title="큰 크기"
         onClick={() => setTextSize("large")}
         className={cn(
-          "flex h-8 w-8 items-center justify-center rounded-full text-base font-semibold transition-colors duration-200",
+          "optical-center flex h-8 w-8 items-center justify-center rounded-full text-base font-semibold transition-colors duration-200",
           textSize === "large"
             ? "bg-season-primary text-season-primary-foreground"
             : "text-season-muted hover:bg-season-secondary hover:text-season-surface-foreground",

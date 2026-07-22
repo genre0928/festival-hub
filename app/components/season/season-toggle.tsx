@@ -48,7 +48,7 @@ export function SeasonToggle() {
         <button
           type="button"
           onClick={resetToAuto}
-          className="ml-1 whitespace-nowrap rounded-full px-2 py-1 text-xs text-season-muted hover:text-season-surface-foreground"
+          className="optical-center ml-1 whitespace-nowrap rounded-full px-2 py-1 text-xs text-season-muted hover:text-season-surface-foreground"
         >
           자동으로
         </button>
