@@ -98,9 +98,9 @@ export function DotMap({ regionCounts, selectedRegion, onSelectRegion, className
                   "select-none fill-season-surface-foreground font-medium transition-opacity duration-300",
                   isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-80",
                 )}
-                fontSize={8}
+                fontSize={7}
               >
-                {region.name.replace(/(특별자치도|특별자치시|광역시|특별시|도)$/u, "")}
+                {region.name}
               </text>
             )}
           </g>
