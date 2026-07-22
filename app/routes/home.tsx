@@ -87,8 +87,8 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           onDateChange={setDate}
         />
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <Card className="flex flex-col gap-3 p-4 lg:sticky lg:top-24 lg:h-[calc(100vh-7.5rem)]">
+        <div className="grid min-w-0 gap-6 lg:grid-cols-2">
+          <Card className="flex min-w-0 flex-col gap-3 p-4 lg:sticky lg:top-24 lg:h-[calc(100vh-7.5rem)]">
             <div className="flex items-center justify-between">
               <h2 className="font-semibold text-season-surface-foreground">지역별 축제 지도</h2>
               {filters.regionCode && (
@@ -113,7 +113,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             </p>
           </Card>
 
-          <div className="flex flex-col gap-4">
+          <div className="flex min-w-0 flex-col gap-4">
             <div className="flex items-center justify-between gap-2">
               <FestivalFilters value={filters.status} onChange={setStatus} />
               <span className="shrink-0 text-sm text-season-muted">

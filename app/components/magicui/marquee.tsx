@@ -19,7 +19,7 @@ export function Marquee({
   return (
     <div
       className={cn(
-        "group flex overflow-hidden [--gap:1.5rem] gap-[--gap]",
+        "group flex min-w-0 overflow-hidden [--gap:1.5rem] gap-[--gap]",
         className,
       )}
     >
