@@ -6,3 +6,6 @@
 # React Router
 /.react-router/
 /build/
+
+# Supabase CLI 로컬 캐시
+/supabase/.temp/
