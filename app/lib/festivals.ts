@@ -28,6 +28,8 @@ function mapRowToFestival(row: FestivalRow): Festival {
     category: normalizeCategory(row.category),
     tags: row.tags ?? [],
     imageUrl: row.image_url ?? undefined,
+    latitude: row.latitude ?? undefined,
+    longitude: row.longitude ?? undefined,
   };
 }
 
