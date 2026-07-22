@@ -16,9 +16,10 @@
 ## 주요 기능
 
 - 봄/여름/가을/겨울 계절 테마 자동 전환 (네비게이션 바에서 수동 미리보기도 가능)
-- 지역별 도트 지도 + 축제 리스트 연동 필터링
+- 실제 시/도 행정구역 경계가 표시되는 지역별 지도(경계선 포함) + 축제 리스트 연동 필터링
 - 검색(축제명/태그), 지역, 날짜, 진행 상태(진행중/예정/종료)별 필터
 - URL 쿼리 파라미터와 필터 상태 동기화 (검색 결과 링크 공유 가능)
+- 상단 "보통/크게" 글자 크기 토글 (rem 기반 전체 스케일, 반응형, localStorage에 저장)
 
 카카오맵 API 연동, 카카오톡 메시지 발송(정기 알림/신규 축제 알림)은 API 키·발송 방식 확정 후 별도로 추가 예정. 다만 신규 축제 감지 트래킹과 구독자 스키마는 미리 구축해둠 (아래 "카카오톡 알림" 절 참고).
 
@@ -37,6 +38,13 @@ npm run dev
 - 스키마: [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql) — `regions`, `festivals` 테이블과 `festivals_with_status` 뷰(진행중/예정/종료 계산). [`0002_festival_sync.sql`](supabase/migrations/0002_festival_sync.sql) — 외부 데이터 동기화용 `external_id`/`source` 컬럼과 `(source, external_id)` 유니크 인덱스 추가. [`0003_notifications.sql`](supabase/migrations/0003_notifications.sql) — 카카오톡 알림용 `subscribers`(구독자), `festival_new_detections`(신규 축제 감지 기록) 테이블과 `pending_new_festival_notifications` 뷰.
 - Supabase CLI로 마이그레이션 적용: `supabase db push` (프로젝트 링크 후)
 - 클라이언트: [`app/lib/supabase/client.ts`](app/lib/supabase/client.ts) — `.env`가 없으면 `null`을 반환하며, 이 경우 [`app/lib/festivals.ts`](app/lib/festivals.ts)가 자동으로 mock 데이터로 대체한다. `.env`에 Supabase 정보를 채우고 `festivals` 테이블에 데이터가 있으면 실제 DB에서 조회한다.
+
+## 지역 경계 지도
+
+[`app/components/map/region-map.tsx`](app/components/map/region-map.tsx)는 실제 시/도 행정구역 경계(SVG path)를 그린다. 좌표는 빌드 타임에 미리 계산해 [`app/components/map/region-boundaries.ts`](app/components/map/region-boundaries.ts)에 저장해두므로, 런타임에는 지도 관련 라이브러리 없이 순수 SVG만으로 렌더링한다.
+
+- 원본 데이터: [southkorea/southkorea-maps](https://github.com/southkorea/southkorea-maps)의 시/도 단순화 TopoJSON (통계청 SGIS 제공, 공공누리 1유형 라이선스) — [`scripts/sources/`](scripts/sources/LICENSE.md)에 원본과 출처를 함께 보관.
+- 변환: `node scripts/build-region-boundaries.mjs` — `topojson-client`로 GeoJSON 변환 → 위도 보정 등거리원통 투영 → Douglas-Peucker로 좌표 단순화(약 3만 → 3천 점, 번들 크기 절감) → SVG path 문자열 생성. 원본 지도를 갱신하려면 `scripts/sources/`의 파일을 교체하고 이 스크립트를 다시 실행하면 됨.
 
 ## TourAPI 연동 (한국관광공사 축제 정보 자동 수집)
 

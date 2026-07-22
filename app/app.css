@@ -90,6 +90,16 @@ body {
   transition: background-color 0.6s ease;
 }
 
+html {
+  font-size: 100%;
+  transition: font-size 0.15s ease;
+}
+
+/* 접근성 큰 글자 모드 - rem 기반이라 앱 전체 텍스트/여백이 함께 커진다 */
+html[data-text-size="large"] {
+  font-size: 120%;
+}
+
 @keyframes marquee {
   from {
     transform: translateX(0);
