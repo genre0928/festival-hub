@@ -1,16 +1,18 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { PlayCircle } from "lucide-react";
 import type { Route } from "./+types/home";
 import { AppLayout } from "~/components/layout/app-layout";
 import { SearchBar } from "~/components/festival/search-bar";
 import { FestivalFilters } from "~/components/festival/festival-filters";
 import { FestivalList } from "~/components/festival/festival-list";
+import { FestivalDetailModal } from "~/components/festival/festival-detail-modal";
 import { DotMap } from "~/components/map/dot-map";
 import { Card } from "~/components/ui/card";
 import { Marquee } from "~/components/magicui/marquee";
 import { Badge } from "~/components/ui/badge";
 import { getRegionByCode } from "~/components/map/region-data";
 import { useFestivalFilters } from "~/hooks/use-festival-filters";
+import type { Festival } from "~/lib/data/festivals.mock";
 import {
   countFestivalsByRegion,
   filterFestivals,
@@ -35,6 +37,7 @@ export async function clientLoader() {
 
 export default function Home({ loaderData }: Route.ComponentProps) {
   const { filters, setQuery, setRegionCode, setDate, setStatus } = useFestivalFilters();
+  const [selectedFestival, setSelectedFestival] = useState<Festival | null>(null);
 
   const allFestivals = loaderData.festivals;
 
@@ -124,10 +127,13 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               festivals={filteredFestivals}
               selectedRegion={filters.regionCode}
               onSelectRegion={setRegionCode}
+              onOpenDetail={setSelectedFestival}
             />
           </div>
         </div>
       </div>
+
+      <FestivalDetailModal festival={selectedFestival} onClose={() => setSelectedFestival(null)} />
     </AppLayout>
   );
 }

@@ -1,7 +1,7 @@
 // 한국관광공사 TourAPI(searchFestival2)로 생성된 실제 축제 데이터.
 // Supabase가 연결되지 않았을 때 화면에 표시되는 데이터로, 아래 명령으로 다시 생성할 수 있다:
 //   node --env-file=.env scripts/generate-mock-data.mjs
-// 생성 시각: 2026-07-22T13:04:03.731Z
+// 생성 시각: 2026-07-22T14:04:52.673Z
 
 export type FestivalCategory =
   | "전통"
@@ -23,6 +23,8 @@ export interface Festival {
   category: FestivalCategory;
   tags: string[];
   imageUrl?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export const FESTIVALS: Festival[] = [
@@ -36,7 +38,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-12-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/01/4060301_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/01/4060301_image2_1.png",
+    "latitude": 37.5681732680976,
+    "longitude": 126.969976113229
   },
   {
     "id": "tourapi-3443073",
@@ -48,7 +52,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-10",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/89/4024089_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/89/4024089_image2_1.jpg",
+    "latitude": 37.56214409114423,
+    "longitude": 126.8015703308394
   },
   {
     "id": "tourapi-2786391",
@@ -60,7 +66,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-12-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/12/3518612_image2_1.jpeg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/12/3518612_image2_1.jpeg",
+    "latitude": 35.1537727886,
+    "longitude": 129.1185199367
   },
   {
     "id": "tourapi-4060434",
@@ -72,7 +80,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-12-31",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/35/4060435_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/35/4060435_image2_1.jpg",
+    "latitude": 37.5728652641047,
+    "longitude": 126.985653181823
   },
   {
     "id": "tourapi-2809535",
@@ -84,7 +94,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-12-31",
     "category": "전통",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/57/4001657_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/57/4001657_image2_1.jpg",
+    "latitude": 37.5697673859634,
+    "longitude": 126.983677617361
   },
   {
     "id": "tourapi-292961",
@@ -96,7 +108,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-12-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/79/4039379_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/79/4039379_image2_1.jpg",
+    "latitude": 37.565054919430565,
+    "longitude": 126.97657463444833
   },
   {
     "id": "tourapi-3107059",
@@ -108,7 +122,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-12-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/99/4001599_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/99/4001599_image2_1.jpg",
+    "latitude": 37.55992837962214,
+    "longitude": 126.97536090852309
   },
   {
     "id": "tourapi-3473295",
@@ -120,7 +136,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-12-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/09/4046009_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/09/4046009_image2_1.png",
+    "latitude": 37.56605397262908,
+    "longitude": 127.00955476908904
   },
   {
     "id": "tourapi-2433596",
@@ -132,7 +150,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-12-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/76/4029576_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/76/4029576_image2_1.jpg",
+    "latitude": 37.458350712273,
+    "longitude": 126.427699293474
   },
   {
     "id": "tourapi-409187",
@@ -144,7 +164,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-30",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/69/3469769_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/69/3469769_image2_1.JPG",
+    "latitude": 36.538830901849224,
+    "longitude": 126.47228311637501
   },
   {
     "id": "tourapi-4020878",
@@ -156,7 +178,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/4020877_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/4020877_image2_1.jpg",
+    "latitude": 37.5734697478172,
+    "longitude": 126.983623718252
   },
   {
     "id": "tourapi-4067214",
@@ -168,7 +192,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-12-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4067313_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4067313_image2_1.jpg",
+    "latitude": 34.7395781561546,
+    "longitude": 127.736371787128
   },
   {
     "id": "tourapi-3113265",
@@ -180,7 +206,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-30",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/69/4054469_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/69/4054469_image2_1.jpg",
+    "latitude": 37.41945269174406,
+    "longitude": 126.92561681569023
   },
   {
     "id": "tourapi-3488655",
@@ -192,7 +220,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-12-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/85/4039885_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/85/4039885_image2_1.jpg",
+    "latitude": 35.1814560887758,
+    "longitude": 126.884278856104
   },
   {
     "id": "tourapi-3488421",
@@ -204,7 +234,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-12-26",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/72/4090072_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/72/4090072_image2_1.jpg",
+    "latitude": 37.7832839326,
+    "longitude": 126.6946859929
   },
   {
     "id": "tourapi-4062064",
@@ -216,7 +248,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-17",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/4062226_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/4062226_image2_1.jpg",
+    "latitude": 35.8405467269236,
+    "longitude": 129.207631152376
   },
   {
     "id": "tourapi-4055101",
@@ -228,7 +262,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/67/4056467_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/67/4056467_image2_1.jpg",
+    "latitude": 37.5680445876689,
+    "longitude": 127.010890355484
   },
   {
     "id": "tourapi-3492276",
@@ -240,7 +276,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-29",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/82/4055582_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/82/4055582_image2_1.png",
+    "latitude": 37.476334,
+    "longitude": 126.632619
   },
   {
     "id": "tourapi-999659",
@@ -252,7 +290,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-30",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4040007_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4040007_image2_1.jpg",
+    "latitude": 34.1798501004128,
+    "longitude": 126.858988248196
   },
   {
     "id": "tourapi-3107440",
@@ -264,7 +304,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/4055559_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/4055559_image2_1.jpg",
+    "latitude": 37.475101,
+    "longitude": 127.03817
   },
   {
     "id": "tourapi-3011948",
@@ -276,7 +318,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/76/3530176_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/76/3530176_image2_1.jpg",
+    "latitude": 37.476743,
+    "longitude": 127.041497
   },
   {
     "id": "tourapi-3377038",
@@ -288,7 +332,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-12",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4054090_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4054090_image2_1.jpg",
+    "latitude": 37.5158257049833,
+    "longitude": 127.057734484281
   },
   {
     "id": "tourapi-142186",
@@ -300,7 +346,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-26",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/4053626_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/4053626_image2_1.JPG",
+    "latitude": 36.826945,
+    "longitude": 127.493167
   },
   {
     "id": "tourapi-293030",
@@ -312,7 +360,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-29",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/32/4039532_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/32/4039532_image2_1.jpg",
+    "latitude": 37.0317706868448,
+    "longitude": 127.310126633916
   },
   {
     "id": "tourapi-2987489",
@@ -324,7 +374,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/97/4054497_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/97/4054497_image2_1.jpg",
+    "latitude": 34.5256,
+    "longitude": 127.1341
   },
   {
     "id": "tourapi-3478890",
@@ -336,7 +388,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-07",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/37/4040737_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/37/4040737_image2_1.jpg",
+    "latitude": 35.14836487617714,
+    "longitude": 126.91873155733187
   },
   {
     "id": "tourapi-2865136",
@@ -348,7 +402,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-07",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/01/4067301_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/01/4067301_image2_1.jpg",
+    "latitude": 35.1474235264676,
+    "longitude": 126.91694835998
   },
   {
     "id": "tourapi-2615461",
@@ -360,7 +416,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-27",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4055163_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4055163_image2_1.jpg",
+    "latitude": 37.576030700049394,
+    "longitude": 126.97672186606306
   },
   {
     "id": "tourapi-2756396",
@@ -372,7 +430,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/03/4073903_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/03/4073903_image2_1.jpg",
+    "latitude": 37.5650549194,
+    "longitude": 126.9765746344
   },
   {
     "id": "tourapi-2828328",
@@ -384,7 +444,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/60/4025160_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/60/4025160_image2_1.jpg",
+    "latitude": 37.5263474738219,
+    "longitude": 126.933595431713
   },
   {
     "id": "tourapi-2842412",
@@ -396,7 +458,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-10",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/03/4055703_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/03/4055703_image2_1.jpg",
+    "latitude": 35.844151,
+    "longitude": 127.129296
   },
   {
     "id": "tourapi-3497454",
@@ -408,7 +472,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-31",
     "category": "전통",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4056513_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4056513_image2_1.jpg",
+    "latitude": 37.574618321885374,
+    "longitude": 126.97838493180903
   },
   {
     "id": "tourapi-3512205",
@@ -420,7 +486,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-30",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/17/4044417_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/17/4044417_image2_1.jpg",
+    "latitude": 33.24708081676599,
+    "longitude": 126.56445889201075
   },
   {
     "id": "tourapi-4053719",
@@ -432,7 +500,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-26",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/29/4053729_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/29/4053729_image2_1.jpg",
+    "latitude": 37.6554800512795,
+    "longitude": 127.08063232704
   },
   {
     "id": "tourapi-1291408",
@@ -444,7 +514,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/50/4044350_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/50/4044350_image2_1.jpg",
+    "latitude": 37.57765074254216,
+    "longitude": 126.99023063100555
   },
   {
     "id": "tourapi-4054430",
@@ -456,7 +528,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-26",
     "category": "자연",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/43/4054443_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/43/4054443_image2_1.jpg",
+    "latitude": 35.047403,
+    "longitude": 126.967541
   },
   {
     "id": "tourapi-2849025",
@@ -467,7 +541,9 @@ export const FESTIVALS: Festival[] = [
     "startDate": "2026-04-17",
     "endDate": "2026-06-19",
     "category": "기타",
-    "tags": []
+    "tags": [],
+    "latitude": 37.4800972389423,
+    "longitude": 127.18089864064
   },
   {
     "id": "tourapi-511801",
@@ -479,7 +555,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-10",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/04/4072004_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/04/4072004_image2_1.jpg",
+    "latitude": 35.3753770717,
+    "longitude": 126.5432800594
   },
   {
     "id": "tourapi-2547013",
@@ -491,7 +569,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-31",
     "category": "전통",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/58/4067258_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/58/4067258_image2_1.JPG",
+    "latitude": 35.814171786262136,
+    "longitude": 127.15002124718735
   },
   {
     "id": "tourapi-4056606",
@@ -503,7 +583,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-06",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/86/4056686_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/86/4056686_image2_1.jpg",
+    "latitude": 37.4339272970259,
+    "longitude": 126.877725826432
   },
   {
     "id": "tourapi-4058556",
@@ -515,7 +597,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-12-15",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/21/4058721_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/21/4058721_image2_1.png",
+    "latitude": 37.2879129895568,
+    "longitude": 127.054491044714
   },
   {
     "id": "tourapi-3111722",
@@ -527,7 +611,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-15",
     "category": "전통",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/49/4058449_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/49/4058449_image2_1.png",
+    "latitude": 37.526347853294425,
+    "longitude": 126.93359519306124
   },
   {
     "id": "tourapi-2953055",
@@ -539,7 +625,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-23",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/67/4064467_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/67/4064467_image2_1.jpg",
+    "latitude": 37.5118239121138,
+    "longitude": 127.059159043842
   },
   {
     "id": "tourapi-2608888",
@@ -551,7 +639,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-25",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/4053670_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/4053670_image2_1.jpg",
+    "latitude": 35.1460465789,
+    "longitude": 126.9192794131
   },
   {
     "id": "tourapi-629718",
@@ -563,7 +653,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/20/3481720_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/20/3481720_image2_1.jpg",
+    "latitude": 37.352556846961036,
+    "longitude": 127.32760568097713
   },
   {
     "id": "tourapi-292977",
@@ -575,7 +667,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-26",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/20/4059220_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/20/4059220_image2_1.jpg",
+    "latitude": 35.2247796540003,
+    "longitude": 129.230369319202
   },
   {
     "id": "tourapi-292835",
@@ -587,7 +681,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-26",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/21/4004221_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/21/4004221_image2_1.jpg",
+    "latitude": 37.1780576,
+    "longitude": 128.4686748
   },
   {
     "id": "tourapi-2755521",
@@ -599,7 +695,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-26",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4044413_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4044413_image2_1.jpg",
+    "latitude": 35.491704322208136,
+    "longitude": 128.75468402410536
   },
   {
     "id": "tourapi-3108284",
@@ -611,7 +709,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-25",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/14/4057814_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/14/4057814_image2_1.jpg",
+    "latitude": 33.4940031561357,
+    "longitude": 126.950702770738
   },
   {
     "id": "tourapi-527710",
@@ -623,7 +723,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/09/4004509_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/09/4004509_image2_1.jpg",
+    "latitude": 37.2930976680779,
+    "longitude": 127.385684947776
   },
   {
     "id": "tourapi-720815",
@@ -635,7 +737,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-06",
     "category": "자연",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4061113_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4061113_image2_1.JPG",
+    "latitude": 36.466746620958695,
+    "longitude": 127.49257384182962
   },
   {
     "id": "tourapi-2982690",
@@ -647,7 +751,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-26",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4058907_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4058907_image2_1.jpg",
+    "latitude": 37.1013472523941,
+    "longitude": 129.00789068775
   },
   {
     "id": "tourapi-507598",
@@ -659,7 +765,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "자연",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/69/4041669_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/69/4041669_image2_1.JPG",
+    "latitude": 35.0591629478,
+    "longitude": 126.5221985649
   },
   {
     "id": "tourapi-2952027",
@@ -671,7 +779,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-26",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4044363_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4044363_image2_1.png",
+    "latitude": 37.668933476214,
+    "longitude": 126.745802827238
   },
   {
     "id": "tourapi-4058499",
@@ -683,7 +793,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-16",
     "category": "전통",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/09/4058709_image2_1.jpeg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/09/4058709_image2_1.jpeg",
+    "latitude": 35.1898363263033,
+    "longitude": 128.083401702234
   },
   {
     "id": "tourapi-4057755",
@@ -695,7 +807,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-26",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/27/4057827_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/27/4057827_image2_1.png",
+    "latitude": 35.2088844577086,
+    "longitude": 128.125054943122
   },
   {
     "id": "tourapi-3487939",
@@ -707,7 +821,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-25",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/56/4059956_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/56/4059956_image2_1.jpg",
+    "latitude": 37.5810326703117,
+    "longitude": 126.814717992376
   },
   {
     "id": "tourapi-1998564",
@@ -719,7 +835,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-03",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/86/4055386_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/86/4055386_image2_1.jpg",
+    "latitude": 37.5787676269878,
+    "longitude": 126.976976800907
   },
   {
     "id": "tourapi-2766000",
@@ -731,7 +849,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/09/4059609_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/09/4059609_image2_1.png",
+    "latitude": 37.36457643111233,
+    "longitude": 127.83403799313135
   },
   {
     "id": "tourapi-3112269",
@@ -743,7 +863,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-26",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4058690_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4058690_image2_1.jpg",
+    "latitude": 37.603353747384375,
+    "longitude": 127.52474870373625
   },
   {
     "id": "tourapi-2434545",
@@ -755,7 +877,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-31",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/22/4051822_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/22/4051822_image2_1.png",
+    "latitude": 33.239201142544914,
+    "longitude": 126.5584238742126
   },
   {
     "id": "tourapi-1574707",
@@ -767,7 +891,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-26",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/58/4039458_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/58/4039458_image2_1.jpg",
+    "latitude": 36.68653710802438,
+    "longitude": 126.6513810417444
   },
   {
     "id": "tourapi-4054203",
@@ -779,7 +905,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-25",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/08/4054208_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/08/4054208_image2_1.png",
+    "latitude": 37.5647056236712,
+    "longitude": 126.993214191194
   },
   {
     "id": "tourapi-2818837",
@@ -791,7 +919,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-27",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/35/4057835_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/35/4057835_image2_1.jpg",
+    "latitude": 37.57098021727393,
+    "longitude": 126.99513110232297
   },
   {
     "id": "tourapi-4058391",
@@ -803,7 +933,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/93/4058393_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/93/4058393_image2_1.jpg",
+    "latitude": 36.57961,
+    "longitude": 128.327777
   },
   {
     "id": "tourapi-2949644",
@@ -815,7 +947,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-04-25",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/22/4040522_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/22/4040522_image2_1.png",
+    "latitude": 37.55509,
+    "longitude": 126.97908
   },
   {
     "id": "tourapi-3113583",
@@ -827,7 +961,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/24/4063024_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/24/4063024_image2_1.jpg",
+    "latitude": 37.512861,
+    "longitude": 126.997353
   },
   {
     "id": "tourapi-506647",
@@ -839,7 +975,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-03",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/89/4090489_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/89/4090489_image2_1.jpg",
+    "latitude": 36.7804900116,
+    "longitude": 127.003490903
   },
   {
     "id": "tourapi-506473",
@@ -851,7 +989,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-06",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/58/4013558_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/58/4013558_image2_1.JPG",
+    "latitude": 35.4041318359584,
+    "longitude": 127.38050354021
   },
   {
     "id": "tourapi-4062805",
@@ -863,7 +1003,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-12-06",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4063007_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4063007_image2_1.jpg",
+    "latitude": 36.8053358842675,
+    "longitude": 127.824356316082
   },
   {
     "id": "tourapi-4061420",
@@ -875,7 +1017,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-02",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/27/4061427_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/27/4061427_image2_1.jpg",
+    "latitude": 37.4273687531597,
+    "longitude": 126.989303817953
   },
   {
     "id": "tourapi-506480",
@@ -887,7 +1031,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/44/4041244_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/44/4041244_image2_1.jpg",
+    "latitude": 35.325206271,
+    "longitude": 126.9878901989
   },
   {
     "id": "tourapi-4060101",
@@ -899,7 +1045,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4060107_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4060107_image2_1.png",
+    "latitude": 36.5605065290203,
+    "longitude": 128.730633466603
   },
   {
     "id": "tourapi-506295",
@@ -911,7 +1059,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-10",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/78/4054278_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/78/4054278_image2_1.jpg",
+    "latitude": 36.7616007400496,
+    "longitude": 128.07698831225
   },
   {
     "id": "tourapi-553299",
@@ -923,7 +1073,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/29/4058829_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/29/4058829_image2_1.JPG",
+    "latitude": 34.719837525,
+    "longitude": 127.0817208222
   },
   {
     "id": "tourapi-1553601",
@@ -935,7 +1087,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/31/4054831_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/31/4054831_image2_1.jpg",
+    "latitude": 35.1651593350767,
+    "longitude": 129.066875989537
   },
   {
     "id": "tourapi-1241762",
@@ -947,7 +1101,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "자연",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/47/3486247_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/47/3486247_image2_1.jpg",
+    "latitude": 36.12974201132962,
+    "longitude": 126.50367167809488
   },
   {
     "id": "tourapi-513326",
@@ -959,7 +1115,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-03",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/98/4056198_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/98/4056198_image2_1.png",
+    "latitude": 37.3107392970604,
+    "longitude": 126.829820938661
   },
   {
     "id": "tourapi-553315",
@@ -971,7 +1129,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-03",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4060110_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4060110_image2_1.jpg",
+    "latitude": 34.73957816,
+    "longitude": 127.7363717853
   },
   {
     "id": "tourapi-506774",
@@ -983,7 +1143,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-03",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/89/4057389_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/89/4057389_image2_1.jpg",
+    "latitude": 35.43506055909842,
+    "longitude": 129.27951373329145
   },
   {
     "id": "tourapi-2984556",
@@ -995,7 +1157,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-03",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/01/4054001_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/01/4054001_image2_1.JPG",
+    "latitude": 35.5400154875724,
+    "longitude": 127.336421060977
   },
   {
     "id": "tourapi-3114868",
@@ -1007,7 +1171,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-03",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4058407_image2_1.jpeg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4058407_image2_1.jpeg",
+    "latitude": 35.855568,
+    "longitude": 126.701126
   },
   {
     "id": "tourapi-2974166",
@@ -1019,7 +1185,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/66/4059966_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/66/4059966_image2_1.jpg",
+    "latitude": 36.562992103028805,
+    "longitude": 128.73271717729182
   },
   {
     "id": "tourapi-3352029",
@@ -1031,7 +1199,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-07",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/98/4055198_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/98/4055198_image2_1.jpg",
+    "latitude": 38.082930787121526,
+    "longitude": 127.20857972265999
   },
   {
     "id": "tourapi-507383",
@@ -1043,7 +1213,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4059313_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4059313_image2_1.jpg",
+    "latitude": 35.2272923624849,
+    "longitude": 127.642918474816
   },
   {
     "id": "tourapi-3489178",
@@ -1055,7 +1227,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-03",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/29/4059329_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/29/4059329_image2_1.jpg",
+    "latitude": 35.54009847598224,
+    "longitude": 126.56170991377171
   },
   {
     "id": "tourapi-3116066",
@@ -1067,7 +1241,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-19",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/46/4060146_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/46/4060146_image2_1.jpg",
+    "latitude": 37.526347853294425,
+    "longitude": 126.93359519306124
   },
   {
     "id": "tourapi-3113790",
@@ -1079,7 +1255,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-03",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/76/4055176_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/76/4055176_image2_1.jpg",
+    "latitude": 35.28300498413343,
+    "longitude": 128.4013795238669
   },
   {
     "id": "tourapi-2714144",
@@ -1091,7 +1269,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-03",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/72/4058472_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/72/4058472_image2_1.jpg",
+    "latitude": 35.283065,
+    "longitude": 128.400375
   },
   {
     "id": "tourapi-2865122",
@@ -1103,7 +1283,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-03",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/41/3380141_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/41/3380141_image2_1.jpg",
+    "latitude": 19.694477084885456,
+    "longitude": 117.99260273191031
   },
   {
     "id": "tourapi-2597638",
@@ -1115,7 +1297,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-03",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/99/3301599_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/99/3301599_image2_1.jpg",
+    "latitude": 37.68927,
+    "longitude": 127.893198
   },
   {
     "id": "tourapi-2720203",
@@ -1127,7 +1311,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-12-31",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/74/4060474_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/74/4060474_image2_1.png",
+    "latitude": 37.5716228232824,
+    "longitude": 126.976787992565
   },
   {
     "id": "tourapi-2657619",
@@ -1139,7 +1325,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-01",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4081263_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4081263_image2_1.jpg",
+    "latitude": 37.2818163237,
+    "longitude": 127.0163732353
   },
   {
     "id": "tourapi-3114696",
@@ -1150,7 +1338,9 @@ export const FESTIVALS: Festival[] = [
     "startDate": "2026-05-02",
     "endDate": "2026-05-02",
     "category": "기타",
-    "tags": []
+    "tags": [],
+    "latitude": 37.61967008757916,
+    "longitude": 127.04452930350259
   },
   {
     "id": "tourapi-1591019",
@@ -1162,7 +1352,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/14/3495714_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/14/3495714_image2_1.jpg",
+    "latitude": 34.4539991234,
+    "longitude": 127.5182439222
   },
   {
     "id": "tourapi-3489255",
@@ -1174,7 +1366,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-03",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/60/4061460_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/60/4061460_image2_1.jpg",
+    "latitude": 36.314761,
+    "longitude": 126.51504
   },
   {
     "id": "tourapi-3488961",
@@ -1186,7 +1380,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-02",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/55/4058355_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/55/4058355_image2_1.jpg",
+    "latitude": 35.4410659405647,
+    "longitude": 127.829359452075
   },
   {
     "id": "tourapi-4058798",
@@ -1198,7 +1394,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4058807_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4058807_image2_1.jpg",
+    "latitude": 35.1896565756,
+    "longitude": 126.883951454
   },
   {
     "id": "tourapi-3310483",
@@ -1210,7 +1408,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-03",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/18/4012118_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/18/4012118_image2_1.jpg",
+    "latitude": 37.52822008764788,
+    "longitude": 126.83214572562274
   },
   {
     "id": "tourapi-3115750",
@@ -1222,7 +1422,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/05/4055805_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/05/4055805_image2_1.JPG",
+    "latitude": 36.930815961635616,
+    "longitude": 128.58532614046393
   },
   {
     "id": "tourapi-534220",
@@ -1234,7 +1436,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/24/3115324_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/24/3115324_image2_1.jpg",
+    "latitude": 38.0122245145856,
+    "longitude": 127.06113381376
   },
   {
     "id": "tourapi-727285",
@@ -1246,7 +1450,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/86/4053986_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/86/4053986_image2_1.jpg",
+    "latitude": 38.103912,
+    "longitude": 127.983093
   },
   {
     "id": "tourapi-3545306",
@@ -1258,7 +1464,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-03",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/14/4059414_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/14/4059414_image2_1.jpg",
+    "latitude": 38.082930787121526,
+    "longitude": 127.20857972265999
   },
   {
     "id": "tourapi-2968672",
@@ -1270,7 +1478,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/32/4060932_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/32/4060932_image2_1.jpg",
+    "latitude": 37.56605397262908,
+    "longitude": 127.00955476908904
   },
   {
     "id": "tourapi-3301281",
@@ -1282,7 +1492,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/84/4058484_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/84/4058484_image2_1.jpg",
+    "latitude": 35.68620279678283,
+    "longitude": 128.46642108068517
   },
   {
     "id": "tourapi-141759",
@@ -1294,7 +1506,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-03",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/58/4057758_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/58/4057758_image2_1.jpg",
+    "latitude": 37.5742351620923,
+    "longitude": 126.994430782881
   },
   {
     "id": "tourapi-2545174",
@@ -1305,7 +1519,9 @@ export const FESTIVALS: Festival[] = [
     "startDate": "2026-05-03",
     "endDate": "2026-05-10",
     "category": "예술",
-    "tags": []
+    "tags": [],
+    "latitude": 37.5820954730452,
+    "longitude": 127.003179704707
   },
   {
     "id": "tourapi-2816502",
@@ -1317,7 +1533,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/23/4055623_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/23/4055623_image2_1.png",
+    "latitude": 37.51766381377982,
+    "longitude": 126.9580364654902
   },
   {
     "id": "tourapi-4060866",
@@ -1329,7 +1547,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-04",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/91/4061391_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/91/4061391_image2_1.png",
+    "latitude": 37.5644841324893,
+    "longitude": 126.980184460247
   },
   {
     "id": "tourapi-2986679",
@@ -1341,7 +1561,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/84/4061184_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/84/4061184_image2_1.jpg",
+    "latitude": 37.481752999,
+    "longitude": 126.5658118156
   },
   {
     "id": "tourapi-3114685",
@@ -1353,7 +1575,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-09",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/4060070_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/4060070_image2_1.jpg",
+    "latitude": 37.275427099204265,
+    "longitude": 126.98267250666271
   },
   {
     "id": "tourapi-3489432",
@@ -1365,7 +1589,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/32/4059932_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/32/4059932_image2_1.jpg",
+    "latitude": 37.50067016567467,
+    "longitude": 127.03015300562205
   },
   {
     "id": "tourapi-1633367",
@@ -1377,7 +1603,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/86/4061386_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/86/4061386_image2_1.jpg",
+    "latitude": 37.336522840777576,
+    "longitude": 127.94737291729675
   },
   {
     "id": "tourapi-1004281",
@@ -1389,7 +1617,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/41/4060041_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/41/4060041_image2_1.jpg",
+    "latitude": 37.305617311364074,
+    "longitude": 126.9537683373052
   },
   {
     "id": "tourapi-1806117",
@@ -1401,7 +1631,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/14/4057214_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/14/4057214_image2_1.jpg",
+    "latitude": 37.55156933131603,
+    "longitude": 126.73994226680931
   },
   {
     "id": "tourapi-2978145",
@@ -1413,7 +1645,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/54/4060154_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/54/4060154_image2_1.jpg",
+    "latitude": 37.56143324134579,
+    "longitude": 126.63681303475117
   },
   {
     "id": "tourapi-2598331",
@@ -1425,7 +1659,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-12-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/68/4059668_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/68/4059668_image2_1.jpg",
+    "latitude": 37.56544835496842,
+    "longitude": 126.97878183534239
   },
   {
     "id": "tourapi-506516",
@@ -1437,7 +1673,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-10",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/49/4059449_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/49/4059449_image2_1.jpg",
+    "latitude": 35.8685163598675,
+    "longitude": 128.589908485381
   },
   {
     "id": "tourapi-715421",
@@ -1449,7 +1687,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-10",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/85/4073885_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/85/4073885_image2_1.JPG",
+    "latitude": 35.489863,
+    "longitude": 128.757076
   },
   {
     "id": "tourapi-2818138",
@@ -1461,7 +1701,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/49/4059849_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/49/4059849_image2_1.jpg",
+    "latitude": 37.57888092158742,
+    "longitude": 126.99644883554714
   },
   {
     "id": "tourapi-1634216",
@@ -1473,7 +1715,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-10",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/29/4060629_image2_1.jpeg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/29/4060629_image2_1.jpeg",
+    "latitude": 37.21547646493128,
+    "longitude": 128.64339654124637
   },
   {
     "id": "tourapi-538458",
@@ -1485,7 +1729,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-10",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/00/4074000_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/00/4074000_image2_1.jpg",
+    "latitude": 35.6342408439,
+    "longitude": 129.3289893114
   },
   {
     "id": "tourapi-1270240",
@@ -1497,7 +1743,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-10",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/97/4059997_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/97/4059997_image2_1.jpg",
+    "latitude": 36.3606844977923,
+    "longitude": 127.357688151291
   },
   {
     "id": "tourapi-3113671",
@@ -1509,7 +1757,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-10",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/48/4070248_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/48/4070248_image2_1.jpg",
+    "latitude": 37.4960246565506,
+    "longitude": 127.11075320085199
   },
   {
     "id": "tourapi-4060158",
@@ -1521,7 +1771,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-10",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/56/4061456_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/56/4061456_image2_1.jpg",
+    "latitude": 37.5076939718271,
+    "longitude": 126.992730984132
   },
   {
     "id": "tourapi-2490376",
@@ -1533,7 +1785,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-09",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/35/4061535_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/35/4061535_image2_1.jpg",
+    "latitude": 37.572228016527,
+    "longitude": 126.838412693156
   },
   {
     "id": "tourapi-3303393",
@@ -1545,7 +1799,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-10",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/30/4054930_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/30/4054930_image2_1.jpg",
+    "latitude": 35.2163777948624,
+    "longitude": 128.999546395503
   },
   {
     "id": "tourapi-2738786",
@@ -1557,7 +1813,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-10",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4070713_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4070713_image2_1.JPG",
+    "latitude": 37.5660539726,
+    "longitude": 127.0095547691
   },
   {
     "id": "tourapi-1954396",
@@ -1569,7 +1827,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-09",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/25/4062825_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/25/4062825_image2_1.jpg",
+    "latitude": 36.321734,
+    "longitude": 127.411186
   },
   {
     "id": "tourapi-141865",
@@ -1581,7 +1841,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/33/4061433_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/33/4061433_image2_1.jpg",
+    "latitude": 37.7333775704446,
+    "longitude": 127.034033459191
   },
   {
     "id": "tourapi-2961451",
@@ -1593,7 +1855,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-10",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/79/4057279_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/79/4057279_image2_1.jpg",
+    "latitude": 37.7844495672426,
+    "longitude": 126.702630367866
   },
   {
     "id": "tourapi-2774275",
@@ -1605,7 +1869,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-19",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/45/4055545_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/45/4055545_image2_1.jpg",
+    "latitude": 34.79666213605975,
+    "longitude": 126.43379088761164
   },
   {
     "id": "tourapi-2818501",
@@ -1617,7 +1883,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/50/4058750_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/50/4058750_image2_1.jpg",
+    "latitude": 37.5247022357875,
+    "longitude": 126.977740246542
   },
   {
     "id": "tourapi-3495688",
@@ -1629,7 +1897,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-13",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/21/4062121_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/21/4062121_image2_1.jpg",
+    "latitude": 37.5716228232824,
+    "longitude": 126.976787992565
   },
   {
     "id": "tourapi-2601364",
@@ -1641,7 +1911,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-24",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/27/4060327_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/27/4060327_image2_1.jpg",
+    "latitude": 37.576030700049394,
+    "longitude": 126.97672186606306
   },
   {
     "id": "tourapi-2560317",
@@ -1653,7 +1925,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-14",
     "category": "자연",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/43/4062743_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/43/4062743_image2_1.png",
+    "latitude": 37.57200988776222,
+    "longitude": 126.97630706471843
   },
   {
     "id": "tourapi-2816651",
@@ -1665,7 +1939,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4081713_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4081713_image2_1.JPG",
+    "latitude": 35.9157611851,
+    "longitude": 128.2800491039
   },
   {
     "id": "tourapi-2841074",
@@ -1677,7 +1953,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/73/4060873_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/73/4060873_image2_1.jpg",
+    "latitude": 35.0771644165947,
+    "longitude": 129.081954798294
   },
   {
     "id": "tourapi-2374957",
@@ -1689,7 +1967,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "자연",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/20/4057520_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/20/4057520_image2_1.JPG",
+    "latitude": 35.858023,
+    "longitude": 128.514778
   },
   {
     "id": "tourapi-4056597",
@@ -1701,7 +1981,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-16",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/57/4058657_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/57/4058657_image2_1.jpg",
+    "latitude": 36.4917742203486,
+    "longitude": 127.271736903174
   },
   {
     "id": "tourapi-3016781",
@@ -1713,7 +1995,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/43/4062843_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/43/4062843_image2_1.jpg",
+    "latitude": 35.0323450358,
+    "longitude": 126.7166310826
   },
   {
     "id": "tourapi-566822",
@@ -1725,7 +2009,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-18",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/55/4025555_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/55/4025555_image2_1.jpg",
+    "latitude": 35.15949657841939,
+    "longitude": 129.16257660164996
   },
   {
     "id": "tourapi-4064297",
@@ -1737,7 +2023,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "자연",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/99/4064299_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/99/4064299_image2_1.jpg",
+    "latitude": 36.452898,
+    "longitude": 127.123215
   },
   {
     "id": "tourapi-3300114",
@@ -1749,7 +2037,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-16",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/29/4039829_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/29/4039829_image2_1.jpg",
+    "latitude": 36.4988231384441,
+    "longitude": 127.270076349597
   },
   {
     "id": "tourapi-577335",
@@ -1761,7 +2051,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4059463_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4059463_image2_1.jpg",
+    "latitude": 37.26652899449143,
+    "longitude": 126.98117491025482
   },
   {
     "id": "tourapi-3115722",
@@ -1773,7 +2065,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/00/4061800_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/00/4061800_image2_1.JPG",
+    "latitude": 35.10051001818189,
+    "longitude": 129.03097709836575
   },
   {
     "id": "tourapi-4060006",
@@ -1785,7 +2079,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-16",
     "category": "자연",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/97/4061397_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/97/4061397_image2_1.jpg",
+    "latitude": 37.2094985664652,
+    "longitude": 128.827774916991
   },
   {
     "id": "tourapi-3116057",
@@ -1797,7 +2093,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/4062170_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/4062170_image2_1.jpg",
+    "latitude": 37.566370776634,
+    "longitude": 126.977918351844
   },
   {
     "id": "tourapi-1717921",
@@ -1809,7 +2107,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-17",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4064407_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4064407_image2_1.jpg",
+    "latitude": 37.58051246104506,
+    "longitude": 127.00237422934477
   },
   {
     "id": "tourapi-1253973",
@@ -1821,7 +2121,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-25",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/83/4058683_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/83/4058683_image2_1.jpg",
+    "latitude": 35.5279345276424,
+    "longitude": 129.283792762158
   },
   {
     "id": "tourapi-2602974",
@@ -1833,7 +2135,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-07",
     "category": "자연",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/89/4084289_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/89/4084289_image2_1.jpg",
+    "latitude": 37.285146703,
+    "longitude": 127.9406302724
   },
   {
     "id": "tourapi-1624017",
@@ -1845,7 +2149,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/96/4055496_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/96/4055496_image2_1.jpg",
+    "latitude": 35.2773776987,
+    "longitude": 127.3080154885
   },
   {
     "id": "tourapi-3110383",
@@ -1857,7 +2163,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-24",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/33/4048733_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/33/4048733_image2_1.jpg",
+    "latitude": 36.8134802084893,
+    "longitude": 127.788201357436
   },
   {
     "id": "tourapi-141251",
@@ -1869,7 +2177,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-24",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/31/4066531_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/31/4066531_image2_1.jpg",
+    "latitude": 37.3891841805042,
+    "longitude": 127.53220602361
   },
   {
     "id": "tourapi-557329",
@@ -1881,7 +2191,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-24",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/97/4055897_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/97/4055897_image2_1.JPG",
+    "latitude": 36.97893869245348,
+    "longitude": 128.36967354429453
   },
   {
     "id": "tourapi-4065912",
@@ -1893,7 +2205,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-25",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/15/4065915_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/15/4065915_image2_1.jpg",
+    "latitude": 37.7529472198585,
+    "longitude": 128.891906196087
   },
   {
     "id": "tourapi-3097834",
@@ -1905,7 +2219,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-26",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/30/4060130_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/30/4060130_image2_1.png",
+    "latitude": 37.4725921213631,
+    "longitude": 126.6204464248807
   },
   {
     "id": "tourapi-1811380",
@@ -1917,7 +2233,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-25",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/02/4058202_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/02/4058202_image2_1.jpg",
+    "latitude": 37.1855346822948,
+    "longitude": 126.651019592317
   },
   {
     "id": "tourapi-4058500",
@@ -1929,7 +2247,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-24",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/22/4059422_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/22/4059422_image2_1.jpg",
+    "latitude": 37.5436228045917,
+    "longitude": 127.043585906393
   },
   {
     "id": "tourapi-2818494",
@@ -1941,7 +2261,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-23",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4063563_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4063563_image2_1.jpg",
+    "latitude": 35.165236725387174,
+    "longitude": 129.05667797660956
   },
   {
     "id": "tourapi-1632810",
@@ -1953,7 +2275,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-24",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4010210_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4010210_image2_1.jpg",
+    "latitude": 36.9263237388638,
+    "longitude": 128.502257343827
   },
   {
     "id": "tourapi-4064543",
@@ -1965,7 +2289,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-23",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/50/4064550_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/50/4064550_image2_1.jpg",
+    "latitude": 37.529629,
+    "longitude": 127.069985
   },
   {
     "id": "tourapi-3099365",
@@ -1977,7 +2303,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "자연",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/28/4068028_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/28/4068028_image2_1.jpg",
+    "latitude": 37.82076649272824,
+    "longitude": 127.52092288691405
   },
   {
     "id": "tourapi-506942",
@@ -1989,7 +2317,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/4024377_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/4024377_image2_1.JPG",
+    "latitude": 37.8731188493011,
+    "longitude": 127.727815407415
   },
   {
     "id": "tourapi-1834279",
@@ -2001,7 +2331,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-24",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/25/4066025_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/25/4066025_image2_1.jpg",
+    "latitude": 33.2414415056443,
+    "longitude": 126.566848427225
   },
   {
     "id": "tourapi-4059424",
@@ -2013,7 +2345,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/4059426_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/4059426_image2_1.JPG",
+    "latitude": 35.6331257273887,
+    "longitude": 127.301224949295
   },
   {
     "id": "tourapi-1804113",
@@ -2025,7 +2359,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-30",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/91/4058491_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/91/4058491_image2_1.png",
+    "latitude": 34.7509493146231,
+    "longitude": 127.747091095943
   },
   {
     "id": "tourapi-2823481",
@@ -2037,7 +2373,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4062790_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4062790_image2_1.jpg",
+    "latitude": 36.7302629464775,
+    "longitude": 127.013835851938
   },
   {
     "id": "tourapi-749800",
@@ -2049,7 +2387,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-07",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/86/3479886_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/86/3479886_image2_1.jpg",
+    "latitude": 36.0084246635841,
+    "longitude": 126.68584501088
   },
   {
     "id": "tourapi-1810345",
@@ -2061,7 +2401,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/93/4063193_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/93/4063193_image2_1.png",
+    "latitude": 37.314505,
+    "longitude": 126.859248
   },
   {
     "id": "tourapi-3522322",
@@ -2073,7 +2415,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/71/4051571_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/71/4051571_image2_1.jpg",
+    "latitude": 37.4727889015297,
+    "longitude": 126.620609137243
   },
   {
     "id": "tourapi-4065251",
@@ -2085,7 +2429,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-30",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/91/4065291_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/91/4065291_image2_1.jpg",
+    "latitude": 36.7035003719896,
+    "longitude": 127.553357528953
   },
   {
     "id": "tourapi-4063702",
@@ -2097,7 +2443,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-05-30",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/08/4063708_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/08/4063708_image2_1.jpg",
+    "latitude": 37.166895871069,
+    "longitude": 127.102430216403
   },
   {
     "id": "tourapi-4082595",
@@ -2109,7 +2457,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-12-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/4082670_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/4082670_image2_1.png",
+    "latitude": 37.5825448754,
+    "longitude": 126.9730592833
   },
   {
     "id": "tourapi-3485135",
@@ -2121,7 +2471,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-21",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/81/4065381_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/81/4065381_image2_1.jpg",
+    "latitude": 35.104388,
+    "longitude": 129.041338
   },
   {
     "id": "tourapi-1835137",
@@ -2133,7 +2485,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-07",
     "category": "자연",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/62/4066762_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/62/4066762_image2_1.jpg",
+    "latitude": 35.5302512004163,
+    "longitude": 126.515365233818
   },
   {
     "id": "tourapi-2393544",
@@ -2145,7 +2499,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-06",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/67/4065267_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/67/4065267_image2_1.jpg",
+    "latitude": 35.814171786262136,
+    "longitude": 127.15002124718735
   },
   {
     "id": "tourapi-3114311",
@@ -2157,7 +2513,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-07",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/27/4059027_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/27/4059027_image2_1.png",
+    "latitude": 37.5317034538759,
+    "longitude": 127.066765925738
   },
   {
     "id": "tourapi-3386681",
@@ -2169,7 +2527,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-07",
     "category": "전통",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/30/4070830_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/30/4070830_image2_1.jpg",
+    "latitude": 35.93835,
+    "longitude": 126.947776
   },
   {
     "id": "tourapi-4063951",
@@ -2181,7 +2541,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-07",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/4064359_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/4064359_image2_1.jpg",
+    "latitude": 37.2974370444597,
+    "longitude": 126.825891838858
   },
   {
     "id": "tourapi-2001015",
@@ -2193,7 +2555,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-07",
     "category": "음식",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4056263_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4056263_image2_1.jpg",
+    "latitude": 37.59279,
+    "longitude": 127.002239
   },
   {
     "id": "tourapi-2371631",
@@ -2205,7 +2569,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-07",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/41/4041141_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/41/4041141_image2_1.jpg",
+    "latitude": 33.5559658509894,
+    "longitude": 126.760117733532
   },
   {
     "id": "tourapi-2818857",
@@ -2217,7 +2583,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-09",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/4063059_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/4063059_image2_1.jpg",
+    "latitude": 37.569192,
+    "longitude": 126.978019
   },
   {
     "id": "tourapi-141731",
@@ -2229,7 +2597,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/55/4039855_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/55/4039855_image2_1.JPG",
+    "latitude": 36.932714623,
+    "longitude": 127.6909815923
   },
   {
     "id": "tourapi-141578",
@@ -2241,7 +2611,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4071963_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4071963_image2_1.jpg",
+    "latitude": 34.8319301305,
+    "longitude": 127.899135712
   },
   {
     "id": "tourapi-1118680",
@@ -2253,7 +2625,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/4080859_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/4080859_image2_1.jpg",
+    "latitude": 36.173139,
+    "longitude": 127.78035
   },
   {
     "id": "tourapi-2807078",
@@ -2265,7 +2639,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/4066726_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/4066726_image2_1.jpg",
+    "latitude": 35.90706961238413,
+    "longitude": 128.6130738582469
   },
   {
     "id": "tourapi-1327778",
@@ -2277,7 +2653,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/48/4066648_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/48/4066648_image2_1.jpg",
+    "latitude": 34.8904967714,
+    "longitude": 128.6965939087
   },
   {
     "id": "tourapi-506545",
@@ -2289,7 +2667,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4066810_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4066810_image2_1.JPG",
+    "latitude": 35.1537727886,
+    "longitude": 129.1185199367
   },
   {
     "id": "tourapi-2853719",
@@ -2301,7 +2681,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/51/4062851_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/51/4062851_image2_1.jpg",
+    "latitude": 35.9897716587,
+    "longitude": 126.7131486773
   },
   {
     "id": "tourapi-4070513",
@@ -2313,7 +2695,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/17/4070517_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/17/4070517_image2_1.jpg",
+    "latitude": 36.726736362,
+    "longitude": 127.4665450037
   },
   {
     "id": "tourapi-4069856",
@@ -2325,7 +2709,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/62/4069862_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/62/4069862_image2_1.jpg",
+    "latitude": 37.4898764289,
+    "longitude": 126.9868918551
   },
   {
     "id": "tourapi-2495286",
@@ -2337,7 +2723,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-13",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/81/4069081_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/81/4069081_image2_1.jpg",
+    "latitude": 38.190662,
+    "longitude": 128.5844785
   },
   {
     "id": "tourapi-2488259",
@@ -2349,7 +2737,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/22/4070022_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/22/4070022_image2_1.jpg",
+    "latitude": 38.5016149385,
+    "longitude": 128.4257605747
   },
   {
     "id": "tourapi-507480",
@@ -2361,7 +2751,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/00/4044300_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/00/4044300_image2_1.jpg",
+    "latitude": 36.0798791496,
+    "longitude": 126.7986906635
   },
   {
     "id": "tourapi-3489648",
@@ -2373,7 +2765,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/06/4063806_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/06/4063806_image2_1.jpg",
+    "latitude": 37.549782,
+    "longitude": 128.062607
   },
   {
     "id": "tourapi-2812160",
@@ -2385,7 +2779,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "음식",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/75/4062075_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/75/4062075_image2_1.jpg",
+    "latitude": 37.893865,
+    "longitude": 126.744269
   },
   {
     "id": "tourapi-3486730",
@@ -2397,7 +2793,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/42/4058642_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/42/4058642_image2_1.jpg",
+    "latitude": 37.28582866409523,
+    "longitude": 127.05944694152052
   },
   {
     "id": "tourapi-530450",
@@ -2409,7 +2807,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/34/4057034_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/34/4057034_image2_1.jpg",
+    "latitude": 37.6004267743,
+    "longitude": 126.8245886711
   },
   {
     "id": "tourapi-1248817",
@@ -2421,7 +2821,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/09/4066709_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/09/4066709_image2_1.jpg",
+    "latitude": 35.720474,
+    "longitude": 127.047671
   },
   {
     "id": "tourapi-2988364",
@@ -2433,7 +2835,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/35/4059435_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/35/4059435_image2_1.jpg",
+    "latitude": 35.1331926835,
+    "longitude": 126.9602800091
   },
   {
     "id": "tourapi-4070242",
@@ -2445,7 +2849,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/55/4070355_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/55/4070355_image2_1.jpg",
+    "latitude": 34.9288716802,
+    "longitude": 127.5008014959
   },
   {
     "id": "tourapi-3304231",
@@ -2457,7 +2863,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-21",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/40/4067740_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/40/4067740_image2_1.JPG",
+    "latitude": 37.47595553449147,
+    "longitude": 129.0330428105135
   },
   {
     "id": "tourapi-3305155",
@@ -2469,7 +2877,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-13",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/62/4066962_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/62/4066962_image2_1.jpg",
+    "latitude": 36.498953453,
+    "longitude": 127.2701840594
   },
   {
     "id": "tourapi-3300182",
@@ -2481,7 +2891,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4066290_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4066290_image2_1.jpg",
+    "latitude": 37.541781,
+    "longitude": 127.703432
   },
   {
     "id": "tourapi-2870717",
@@ -2493,7 +2905,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-14",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/00/4066700_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/00/4066700_image2_1.jpg",
+    "latitude": 36.7638885986155,
+    "longitude": 127.595569426407
   },
   {
     "id": "tourapi-1817328",
@@ -2505,7 +2919,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-13",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/83/4069183_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/83/4069183_image2_1.jpg",
+    "latitude": 37.5308485071395,
+    "longitude": 126.927745696174
   },
   {
     "id": "tourapi-4065756",
@@ -2517,7 +2933,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/53/4065953_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/53/4065953_image2_1.png",
+    "latitude": 37.555064,
+    "longitude": 126.979198
   },
   {
     "id": "tourapi-4070216",
@@ -2529,7 +2947,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-13",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/48/4070348_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/48/4070348_image2_1.jpg",
+    "latitude": 37.556896,
+    "longitude": 126.924142
   },
   {
     "id": "tourapi-3497353",
@@ -2541,7 +2961,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/73/4070173_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/73/4070173_image2_1.jpg",
+    "latitude": 35.154689,
+    "longitude": 129.132986
   },
   {
     "id": "tourapi-3498398",
@@ -2553,7 +2975,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-13",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/80/4069880_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/80/4069880_image2_1.jpg",
+    "latitude": 37.569249,
+    "longitude": 126.978013
   },
   {
     "id": "tourapi-4069159",
@@ -2565,7 +2989,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-13",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/02/4069202_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/02/4069202_image2_1.jpg",
+    "latitude": 36.4226711214339,
+    "longitude": 129.419714112622
   },
   {
     "id": "tourapi-531391",
@@ -2577,7 +3003,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-22",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/76/4057376_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/76/4057376_image2_1.JPG",
+    "latitude": 37.7481582843,
+    "longitude": 128.8949883724
   },
   {
     "id": "tourapi-4071535",
@@ -2589,7 +3017,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-16",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/19/4071619_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/19/4071619_image2_1.jpg",
+    "latitude": 37.565567165,
+    "longitude": 126.9783328596
   },
   {
     "id": "tourapi-3491755",
@@ -2601,7 +3031,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-16",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4058663_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4058663_image2_1.jpg",
+    "latitude": 37.4682787075426,
+    "longitude": 127.039136433366
   },
   {
     "id": "tourapi-2661307",
@@ -2613,7 +3045,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-21",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/84/4057984_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/84/4057984_image2_1.png",
+    "latitude": 35.1710365257136,
+    "longitude": 129.127084511585
   },
   {
     "id": "tourapi-3494070",
@@ -2625,7 +3059,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-21",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/33/4071433_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/33/4071433_image2_1.jpg",
+    "latitude": 35.1998941088,
+    "longitude": 128.1941147222
   },
   {
     "id": "tourapi-3114721",
@@ -2637,7 +3073,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-21",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/78/4073378_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/78/4073378_image2_1.JPG",
+    "latitude": 37.8809963062,
+    "longitude": 127.7293744803
   },
   {
     "id": "tourapi-2611559",
@@ -2649,7 +3087,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-21",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/46/4063746_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/46/4063746_image2_1.jpg",
+    "latitude": 37.598656,
+    "longitude": 126.788068
   },
   {
     "id": "tourapi-1007868",
@@ -2661,7 +3101,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-20",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/4058670_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/4058670_image2_1.jpg",
+    "latitude": 35.1144041132,
+    "longitude": 129.0464193172
   },
   {
     "id": "tourapi-2616325",
@@ -2673,7 +3115,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-19",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/47/4061947_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/47/4061947_image2_1.jpg",
+    "latitude": 37.5076939718,
+    "longitude": 126.9927309841
   },
   {
     "id": "tourapi-141963",
@@ -2685,7 +3129,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-06",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/51/4075151_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/51/4075151_image2_1.jpg",
+    "latitude": 35.8447383632,
+    "longitude": 128.5580763673
   },
   {
     "id": "tourapi-4069908",
@@ -2697,7 +3143,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-20",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4069913_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4069913_image2_1.jpg",
+    "latitude": 37.8864623318,
+    "longitude": 127.7153683848
   },
   {
     "id": "tourapi-3104107",
@@ -2709,7 +3157,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-21",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/87/4067387_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/87/4067387_image2_1.jpg",
+    "latitude": 35.5526693627,
+    "longitude": 129.310416494
   },
   {
     "id": "tourapi-3334712",
@@ -2721,7 +3171,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-20",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/12/4081112_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/12/4081112_image2_1.jpg",
+    "latitude": 37.500517,
+    "longitude": 127.992518
   },
   {
     "id": "tourapi-3113022",
@@ -2733,7 +3185,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-28",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4071410_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4071410_image2_1.jpg",
+    "latitude": 36.2721854896,
+    "longitude": 126.8880743426
   },
   {
     "id": "tourapi-2381291",
@@ -2745,7 +3199,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-21",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/53/4077553_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/53/4077553_image2_1.jpg",
+    "latitude": 35.377596842,
+    "longitude": 129.143410137
   },
   {
     "id": "tourapi-4074598",
@@ -2757,7 +3213,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-21",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/00/4074600_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/00/4074600_image2_1.jpg",
+    "latitude": 37.6294432,
+    "longitude": 127.047566
   },
   {
     "id": "tourapi-2952109",
@@ -2769,7 +3227,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-20",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/73/4067473_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/73/4067473_image2_1.jpg",
+    "latitude": 35.100929432638,
+    "longitude": 129.032442805252
   },
   {
     "id": "tourapi-3495437",
@@ -2781,7 +3241,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/93/4080593_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/93/4080593_image2_1.jpg",
+    "latitude": 38.1345233861,
+    "longitude": 127.0274821632
   },
   {
     "id": "tourapi-3488940",
@@ -2793,7 +3255,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-28",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/17/4063217_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/17/4063217_image2_1.jpg",
+    "latitude": 37.668933476214,
+    "longitude": 126.745802827238
   },
   {
     "id": "tourapi-3304617",
@@ -2805,7 +3269,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-28",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/28/4071228_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/28/4071228_image2_1.jpg",
+    "latitude": 34.6522190009,
+    "longitude": 126.7624391658
   },
   {
     "id": "tourapi-1302214",
@@ -2817,7 +3283,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-28",
     "category": "자연",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4071390_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4071390_image2_1.JPG",
+    "latitude": 34.8601375327,
+    "longitude": 126.5296561665
   },
   {
     "id": "tourapi-1032770",
@@ -2829,7 +3297,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-26",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/20/4064420_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/20/4064420_image2_1.jpg",
+    "latitude": 35.1710365257136,
+    "longitude": 129.127084511585
   },
   {
     "id": "tourapi-2550263",
@@ -2841,7 +3311,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-17",
     "category": "자연",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/76/4078876_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/76/4078876_image2_1.JPG",
+    "latitude": 37.5408730098,
+    "longitude": 127.3239218611
   },
   {
     "id": "tourapi-2719122",
@@ -2853,7 +3325,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-28",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4065290_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4065290_image2_1.jpg",
+    "latitude": 35.170963130477155,
+    "longitude": 129.12704224730075
   },
   {
     "id": "tourapi-3497502",
@@ -2865,7 +3339,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-01",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4064110_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4064110_image2_1.jpg",
+    "latitude": 35.8247094097,
+    "longitude": 128.7296311268
   },
   {
     "id": "tourapi-1841539",
@@ -2877,7 +3353,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-27",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/53/4067353_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/53/4067353_image2_1.jpg",
+    "latitude": 36.959613659895545,
+    "longitude": 127.0441409123333
   },
   {
     "id": "tourapi-3495841",
@@ -2889,7 +3367,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-06-28",
     "category": "자연",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/66/4074666_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/66/4074666_image2_1.jpg",
+    "latitude": 33.4918468474,
+    "longitude": 126.5238513705
   },
   {
     "id": "tourapi-1801011",
@@ -2901,7 +3381,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-05",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/84/4071284_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/84/4071284_image2_1.jpg",
+    "latitude": 35.8508968806,
+    "longitude": 128.5587905692
   },
   {
     "id": "tourapi-1829696",
@@ -2913,7 +3395,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/49/4057349_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/49/4057349_image2_1.jpg",
+    "latitude": 37.5678450408989,
+    "longitude": 126.975895739578
   },
   {
     "id": "tourapi-2607445",
@@ -2925,7 +3409,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-05",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/30/4078330_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/30/4078330_image2_1.jpg",
+    "latitude": 37.805223671,
+    "longitude": 128.9067299347
   },
   {
     "id": "tourapi-574047",
@@ -2937,7 +3423,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-05",
     "category": "자연",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/74/4067074_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/74/4067074_image2_1.jpg",
+    "latitude": 36.27204,
+    "longitude": 126.910626
   },
   {
     "id": "tourapi-3501428",
@@ -2949,7 +3437,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4067310_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4067310_image2_1.jpg",
+    "latitude": 37.3241008195,
+    "longitude": 126.6806875482
   },
   {
     "id": "tourapi-3035057",
@@ -2961,7 +3451,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/36/4063736_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/36/4063736_image2_1.jpg",
+    "latitude": 33.39087381270927,
+    "longitude": 126.36737929508537
   },
   {
     "id": "tourapi-2375382",
@@ -2973,7 +3465,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/15/4077015_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/15/4077015_image2_1.JPG",
+    "latitude": 35.8322903512,
+    "longitude": 128.6004362056
   },
   {
     "id": "tourapi-4076709",
@@ -2985,7 +3479,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/4076726_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/4076726_image2_1.png",
+    "latitude": 37.4682787075,
+    "longitude": 127.0391364334
   },
   {
     "id": "tourapi-3499540",
@@ -2997,7 +3493,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/66/4067566_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/66/4067566_image2_1.jpg",
+    "latitude": 37.5536770229,
+    "longitude": 127.7083264252
   },
   {
     "id": "tourapi-2719507",
@@ -3009,7 +3507,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-12",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/42/4064242_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/42/4064242_image2_1.jpg",
+    "latitude": 36.1001640877,
+    "longitude": 127.5011979651
   },
   {
     "id": "tourapi-3302702",
@@ -3021,7 +3521,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-12",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/48/4065648_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/48/4065648_image2_1.jpg",
+    "latitude": 36.1415966922556,
+    "longitude": 128.442232571322
   },
   {
     "id": "tourapi-1951053",
@@ -3033,7 +3535,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4082690_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4082690_image2_1.jpg",
+    "latitude": 35.5556181512,
+    "longitude": 129.1316552505
   },
   {
     "id": "tourapi-1824778",
@@ -3045,7 +3549,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-19",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/82/4070082_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/82/4070082_image2_1.jpg",
+    "latitude": 34.842038257844116,
+    "longitude": 128.4274781812797
   },
   {
     "id": "tourapi-4080156",
@@ -3057,7 +3563,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-12",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/87/4080287_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/87/4080287_image2_1.jpg",
+    "latitude": 35.1690637155,
+    "longitude": 129.1360182683
   },
   {
     "id": "tourapi-2826964",
@@ -3069,7 +3577,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-12",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/42/4071342_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/42/4071342_image2_1.jpg",
+    "latitude": 37.4675533646,
+    "longitude": 126.9449623941
   },
   {
     "id": "tourapi-3487396",
@@ -3081,7 +3591,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-12",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/06/4061206_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/06/4061206_image2_1.jpg",
+    "latitude": 35.998765,
+    "longitude": 128.395932
   },
   {
     "id": "tourapi-1825520",
@@ -3093,7 +3605,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-22",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/47/4076547_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/47/4076547_image2_1.jpg",
+    "latitude": 37.2665289945,
+    "longitude": 126.9811749103
   },
   {
     "id": "tourapi-2387785",
@@ -3105,7 +3619,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-19",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/35/4080135_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/35/4080135_image2_1.jpg",
+    "latitude": 37.5118651508,
+    "longitude": 127.0592035846
   },
   {
     "id": "tourapi-3495394",
@@ -3117,7 +3633,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-18",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/55/4076355_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/55/4076355_image2_1.png",
+    "latitude": 35.8117335108,
+    "longitude": 127.148172882
   },
   {
     "id": "tourapi-4088257",
@@ -3129,7 +3647,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-18",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/74/4088274_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/74/4088274_image2_1.jpg",
+    "latitude": 35.8117509206,
+    "longitude": 127.1481603005
   },
   {
     "id": "tourapi-2989580",
@@ -3141,7 +3661,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-19",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/12/4073812_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/12/4073812_image2_1.jpg",
+    "latitude": 35.5896080738,
+    "longitude": 127.5292776915
   },
   {
     "id": "tourapi-606549",
@@ -3153,7 +3675,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/56/4075256_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/56/4075256_image2_1.jpg",
+    "latitude": 37.1819133415,
+    "longitude": 128.4614563757
   },
   {
     "id": "tourapi-4086427",
@@ -3165,7 +3689,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-17",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/31/4086431_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/31/4086431_image2_1.jpg",
+    "latitude": 37.8724857,
+    "longitude": 127.7002608
   },
   {
     "id": "tourapi-140833",
@@ -3177,7 +3703,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-19",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/51/4075351_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/51/4075351_image2_1.jpg",
+    "latitude": 37.6892417,
+    "longitude": 127.8931779
   },
   {
     "id": "tourapi-4079965",
@@ -3189,7 +3717,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-18",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/66/4079966_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/66/4079966_image2_1.jpg",
+    "latitude": 35.8412414475,
+    "longitude": 128.4649553312
   },
   {
     "id": "tourapi-3352452",
@@ -3201,7 +3731,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-19",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/38/4076738_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/38/4076738_image2_1.png",
+    "latitude": 37.6689334781,
+    "longitude": 126.7458028497
   },
   {
     "id": "tourapi-3509884",
@@ -3213,7 +3745,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-09",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/04/4079504_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/04/4079504_image2_1.png",
+    "latitude": 37.5718478585,
+    "longitude": 126.9761682759
   },
   {
     "id": "tourapi-4055637",
@@ -3225,7 +3759,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-29",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/4055726_image2_1.jpeg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/4055726_image2_1.jpeg",
+    "latitude": 35.1690637155,
+    "longitude": 129.1360182683
   },
   {
     "id": "tourapi-580049",
@@ -3237,7 +3773,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-01",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/68/4088768_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/68/4088768_image2_1.png",
+    "latitude": 35.5044256455,
+    "longitude": 128.7585154747
   },
   {
     "id": "tourapi-2543724",
@@ -3249,7 +3787,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-26",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/43/4078843_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/43/4078843_image2_1.jpg",
+    "latitude": 37.7503981777,
+    "longitude": 128.8902724158
   },
   {
     "id": "tourapi-4077756",
@@ -3261,7 +3801,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-24",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/57/4077757_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/57/4077757_image2_1.jpg",
+    "latitude": 35.1690637155,
+    "longitude": 129.1360182683
   },
   {
     "id": "tourapi-3318880",
@@ -3273,7 +3815,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-26",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4066710_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4066710_image2_1.jpg",
+    "latitude": 33.2440353493,
+    "longitude": 126.4207718907
   },
   {
     "id": "tourapi-590921",
@@ -3285,7 +3829,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-02",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/08/4080008_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/08/4080008_image2_1.jpg",
+    "latitude": 37.6579058594,
+    "longitude": 128.6760022882
   },
   {
     "id": "tourapi-2728613",
@@ -3297,7 +3843,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-17",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/60/4081660_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/60/4081660_image2_1.png",
+    "latitude": 33.3049276506,
+    "longitude": 126.3151497973
   },
   {
     "id": "tourapi-506534",
@@ -3309,7 +3857,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-09",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/79/3534979_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/79/3534979_image2_1.jpg",
+    "latitude": 36.314822,
+    "longitude": 126.515029
   },
   {
     "id": "tourapi-1831344",
@@ -3321,7 +3871,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-02",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/23/4061523_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/23/4061523_image2_1.JPG",
+    "latitude": 37.5032098899,
+    "longitude": 128.4507193463
   },
   {
     "id": "tourapi-2704473",
@@ -3332,7 +3884,9 @@ export const FESTIVALS: Festival[] = [
     "startDate": "2026-07-24",
     "endDate": "2026-07-26",
     "category": "기타",
-    "tags": []
+    "tags": [],
+    "latitude": 35.1657825586672,
+    "longitude": 129.135026643506
   },
   {
     "id": "tourapi-2523149",
@@ -3344,7 +3898,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-26",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/66/4059066_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/66/4059066_image2_1.jpg",
+    "latitude": 35.16576593920963,
+    "longitude": 129.13494793474206
   },
   {
     "id": "tourapi-589170",
@@ -3356,7 +3912,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-26",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/62/4082962_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/62/4082962_image2_1.jpg",
+    "latitude": 34.8391873206,
+    "longitude": 128.7012355342
   },
   {
     "id": "tourapi-3329992",
@@ -3368,7 +3926,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-26",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/05/4082205_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/05/4082205_image2_1.jpg",
+    "latitude": 37.5746799,
+    "longitude": 126.7380463
   },
   {
     "id": "tourapi-3507102",
@@ -3380,7 +3940,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-26",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/98/4085498_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/98/4085498_image2_1.jpg",
+    "latitude": 35.8998279,
+    "longitude": 128.6288967
   },
   {
     "id": "tourapi-4088149",
@@ -3392,7 +3954,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-25",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/50/4088150_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/50/4088150_image2_1.jpg",
+    "latitude": 35.0985979131,
+    "longitude": 129.0327114585
   },
   {
     "id": "tourapi-142064",
@@ -3404,7 +3968,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-02",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/30/4080830_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/30/4080830_image2_1.JPG",
+    "latitude": 36.8884979597,
+    "longitude": 128.7367992541
   },
   {
     "id": "tourapi-2499947",
@@ -3416,7 +3982,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-09",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/88/4087988_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/88/4087988_image2_1.JPG",
+    "latitude": 37.6038254756,
+    "longitude": 127.0132924339
   },
   {
     "id": "tourapi-2993769",
@@ -3428,7 +3996,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-02",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/94/4080294_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/94/4080294_image2_1.jpg",
+    "latitude": 36.5515310931,
+    "longitude": 128.7291441776
   },
   {
     "id": "tourapi-767114",
@@ -3440,7 +4010,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-02",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/4071277_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/4071277_image2_1.jpg",
+    "latitude": 34.6797623326,
+    "longitude": 126.9026698466
   },
   {
     "id": "tourapi-2391294",
@@ -3452,7 +4024,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-02",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/56/4064656_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/56/4064656_image2_1.jpg",
+    "latitude": 37.1727113461,
+    "longitude": 128.9910237103
   },
   {
     "id": "tourapi-2372235",
@@ -3464,7 +4038,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-15",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/78/4084478_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/78/4084478_image2_1.jpg",
+    "latitude": 34.9331652948,
+    "longitude": 128.0507877466
   },
   {
     "id": "tourapi-4081268",
@@ -3476,7 +4052,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-07-26",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/4081270_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/4081270_image2_1.jpg",
+    "latitude": 37.7087429269,
+    "longitude": 127.9082310793
   },
   {
     "id": "tourapi-4090201",
@@ -3488,7 +4066,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-29",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/02/4090202_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/02/4090202_image2_1.jpg",
+    "latitude": 35.5310582726,
+    "longitude": 129.2938457635
   },
   {
     "id": "tourapi-4089090",
@@ -3500,7 +4080,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-25",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/92/4089092_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/92/4089092_image2_1.jpg",
+    "latitude": 35.1896608044,
+    "longitude": 126.8839435426
   },
   {
     "id": "tourapi-2394558",
@@ -3512,7 +4094,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-05",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/42/4089242_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/42/4089242_image2_1.png",
+    "latitude": 37.805223671,
+    "longitude": 128.9067299347
   },
   {
     "id": "tourapi-2718984",
@@ -3524,7 +4108,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-02",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/78/4062778_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/78/4062778_image2_1.png",
+    "latitude": 37.51186515083277,
+    "longitude": 127.05920358462161
   },
   {
     "id": "tourapi-1340294",
@@ -3536,7 +4122,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-01",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/20/4089520_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/20/4089520_image2_1.jpg",
+    "latitude": 34.0244579928,
+    "longitude": 127.3099026974
   },
   {
     "id": "tourapi-2611034",
@@ -3548,7 +4136,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-02",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/4087277_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/4087277_image2_1.jpg",
+    "latitude": 38.1904227,
+    "longitude": 128.6033116
   },
   {
     "id": "tourapi-2992167",
@@ -3560,7 +4150,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-02",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/30/4084230_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/30/4084230_image2_1.jpg",
+    "latitude": 36.8084573763,
+    "longitude": 128.607719578
   },
   {
     "id": "tourapi-561027",
@@ -3572,7 +4164,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-02",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/65/4070165_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/65/4070165_image2_1.jpg",
+    "latitude": 37.4077795259,
+    "longitude": 126.6324707951
   },
   {
     "id": "tourapi-3007934",
@@ -3584,7 +4178,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-02",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/44/4089744_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/44/4089744_image2_1.jpg",
+    "latitude": 35.5628647999,
+    "longitude": 126.8529061939
   },
   {
     "id": "tourapi-2991796",
@@ -3596,7 +4192,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-02",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/23/4087823_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/23/4087823_image2_1.JPG",
+    "latitude": 37.5660539726,
+    "longitude": 127.0095547691
   },
   {
     "id": "tourapi-3514951",
@@ -3608,7 +4206,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-02",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/25/4084525_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/25/4084525_image2_1.jpg",
+    "latitude": 35.1690637155,
+    "longitude": 129.1360182683
   },
   {
     "id": "tourapi-2828431",
@@ -3620,7 +4220,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-16",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/50/4089550_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/50/4089550_image2_1.jpg",
+    "latitude": 37.5557880617,
+    "longitude": 126.8939537189
   },
   {
     "id": "tourapi-3498395",
@@ -3632,7 +4234,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-01",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/41/4065341_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/41/4065341_image2_1.jpg",
+    "latitude": 35.1537727886,
+    "longitude": 129.1185199367
   },
   {
     "id": "tourapi-2497537",
@@ -3644,7 +4248,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-02",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4071363_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4071363_image2_1.jpg",
+    "latitude": 37.524979,
+    "longitude": 126.937696
   },
   {
     "id": "tourapi-3509748",
@@ -3656,7 +4262,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-30",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/17/4090217_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/17/4090217_image2_1.jpg",
+    "latitude": 35.8340147657,
+    "longitude": 129.2895153224
   },
   {
     "id": "tourapi-2539802",
@@ -3668,7 +4276,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-09",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/16/4075616_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/16/4075616_image2_1.jpg",
+    "latitude": 37.689158,
+    "longitude": 127.893014
   },
   {
     "id": "tourapi-142193",
@@ -3680,7 +4290,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-23",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/22/4087022_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/22/4087022_image2_1.jpg",
+    "latitude": 37.5620373293,
+    "longitude": 126.9150631652
   },
   {
     "id": "tourapi-2557842",
@@ -3692,7 +4304,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-08",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/43/4086143_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/43/4086143_image2_1.jpg",
+    "latitude": 35.8442101179,
+    "longitude": 127.1292609884
   },
   {
     "id": "tourapi-2728529",
@@ -3704,7 +4318,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-09",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4081290_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4081290_image2_1.jpg",
+    "latitude": 34.7509493146,
+    "longitude": 127.7470910959
   },
   {
     "id": "tourapi-2644679",
@@ -3716,7 +4332,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-09",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/92/4077792_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/92/4077792_image2_1.jpg",
+    "latitude": 35.1687048508,
+    "longitude": 129.1354937071
   },
   {
     "id": "tourapi-4070865",
@@ -3728,7 +4346,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-09",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/67/4070867_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/67/4070867_image2_1.JPG",
+    "latitude": 35.489859,
+    "longitude": 128.757295
   },
   {
     "id": "tourapi-142080",
@@ -3740,7 +4360,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-13",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/40/4085840_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/40/4085840_image2_1.jpg",
+    "latitude": 35.046996,
+    "longitude": 128.966195
   },
   {
     "id": "tourapi-2989846",
@@ -3752,7 +4374,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-15",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/4089470_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/4089470_image2_1.JPG",
+    "latitude": 37.3990127926,
+    "longitude": 126.6562376599
   },
   {
     "id": "tourapi-507454",
@@ -3764,7 +4388,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-16",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/08/4041308_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/08/4041308_image2_1.jpg",
+    "latitude": 34.84040498996689,
+    "longitude": 128.42462866254016
   },
   {
     "id": "tourapi-2541883",
@@ -3776,7 +4402,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-16",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/3317777_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/3317777_image2_1.jpg",
+    "latitude": 37.7532215016,
+    "longitude": 128.8920940489
   },
   {
     "id": "tourapi-3485078",
@@ -3788,7 +4416,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-08",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/40/4055040_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/40/4055040_image2_1.jpg",
+    "latitude": 37.7508207356,
+    "longitude": 126.4853900771
   },
   {
     "id": "tourapi-2724153",
@@ -3800,7 +4430,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-22",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/03/4089203_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/03/4089203_image2_1.jpg",
+    "latitude": 35.9901979568,
+    "longitude": 126.7098663883
   },
   {
     "id": "tourapi-2751126",
@@ -3812,7 +4444,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-16",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/64/4060564_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/64/4060564_image2_1.JPG",
+    "latitude": 36.1375841379792,
+    "longitude": 128.087866077872
   },
   {
     "id": "tourapi-2736033",
@@ -3824,7 +4458,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-16",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/55/4087155_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/55/4087155_image2_1.jpg",
+    "latitude": 35.1687048508,
+    "longitude": 129.1354937071
   },
   {
     "id": "tourapi-3383748",
@@ -3836,7 +4472,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-16",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/21/4089821_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/21/4089821_image2_1.jpg",
+    "latitude": 35.0463798103,
+    "longitude": 128.9680077464
   },
   {
     "id": "tourapi-1539730",
@@ -3848,7 +4486,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-14",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/87/4090187_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/87/4090187_image2_1.jpg",
+    "latitude": 37.5718478585,
+    "longitude": 126.9761682759
   },
   {
     "id": "tourapi-1847202",
@@ -3860,7 +4500,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-16",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/12/4089612_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/12/4089612_image2_1.JPG",
+    "latitude": 37.5746183894,
+    "longitude": 126.9573284067
   },
   {
     "id": "tourapi-4087207",
@@ -3872,7 +4514,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-23",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/91/4087291_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/91/4087291_image2_1.jpg",
+    "latitude": 35.8606451724,
+    "longitude": 129.2090805222
   },
   {
     "id": "tourapi-3351451",
@@ -3884,7 +4528,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-23",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/75/4059475_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/75/4059475_image2_1.jpg",
+    "latitude": 37.566727291186524,
+    "longitude": 126.82539429651213
   },
   {
     "id": "tourapi-2846353",
@@ -3896,7 +4542,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-23",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/68/4089268_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/68/4089268_image2_1.jpg",
+    "latitude": 36.5363350972,
+    "longitude": 129.4083003171
   },
   {
     "id": "tourapi-1939183",
@@ -3908,7 +4556,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-22",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/31/4078831_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/31/4078831_image2_1.jpg",
+    "latitude": 36.7616034611,
+    "longitude": 128.0769891081
   },
   {
     "id": "tourapi-3399432",
@@ -3920,7 +4570,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-15",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/4073777_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/4073777_image2_1.jpg",
+    "latitude": 33.4525500193,
+    "longitude": 126.489686091
   },
   {
     "id": "tourapi-2853756",
@@ -3932,7 +4584,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-30",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/05/4078805_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/05/4078805_image2_1.jpg",
+    "latitude": 37.2152816297,
+    "longitude": 126.9626937088
   },
   {
     "id": "tourapi-2651042",
@@ -3944,7 +4598,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-25",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/34/4055834_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/34/4055834_image2_1.jpg",
+    "latitude": 36.5407525055894,
+    "longitude": 128.522797583438
   },
   {
     "id": "tourapi-2991394",
@@ -3956,7 +4612,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-08-30",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/37/4069137_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/37/4069137_image2_1.jpg",
+    "latitude": 35.1679082179,
+    "longitude": 129.1273173184
   },
   {
     "id": "tourapi-2996478",
@@ -3968,7 +4626,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-06",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4020710_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4020710_image2_1.jpg",
+    "latitude": 36.7773487289308,
+    "longitude": 127.2325927550662
   },
   {
     "id": "tourapi-506523",
@@ -3980,7 +4640,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-12",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/69/3520569_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/69/3520569_image2_1.jpg",
+    "latitude": 36.00234182501585,
+    "longitude": 127.66257492448783
   },
   {
     "id": "tourapi-3486887",
@@ -3992,7 +4654,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-06",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/69/4090469_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/69/4090469_image2_1.png",
+    "latitude": 35.9877833495,
+    "longitude": 128.4014504193
   },
   {
     "id": "tourapi-3305165",
@@ -4004,7 +4668,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-06",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/80/4083180_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/80/4083180_image2_1.JPG",
+    "latitude": 36.6429424201,
+    "longitude": 127.4722198763
   },
   {
     "id": "tourapi-507635",
@@ -4016,7 +4682,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-13",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/28/3523028_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/28/3523028_image2_1.jpg",
+    "latitude": 37.61404210190838,
+    "longitude": 128.37159535351242
   },
   {
     "id": "tourapi-4075091",
@@ -4028,7 +4696,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-09",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/88/4075188_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/88/4075188_image2_1.jpg",
+    "latitude": 37.6521031527,
+    "longitude": 127.68710635
   },
   {
     "id": "tourapi-763974",
@@ -4040,7 +4710,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-13",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/91/3519591_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/91/3519591_image2_1.jpg",
+    "latitude": 35.64021652250558,
+    "longitude": 127.5190644518293
   },
   {
     "id": "tourapi-573459",
@@ -4052,7 +4724,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-16",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4087113_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/4087113_image2_1.png",
+    "latitude": 37.9209224402,
+    "longitude": 127.720107584
   },
   {
     "id": "tourapi-2614198",
@@ -4064,7 +4738,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-10",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/46/4001646_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/46/4001646_image2_1.jpg",
+    "latitude": 35.1468884464,
+    "longitude": 126.8405217823
   },
   {
     "id": "tourapi-1018469",
@@ -4076,7 +4752,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-16",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/69/4073769_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/69/4073769_image2_1.jpg",
+    "latitude": 37.5734199329,
+    "longitude": 126.9836265705
   },
   {
     "id": "tourapi-1945450",
@@ -4088,7 +4766,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-13",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/69/4060669_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/69/4060669_image2_1.jpg",
+    "latitude": 35.81227650714569,
+    "longitude": 127.15958408130633
   },
   {
     "id": "tourapi-2392105",
@@ -4100,7 +4780,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/09/4086009_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/09/4086009_image2_1.png",
+    "latitude": 35.8412414475,
+    "longitude": 128.4649553312
   },
   {
     "id": "tourapi-3499401",
@@ -4112,7 +4794,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-12",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/36/4065636_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/36/4065636_image2_1.jpg",
+    "latitude": 37.3948838875698,
+    "longitude": 127.110963766859
   },
   {
     "id": "tourapi-3532372",
@@ -4124,7 +4808,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-13",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/83/4081183_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/83/4081183_image2_1.jpg",
+    "latitude": 36.3259454984,
+    "longitude": 127.4202942759
   },
   {
     "id": "tourapi-4033328",
@@ -4136,7 +4822,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-16",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/79/4039679_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/79/4039679_image2_1.jpg",
+    "latitude": 35.1175129767356,
+    "longitude": 129.049383440539
   },
   {
     "id": "tourapi-2556687",
@@ -4148,7 +4836,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-20",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/65/4081065_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/65/4081065_image2_1.jpg",
+    "latitude": 37.580512461,
+    "longitude": 127.0023742293
   },
   {
     "id": "tourapi-2699287",
@@ -4160,7 +4850,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-20",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/14/4078314_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/14/4078314_image2_1.jpg",
+    "latitude": 36.9898919857,
+    "longitude": 127.5886600812
   },
   {
     "id": "tourapi-1100492",
@@ -4172,7 +4864,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-20",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/61/4081461_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/61/4081461_image2_1.jpg",
+    "latitude": 37.6552847261,
+    "longitude": 126.7689082803
   },
   {
     "id": "tourapi-2029491",
@@ -4184,7 +4878,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-20",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/81/4087181_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/81/4087181_image2_1.jpg",
+    "latitude": 37.4273687532,
+    "longitude": 126.989303818
   },
   {
     "id": "tourapi-2412052",
@@ -4196,7 +4892,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-20",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/82/4084482_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/82/4084482_image2_1.JPG",
+    "latitude": 35.1537727634,
+    "longitude": 129.1185199725
   },
   {
     "id": "tourapi-589386",
@@ -4208,7 +4906,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-20",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/75/3557475_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/75/3557475_image2_1.JPG",
+    "latitude": 37.50819874831107,
+    "longitude": 126.74219327149696
   },
   {
     "id": "tourapi-3544886",
@@ -4220,7 +4920,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-18",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/66/4031666_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/66/4031666_image2_1.jpg",
+    "latitude": 37.5662050219,
+    "longitude": 126.9777062791
   },
   {
     "id": "tourapi-142197",
@@ -4232,7 +4934,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-20",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/09/3528809_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/09/3528809_image2_1.jpg",
+    "latitude": 37.389771146858344,
+    "longitude": 126.78124058551218
   },
   {
     "id": "tourapi-1078905",
@@ -4244,7 +4948,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-27",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/32/4041232_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/32/4041232_image2_1.jpg",
+    "latitude": 35.2001494518,
+    "longitude": 126.5506284863
   },
   {
     "id": "tourapi-140880",
@@ -4256,7 +4962,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-20",
     "category": "전통",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/80/4090380_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/80/4090380_image2_1.jpg",
+    "latitude": 37.630868536,
+    "longitude": 128.5567707084
   },
   {
     "id": "tourapi-1718060",
@@ -4268,7 +4976,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-20",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/02/3535902_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/02/3535902_image2_1.jpg",
+    "latitude": 35.773039352113926,
+    "longitude": 127.41624486894176
   },
   {
     "id": "tourapi-1250585",
@@ -4280,7 +4990,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-01",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/71/4065571_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/71/4065571_image2_1.jpg",
+    "latitude": 37.276920816247,
+    "longitude": 127.423725332612
   },
   {
     "id": "tourapi-3524889",
@@ -4292,7 +5004,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-20",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/58/4078758_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/58/4078758_image2_1.png",
+    "latitude": 37.5660539726,
+    "longitude": 127.0095547691
   },
   {
     "id": "tourapi-2751090",
@@ -4304,7 +5018,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-06",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/46/4076246_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/46/4076246_image2_1.jpg",
+    "latitude": 37.285512,
+    "longitude": 127.009673
   },
   {
     "id": "tourapi-2829118",
@@ -4316,7 +5032,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-19",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4090107_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4090107_image2_1.jpg",
+    "latitude": 37.4631460755,
+    "longitude": 126.666305572
   },
   {
     "id": "tourapi-1389228",
@@ -4328,7 +5046,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-09-20",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/41/4087941_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/41/4087941_image2_1.jpg",
+    "latitude": 37.2862743274,
+    "longitude": 126.574553621
   },
   {
     "id": "tourapi-141105",
@@ -4340,7 +5060,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-01",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/32/4084832_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/32/4084832_image2_1.jpg",
+    "latitude": 35.0533072967,
+    "longitude": 128.3915143393
   },
   {
     "id": "tourapi-506670",
@@ -4352,7 +5074,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-04",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/06/4025906_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/06/4025906_image2_1.JPG",
+    "latitude": 36.5597879985,
+    "longitude": 128.7307724581
   },
   {
     "id": "tourapi-4080078",
@@ -4364,7 +5088,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-02",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/28/4080328_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/28/4080328_image2_1.jpg",
+    "latitude": 36.6265266149,
+    "longitude": 127.3354600053
   },
   {
     "id": "tourapi-2992940",
@@ -4376,7 +5102,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/74/3514774_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/74/3514774_image2_1.JPG",
+    "latitude": 36.3067687,
+    "longitude": 127.2371112
   },
   {
     "id": "tourapi-574285",
@@ -4388,7 +5116,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/54/3516354_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/54/3516354_image2_1.jpg",
+    "latitude": 35.7540218787,
+    "longitude": 126.8522718951
   },
   {
     "id": "tourapi-506895",
@@ -4400,7 +5130,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-04",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/03/4085103_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/03/4085103_image2_1.jpg",
+    "latitude": 37.3771987522,
+    "longitude": 128.6658996682
   },
   {
     "id": "tourapi-506935",
@@ -4412,7 +5144,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/35/4056635_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/35/4056635_image2_1.JPG",
+    "latitude": 36.819443033583454,
+    "longitude": 127.11145203614497
   },
   {
     "id": "tourapi-1846797",
@@ -4424,7 +5158,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/48/3561448_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/48/3561448_image2_1.jpg",
+    "latitude": 35.987791,
+    "longitude": 126.711671
   },
   {
     "id": "tourapi-506465",
@@ -4436,7 +5172,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/3524159_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/3524159_image2_1.JPG",
+    "latitude": 36.1001535022,
+    "longitude": 127.5005221346
   },
   {
     "id": "tourapi-140799",
@@ -4448,7 +5186,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-04",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/06/4040606_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/06/4040606_image2_1.jpg",
+    "latitude": 35.1728573,
+    "longitude": 128.9681914
   },
   {
     "id": "tourapi-1266642",
@@ -4460,7 +5200,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-04",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/4067377_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/4067377_image2_1.jpg",
+    "latitude": 37.4944181127115,
+    "longitude": 126.722995433556
   },
   {
     "id": "tourapi-506600",
@@ -4472,7 +5214,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/88/3523088_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/88/3523088_image2_1.JPG",
+    "latitude": 35.44106596986498,
+    "longitude": 127.82935943935597
   },
   {
     "id": "tourapi-506809",
@@ -4484,7 +5228,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-04",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/93/4074893_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/93/4074893_image2_1.jpg",
+    "latitude": 37.3979276988,
+    "longitude": 126.7393126807
   },
   {
     "id": "tourapi-506690",
@@ -4496,7 +5242,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-05",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/54/3540554_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/54/3540554_image2_1.JPG",
+    "latitude": 37.03363446808453,
+    "longitude": 127.30541038677875
   },
   {
     "id": "tourapi-1336591",
@@ -4508,7 +5256,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-04",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/49/4062849_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/49/4062849_image2_1.JPG",
+    "latitude": 35.974170146415695,
+    "longitude": 127.23120952485095
   },
   {
     "id": "tourapi-613316",
@@ -4520,7 +5270,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/14/3549714_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/14/3549714_image2_1.jpg",
+    "latitude": 36.7332002013,
+    "longitude": 127.4073645226
   },
   {
     "id": "tourapi-506766",
@@ -4532,7 +5284,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/55/3563955_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/55/3563955_image2_1.jpg",
+    "latitude": 36.868718,
+    "longitude": 128.521518
   },
   {
     "id": "tourapi-1725929",
@@ -4544,7 +5298,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-04",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/62/4054062_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/62/4054062_image2_1.jpg",
+    "latitude": 37.2066442866,
+    "longitude": 126.995063775
   },
   {
     "id": "tourapi-506926",
@@ -4556,7 +5312,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-18",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/57/4082657_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/57/4082657_image2_1.png",
+    "latitude": 35.1904937892,
+    "longitude": 128.0800831631
   },
   {
     "id": "tourapi-914138",
@@ -4568,7 +5326,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4060890_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/4060890_image2_1.jpg",
+    "latitude": 37.2818820192,
+    "longitude": 127.0143944638
   },
   {
     "id": "tourapi-2554814",
@@ -4580,7 +5340,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-04",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/4078459_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/4078459_image2_1.png",
+    "latitude": 37.5760307,
+    "longitude": 126.9767218661
   },
   {
     "id": "tourapi-692682",
@@ -4592,7 +5354,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/71/3584471_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/71/3584471_image2_1.jpg",
+    "latitude": 35.150241,
+    "longitude": 126.91587
   },
   {
     "id": "tourapi-2990881",
@@ -4604,7 +5368,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4076763_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/4076763_image2_1.jpg",
+    "latitude": 35.1474913381,
+    "longitude": 126.9198016528
   },
   {
     "id": "tourapi-563458",
@@ -4616,7 +5382,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/67/4053967_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/67/4053967_image2_1.JPG",
+    "latitude": 35.5236812446,
+    "longitude": 127.7218508587
   },
   {
     "id": "tourapi-232325",
@@ -4628,7 +5396,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/42/4064642_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/42/4064642_image2_1.jpg",
+    "latitude": 37.500463,
+    "longitude": 127.992519
   },
   {
     "id": "tourapi-2031318",
@@ -4640,7 +5410,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/54/3377054_image2_1.png"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/54/3377054_image2_1.png",
+    "latitude": 35.63156938109518,
+    "longitude": 127.30177597177955
   },
   {
     "id": "tourapi-1105347",
@@ -4652,7 +5424,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-18",
     "category": "자연",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/56/4071256_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/56/4071256_image2_1.JPG",
+    "latitude": 35.5544107679,
+    "longitude": 127.0193690153
   },
   {
     "id": "tourapi-140752",
@@ -4664,7 +5438,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/47/3550747_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/47/3550747_image2_1.jpg",
+    "latitude": 36.71355657908334,
+    "longitude": 126.55038368933553
   },
   {
     "id": "tourapi-1849007",
@@ -4676,7 +5452,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/16/3553216_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/16/3553216_image2_1.jpg",
+    "latitude": 36.49895345303314,
+    "longitude": 127.27018405937929
   },
   {
     "id": "tourapi-2828336",
@@ -4688,7 +5466,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/4089877_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/4089877_image2_1.jpg",
+    "latitude": 37.3873639083,
+    "longitude": 126.7402812374
   },
   {
     "id": "tourapi-1718137",
@@ -4700,7 +5480,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/83/4063783_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/83/4063783_image2_1.JPG",
+    "latitude": 35.841281,
+    "longitude": 129.210644
   },
   {
     "id": "tourapi-2877244",
@@ -4712,7 +5494,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-10",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/03/4081503_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/03/4081503_image2_1.JPG",
+    "latitude": 36.4731467766,
+    "longitude": 127.1378517748
   },
   {
     "id": "tourapi-2622679",
@@ -4724,7 +5508,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "예술",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/4059026_image2_1.jpeg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/4059026_image2_1.jpeg",
+    "latitude": 36.5715986793,
+    "longitude": 128.4887513731
   },
   {
     "id": "tourapi-4087092",
@@ -4736,7 +5522,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-11",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/98/4087098_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/98/4087098_image2_1.jpg",
+    "latitude": 37.8920434573,
+    "longitude": 126.7447928585
   },
   {
     "id": "tourapi-604454",
@@ -4748,7 +5536,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-19",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/30/3519730_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/30/3519730_image2_1.jpg",
+    "latitude": 35.43314793158578,
+    "longitude": 126.70350182663505
   },
   {
     "id": "tourapi-638241",
@@ -4760,7 +5550,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-18",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/3535559_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/3535559_image2_1.JPG",
+    "latitude": 35.36875547170213,
+    "longitude": 127.11232141891857
   },
   {
     "id": "tourapi-293084",
@@ -4772,7 +5564,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-18",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/72/4058672_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/72/4058672_image2_1.jpg",
+    "latitude": 36.1563534107,
+    "longitude": 127.786513691
   },
   {
     "id": "tourapi-1844150",
@@ -4784,7 +5578,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-18",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/66/4080666_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/66/4080666_image2_1.jpg",
+    "latitude": 36.018468,
+    "longitude": 128.401094
   },
   {
     "id": "tourapi-1307813",
@@ -4796,7 +5592,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-18",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/3541977_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/3541977_image2_1.jpg",
+    "latitude": 37.55906143476573,
+    "longitude": 127.13060065465167
   },
   {
     "id": "tourapi-2612274",
@@ -4808,7 +5606,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-18",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/31/4073831_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/31/4073831_image2_1.jpg",
+    "latitude": 37.4715875501,
+    "longitude": 126.9587204342
   },
   {
     "id": "tourapi-1275743",
@@ -4820,7 +5620,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-18",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/57/4090457_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/57/4090457_image2_1.jpg",
+    "latitude": 35.2452812589,
+    "longitude": 129.0570297348
   },
   {
     "id": "tourapi-2551117",
@@ -4832,7 +5634,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-18",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/17/4073617_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/17/4073617_image2_1.jpg",
+    "latitude": 35.2348642516,
+    "longitude": 128.8772389826
   },
   {
     "id": "tourapi-229048",
@@ -4844,7 +5648,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-18",
     "category": "전통",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/43/3366443_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/43/3366443_image2_1.jpg",
+    "latitude": 35.2120802836554,
+    "longitude": 129.09053553882106
   },
   {
     "id": "tourapi-574014",
@@ -4856,7 +5662,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-18",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/3498990_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/3498990_image2_1.JPG",
+    "latitude": 34.7865334008,
+    "longitude": 126.3936724331
   },
   {
     "id": "tourapi-1344850",
@@ -4868,7 +5676,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-18",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/82/4064382_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/82/4064382_image2_1.jpg",
+    "latitude": 36.72128130535547,
+    "longitude": 127.60067592555232
   },
   {
     "id": "tourapi-2667707",
@@ -4880,7 +5690,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-19",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/17/4062917_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/17/4062917_image2_1.jpg",
+    "latitude": 37.5409386577644,
+    "longitude": 127.323960794665
   },
   {
     "id": "tourapi-3017799",
@@ -4892,7 +5704,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-18",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/50/4063650_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/50/4063650_image2_1.JPG",
+    "latitude": 36.116079,
+    "longitude": 128.349461
   },
   {
     "id": "tourapi-825295",
@@ -4904,7 +5718,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-25",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/24/3546224_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/24/3546224_image2_1.JPG",
+    "latitude": 37.7726104945,
+    "longitude": 128.9473094259
   },
   {
     "id": "tourapi-234232",
@@ -4916,7 +5732,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-25",
     "category": "기타",
     "tags": [],
-    "imageUrl": "http://tong.visitkorea.or.kr/cms/resource/49/3566649_image2_1.png"
+    "imageUrl": "http://tong.visitkorea.or.kr/cms/resource/49/3566649_image2_1.png",
+    "latitude": 35.0911816485,
+    "longitude": 128.0699132182
   },
   {
     "id": "tourapi-604097",
@@ -4928,7 +5746,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-25",
     "category": "음식",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/32/3545732_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/32/3545732_image2_1.JPG",
+    "latitude": 35.1590033102,
+    "longitude": 126.8530264839
   },
   {
     "id": "tourapi-3377995",
@@ -4940,7 +5760,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-25",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/27/3544627_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/27/3544627_image2_1.jpg",
+    "latitude": 36.102930074676955,
+    "longitude": 127.99484429506171
   },
   {
     "id": "tourapi-506616",
@@ -4952,7 +5774,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-25",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/11/4039211_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/11/4039211_image2_1.jpg",
+    "latitude": 33.243863,
+    "longitude": 126.560563
   },
   {
     "id": "tourapi-1147035",
@@ -4964,7 +5788,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-10-25",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/3546463_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/3546463_image2_1.JPG",
+    "latitude": 37.29912,
+    "longitude": 127.655753
   },
   {
     "id": "tourapi-3501104",
@@ -4976,7 +5802,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-01",
     "category": "음악",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/74/4078274_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/74/4078274_image2_1.JPG",
+    "latitude": 35.557223,
+    "longitude": 129.321469
   },
   {
     "id": "tourapi-3383613",
@@ -4988,7 +5816,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-01",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/73/4066273_image2_1.JPG"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/73/4066273_image2_1.JPG",
+    "latitude": 37.654669772497314,
+    "longitude": 126.83276387204035
   },
   {
     "id": "tourapi-921212",
@@ -5000,7 +5830,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-08",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/98/3533798_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/98/3533798_image2_1.jpg",
+    "latitude": 36.432486,
+    "longitude": 129.055726
   },
   {
     "id": "tourapi-3028462",
@@ -5012,7 +5844,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-08",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/40/3497640_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/40/3497640_image2_1.jpg",
+    "latitude": 36.129404,
+    "longitude": 128.331422
   },
   {
     "id": "tourapi-588175",
@@ -5024,7 +5858,9 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2026-11-22",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/88/3484788_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/88/3484788_image2_1.jpg",
+    "latitude": 36.0530051077193,
+    "longitude": 129.377594275323
   },
   {
     "id": "tourapi-507599",
@@ -5036,6 +5872,8 @@ export const FESTIVALS: Festival[] = [
     "endDate": "2027-01-31",
     "category": "기타",
     "tags": [],
-    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/46/4071246_image2_1.jpg"
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/46/4071246_image2_1.jpg",
+    "latitude": 38.1126243028,
+    "longitude": 127.7098811689
   }
 ];
