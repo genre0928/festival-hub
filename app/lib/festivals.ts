@@ -22,6 +22,7 @@ function mapRowToFestival(row: FestivalRow): Festival {
     name: row.name,
     description: row.description,
     regionCode: row.region_code,
+    sigungu: row.sigungu,
     address: row.address,
     startDate: row.start_date,
     endDate: row.end_date,
@@ -74,6 +75,8 @@ function toDateOnly(date: Date) {
 export interface FestivalFilters {
   status: FestivalStatus | "all";
   regionCode: string | null;
+  /** regionCode 안에서 더 좁힐 시/군/구. regionCode가 없으면 무시된다. */
+  sigungu: string | null;
   query: string;
   /** YYYY-MM-DD. 지정 시 해당 날짜에 열리는 축제만 남김 */
   date: string | null;
@@ -95,6 +98,10 @@ export function filterFestivals(
       return false;
     }
 
+    if (filters.regionCode && filters.sigungu && festival.sigungu !== filters.sigungu) {
+      return false;
+    }
+
     if (filters.date) {
       if (festival.startDate > filters.date || festival.endDate < filters.date) {
         return false;
@@ -110,6 +117,18 @@ export function filterFestivals(
 
     return true;
   });
+}
+
+/** 선택된 regionCode 안에 존재하는 시/군/구 목록(가나다순)을 돌려준다. regionCode가 없으면 빈 배열. */
+export function getSigunguOptions(festivals: Festival[], regionCode: string | null): string[] {
+  if (!regionCode) return [];
+  const values = new Set<string>();
+  for (const festival of festivals) {
+    if (festival.regionCode === regionCode && festival.sigungu) {
+      values.add(festival.sigungu);
+    }
+  }
+  return [...values].sort((a, b) => a.localeCompare(b, "ko"));
 }
 
 export function countFestivalsByRegion(festivals: Festival[]): Record<string, number> {

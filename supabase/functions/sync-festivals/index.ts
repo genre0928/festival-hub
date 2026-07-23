@@ -132,6 +132,16 @@ function resolveRegionCode(item: Pick<TourApiItem, "areacode" | "lDongRegnCd" | 
   return null;
 }
 
+/**
+ * addr1의 두번째 토큰(시/도 다음)이 시/군/구로 끝나면 그대로 시/군/구 이름으로 쓴다.
+ * 세종처럼 시/군/구 단위 없이 읍/면/동으로 바로 이어지는 주소는 null을 반환한다.
+ */
+function extractSigungu(addr1: string | undefined): string | null {
+  if (!addr1) return null;
+  const candidate = addr1.trim().split(/\s+/)[1];
+  return candidate && /(시|군|구)$/.test(candidate) ? candidate : null;
+}
+
 function guessCategory(title: string): string {
   for (const [keywords, category] of CATEGORY_KEYWORDS) {
     if (keywords.some((k) => title.includes(k))) return category;
@@ -240,6 +250,7 @@ Deno.serve(async (req) => {
           name: item.title,
           description: "",
           region_code: regionCode,
+          sigungu: extractSigungu(item.addr1),
           address: [item.addr1, item.addr2].filter(Boolean).join(" "),
           start_date: startDate,
           end_date: endDate < startDate ? startDate : endDate,
