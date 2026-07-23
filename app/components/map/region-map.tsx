@@ -3,13 +3,26 @@ import { MAP_VIEWBOX, REGION_BOUNDARIES } from "./region-boundaries";
 import { cn } from "~/lib/utils";
 
 interface RegionMapProps {
-  regionCounts: Record<string, number>;
-  selectedRegion: string | null;
-  onSelectRegion: (code: string | null) => void;
+  /** 지역별 축제 건수 (색 농도용). 다중 선택 모드(관심지역 관리 등)에서는 필요 없음 */
+  regionCounts?: Record<string, number>;
+  /** 단일 선택 모드(홈 화면 필터): 지역 하나만 선택/해제 */
+  selectedRegion?: string | null;
+  onSelectRegion?: (code: string | null) => void;
+  /** 다중 선택 모드(관심지역 관리): 여러 지역을 토글로 켜고 끔. 이 값이 있으면 다중 선택 모드로 동작 */
+  selectedRegions?: string[];
+  onToggleRegion?: (code: string) => void;
   className?: string;
 }
 
-export function RegionMap({ regionCounts, selectedRegion, onSelectRegion, className }: RegionMapProps) {
+export function RegionMap({
+  regionCounts = {},
+  selectedRegion = null,
+  onSelectRegion,
+  selectedRegions,
+  onToggleRegion,
+  className,
+}: RegionMapProps) {
+  const isMultiSelect = selectedRegions !== undefined;
   const maxCount = Math.max(1, ...Object.values(regionCounts));
   // 라벨을 경계선과 같은 <g>에 두면 나중에 그려지는(=배열상 뒤쪽) 다른 지역 path가
   // 앞선 지역의 라벨을 덮어버린다. 이를 막기 위해 path를 먼저 전부 그리고, 라벨은
@@ -26,10 +39,18 @@ export function RegionMap({ regionCounts, selectedRegion, onSelectRegion, classN
     >
       {REGION_BOUNDARIES.map((region) => {
         const count = regionCounts[region.code] ?? 0;
-        const isSelected = selectedRegion === region.code;
+        const isSelected = isMultiSelect
+          ? (selectedRegions ?? []).includes(region.code)
+          : selectedRegion === region.code;
         const intensity = count / maxCount;
 
-        const handleSelect = () => onSelectRegion(isSelected ? null : region.code);
+        const handleSelect = () => {
+          if (isMultiSelect) {
+            onToggleRegion?.(region.code);
+          } else {
+            onSelectRegion?.(isSelected ? null : region.code);
+          }
+        };
         const clearHover = () =>
           setHoveredRegion((prev) => (prev === region.code ? null : prev));
 
@@ -38,7 +59,7 @@ export function RegionMap({ regionCounts, selectedRegion, onSelectRegion, classN
             key={region.code}
             role="button"
             tabIndex={0}
-            aria-label={`${region.name} (축제 ${count}건)${isSelected ? ", 선택됨" : ""}`}
+            aria-label={`${region.name}${isMultiSelect ? "" : ` (축제 ${count}건)`}${isSelected ? ", 선택됨" : ""}`}
             aria-pressed={isSelected}
             onClick={handleSelect}
             onKeyDown={(e) => {
@@ -51,7 +72,7 @@ export function RegionMap({ regionCounts, selectedRegion, onSelectRegion, classN
             onMouseLeave={clearHover}
             className="cursor-pointer outline-none"
           >
-            <title>{`${region.name} · 축제 ${count}건`}</title>
+            <title>{isMultiSelect ? region.name : `${region.name} · 축제 ${count}건`}</title>
 
             <path
               d={region.path}
@@ -73,8 +94,10 @@ export function RegionMap({ regionCounts, selectedRegion, onSelectRegion, classN
 
       {REGION_BOUNDARIES.map((region) => {
         const count = regionCounts[region.code] ?? 0;
-        const isSelected = selectedRegion === region.code;
-        const showLabel = isSelected || (hoveredRegion === region.code && count > 0);
+        const isSelected = isMultiSelect
+          ? (selectedRegions ?? []).includes(region.code)
+          : selectedRegion === region.code;
+        const showLabel = isSelected || (hoveredRegion === region.code && (isMultiSelect || count > 0));
         if (!showLabel) return null;
 
         return (
