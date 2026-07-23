@@ -81,7 +81,7 @@ export function RegionMap({ regionCounts, selectedRegion, onSelectRegion, classN
           <g key={region.code} className="pointer-events-none">
             <rect
               x={region.cx - region.name.length * 3.6 - 3}
-              y={region.cy - 9}
+              y={region.cy - 6}
               width={region.name.length * 7.2 + 6}
               height={12}
               rx={6}
