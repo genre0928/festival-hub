@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  Check,
   ExternalLink,
   Hotel,
   LayoutGrid,
   Landmark,
+  Link as LinkIcon,
   Loader2,
   MapPin,
   Phone,
+  Share2,
   Utensils,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "~/components/ui/dialog";
@@ -65,11 +68,13 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
   const [error, setError] = useState<string | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
+  const [shareCopied, setShareCopied] = useState(false);
   const listItemRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
     setCategoryFilter("all");
     setSelectedPlaceId(null);
+    setShareCopied(false);
 
     if (!festival || festival.latitude == null || festival.longitude == null) {
       setNearby(null);
@@ -125,6 +130,30 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
     listItemRefs.current[contentId]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
+  async function handleShare() {
+    if (!festival) return;
+    const shareUrl = `${window.location.origin}/?festival=${festival.id}`;
+    const region = getRegionByCode(festival.regionCode);
+    const shareText = `${region?.name ?? ""}${festival.sigungu ? ` ${festival.sigungu}` : ""} · ${formatDateRange(festival.startDate, festival.endDate)}`;
+
+    if (typeof navigator.share === "function") {
+      try {
+        await navigator.share({ title: festival.name, text: shareText, url: shareUrl });
+      } catch {
+        // 사용자가 공유를 취소한 경우 등 - 별도 처리 없이 무시
+      }
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    } catch {
+      // 클립보드 접근이 막힌 환경 - 조용히 무시
+    }
+  }
+
   const status = festival ? getFestivalStatus(festival) : null;
   const region = festival ? getRegionByCode(festival.regionCode) : null;
   const hasCoords = festival?.latitude != null && festival?.longitude != null;
@@ -152,11 +181,34 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
               </div>
             )}
 
-            <div className="mt-4 flex flex-wrap items-center gap-2">
-              {status && (
-                <Badge variant={STATUS_BADGE_VARIANT[status]}>{STATUS_LABELS[status]}</Badge>
-              )}
-              <Badge variant="soft">{festival.category}</Badge>
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                {status && (
+                  <Badge variant={STATUS_BADGE_VARIANT[status]}>{STATUS_LABELS[status]}</Badge>
+                )}
+                <Badge variant="soft">{festival.category}</Badge>
+              </div>
+              <button
+                type="button"
+                onClick={handleShare}
+                className="optical-center flex shrink-0 items-center gap-1.5 rounded-full border border-season-border px-3 py-1.5 text-xs font-medium text-season-surface-foreground hover:bg-season-secondary"
+              >
+                {shareCopied ? (
+                  <>
+                    <Check className="h-3.5 w-3.5" />
+                    링크 복사됨
+                  </>
+                ) : (
+                  <>
+                    {typeof navigator.share === "function" ? (
+                      <Share2 className="h-3.5 w-3.5" />
+                    ) : (
+                      <LinkIcon className="h-3.5 w-3.5" />
+                    )}
+                    공유하기
+                  </>
+                )}
+              </button>
             </div>
 
             {festival.description && (

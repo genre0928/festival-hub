@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router";
 import { PlayCircle } from "lucide-react";
 import type { Route } from "./+types/home";
 import { AppLayout } from "~/components/layout/app-layout";
@@ -39,8 +40,41 @@ export async function clientLoader() {
 export default function Home({ loaderData }: Route.ComponentProps) {
   const { filters, setQuery, setRegionCode, setSigungu, setDate, setStatus } = useFestivalFilters();
   const [selectedFestival, setSelectedFestival] = useState<Festival | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const allFestivals = loaderData.festivals;
+
+  // 공유된 링크(?festival=id)로 들어오면 해당 축제 상세를 자동으로 연다.
+  useEffect(() => {
+    const festivalId = searchParams.get("festival");
+    if (!festivalId) return;
+    const found = allFestivals.find((f) => f.id === festivalId);
+    if (found) setSelectedFestival(found);
+  }, [searchParams, allFestivals]);
+
+  function openFestivalDetail(festival: Festival) {
+    setSelectedFestival(festival);
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.set("festival", festival.id);
+        return next;
+      },
+      { replace: true, preventScrollReset: true },
+    );
+  }
+
+  function closeFestivalDetail() {
+    setSelectedFestival(null);
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("festival");
+        return next;
+      },
+      { replace: true, preventScrollReset: true },
+    );
+  }
 
   const ongoingFestivals = useMemo(
     () => allFestivals.filter((f) => getFestivalStatus(f) === "ongoing"),
@@ -149,13 +183,13 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               selectedRegion={filters.regionCode}
               selectedSigungu={filters.sigungu}
               onSelectRegion={setRegionCode}
-              onOpenDetail={setSelectedFestival}
+              onOpenDetail={openFestivalDetail}
             />
           </div>
         </div>
       </div>
 
-      <FestivalDetailModal festival={selectedFestival} onClose={() => setSelectedFestival(null)} />
+      <FestivalDetailModal festival={selectedFestival} onClose={closeFestivalDetail} />
     </AppLayout>
   );
 }
