@@ -22,7 +22,13 @@ export async function persistKakaoTokensFromSession(session: Session): Promise<v
 
   const accessToken = session.provider_token;
   const refreshToken = session.provider_refresh_token;
-  if (!accessToken || !refreshToken) return;
+  if (!accessToken || !refreshToken) {
+    console.warn("[kakao-auth] provider_token/provider_refresh_token이 세션에 없습니다.", {
+      hasAccessToken: !!accessToken,
+      hasRefreshToken: !!refreshToken,
+    });
+    return;
+  }
 
   const userId = session.user.id;
   const expiresAt = new Date(Date.now() + ASSUMED_TOKEN_LIFETIME_MS).toISOString();
@@ -35,7 +41,7 @@ export async function persistKakaoTokensFromSession(session: Session): Promise<v
   };
   const { error: tokenError } = await supabase.from("kakao_tokens").upsert(tokenPayload);
   if (tokenError) {
-    console.error("카카오 토큰 저장 실패:", tokenError.message);
+    console.error("[kakao-auth] 카카오 토큰 저장 실패:", tokenError.message);
     return;
   }
 
@@ -44,6 +50,8 @@ export async function persistKakaoTokensFromSession(session: Session): Promise<v
     .from("subscribers")
     .upsert(subscriberPayload, { onConflict: "user_id" });
   if (subscriberError) {
-    console.error("구독 정보 갱신 실패:", subscriberError.message);
+    console.error("[kakao-auth] 구독 정보 갱신 실패:", subscriberError.message);
+  } else {
+    console.info("[kakao-auth] 카카오 토큰 저장 및 kakao_connected 갱신 완료");
   }
 }
