@@ -18,6 +18,7 @@ import {
   filterFestivals,
   getFestivalStatus,
   getFestivals,
+  getSigunguOptions,
 } from "~/lib/festivals";
 
 export function meta({}: Route.MetaArgs) {
@@ -36,7 +37,7 @@ export async function clientLoader() {
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const { filters, setQuery, setRegionCode, setDate, setStatus } = useFestivalFilters();
+  const { filters, setQuery, setRegionCode, setSigungu, setDate, setStatus } = useFestivalFilters();
   const [selectedFestival, setSelectedFestival] = useState<Festival | null>(null);
 
   const allFestivals = loaderData.festivals;
@@ -67,6 +68,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     [filteredFestivals],
   );
 
+  const sigunguOptions = useMemo(
+    () => getSigunguOptions(allFestivals, filters.regionCode),
+    [allFestivals, filters.regionCode],
+  );
+
   return (
     <AppLayout>
       <div className="flex flex-col gap-6">
@@ -80,11 +86,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               {popularOngoingFestivals.map((f) => (
                 <button
                   key={f.id}
-                  onClick={() => setRegionCode(f.regionCode)}
+                  onClick={() => setRegionCode(f.regionCode, f.sigungu)}
                   className="shrink-0"
                 >
                   <Badge variant="soft">
-                    {getRegionByCode(f.regionCode)?.name} · {f.name}
+                    {getRegionByCode(f.regionCode)?.name}
+                    {f.sigungu ? ` ${f.sigungu}` : ""} · {f.name}
                   </Badge>
                 </button>
               ))}
@@ -97,6 +104,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           onQueryChange={setQuery}
           regionCode={filters.regionCode}
           onRegionChange={setRegionCode}
+          sigungu={filters.sigungu}
+          onSigunguChange={(value) => setRegionCode(filters.regionCode, value)}
+          sigunguOptions={sigunguOptions}
           date={filters.date}
           onDateChange={setDate}
         />
@@ -137,6 +147,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             <FestivalList
               festivals={filteredFestivals}
               selectedRegion={filters.regionCode}
+              selectedSigungu={filters.sigungu}
               onSelectRegion={setRegionCode}
               onOpenDetail={setSelectedFestival}
             />

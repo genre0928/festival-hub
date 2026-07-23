@@ -35,7 +35,7 @@ const STATUS_BADGE_VARIANT: Record<FestivalStatus, "solid" | "outline" | "soft">
 interface FestivalCardProps {
   festival: Festival;
   selected?: boolean;
-  onSelectRegion?: (regionCode: string) => void;
+  onSelectRegion?: (regionCode: string, sigungu?: string | null) => void;
   onOpenDetail?: (festival: Festival) => void;
 }
 
@@ -99,11 +99,12 @@ export function FestivalCard({ festival, selected, onSelectRegion, onOpenDetail 
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onSelectRegion?.(festival.regionCode);
+                  onSelectRegion?.(festival.regionCode, festival.sigungu);
                 }}
                 className="hover:text-season-primary hover:underline"
               >
                 {region.name}
+                {festival.sigungu ? ` ${festival.sigungu}` : ""}
               </button>
             ) : (
               festival.address

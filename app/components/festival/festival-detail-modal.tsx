@@ -139,11 +139,13 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
 
             {/* 상단: 행사 상세 정보 */}
             {festival.imageUrl && (
-              <img
-                src={festival.imageUrl}
-                alt=""
-                className="mt-4 h-48 w-full rounded-xl object-cover"
-              />
+              <div className="mt-4 w-full overflow-hidden rounded-xl bg-season-secondary">
+                <img
+                  src={festival.imageUrl}
+                  alt=""
+                  className="max-h-64 w-full object-contain"
+                />
+              </div>
             )}
 
             <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -196,9 +198,14 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
                   </p>
                 ) : (
                   <>
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                       <h3 className="font-semibold text-season-surface-foreground">주변 정보</h3>
-                      <Tabs items={FILTER_ITEMS} value={categoryFilter} onChange={setCategoryFilter} />
+                      <Tabs
+                        items={FILTER_ITEMS}
+                        value={categoryFilter}
+                        onChange={setCategoryFilter}
+                        className="w-full sm:w-auto"
+                      />
                     </div>
 
                     {expandedRadiusNotes.length > 0 && (

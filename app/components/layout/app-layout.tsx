@@ -2,18 +2,21 @@ import type { ReactNode } from "react";
 import { SeasonProvider } from "~/components/season/season-provider";
 import { SeasonalBackground } from "~/components/season/seasonal-background";
 import { TextSizeProvider } from "~/components/settings/text-size-provider";
+import { AuthProvider } from "~/components/auth/auth-provider";
 import { Navbar } from "~/components/layout/navbar";
 
 export function AppLayout({ children }: { children: ReactNode }) {
   return (
-    <TextSizeProvider>
-      <SeasonProvider>
-        <div className="relative min-h-screen">
-          <SeasonalBackground />
-          <Navbar />
-          <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
-        </div>
-      </SeasonProvider>
-    </TextSizeProvider>
+    <AuthProvider>
+      <TextSizeProvider>
+        <SeasonProvider>
+          <div className="relative min-h-screen">
+            <SeasonalBackground />
+            <Navbar />
+            <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
+          </div>
+        </SeasonProvider>
+      </TextSizeProvider>
+    </AuthProvider>
   );
 }
