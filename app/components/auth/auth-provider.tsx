@@ -32,6 +32,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
+      console.info(`[auth-provider] onAuthStateChange: ${event}`, {
+        hasSession: !!session,
+        hasProviderToken: !!session?.provider_token,
+      });
       if (event === "SIGNED_IN" && session) {
         persistKakaoTokensFromSession(session);
       }
