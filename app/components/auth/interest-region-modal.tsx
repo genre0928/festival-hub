@@ -37,8 +37,10 @@ export function InterestRegionModal({ open, onClose }: InterestRegionModalProps)
     setRegions((prev) => (prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]));
   }
 
-  function selectAllRegions() {
-    setRegions(REGIONS.map((region) => region.code));
+  const allRegionsSelected = regions.length === REGIONS.length;
+
+  function toggleAllRegions() {
+    setRegions(allRegionsSelected ? [] : REGIONS.map((region) => region.code));
   }
 
   async function handleSave() {
@@ -77,10 +79,10 @@ export function InterestRegionModal({ open, onClose }: InterestRegionModalProps)
                 <p className="text-xs text-season-muted">지도를 클릭해서 지역을 선택/해제할 수 있어요</p>
                 <button
                   type="button"
-                  onClick={selectAllRegions}
+                  onClick={toggleAllRegions}
                   className="optical-center shrink-0 text-xs font-medium text-season-primary hover:underline"
                 >
-                  모두 선택
+                  {allRegionsSelected ? "모두 해제" : "모두 선택"}
                 </button>
               </div>
 
