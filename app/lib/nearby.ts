@@ -11,6 +11,8 @@ export interface NearbyPlace {
   latitude: number | null;
   longitude: number | null;
   distanceMeters: number | null;
+  /** 네이버 지역검색으로 가져온 경우에만 있음 - "네이버에서 보기" 링크 */
+  link: string | null;
 }
 
 export interface NearbyCategoryResult {
@@ -36,12 +38,16 @@ const EMPTY_NEARBY_INFO: NearbyInfo = {
   lodgings: EMPTY_CATEGORY,
 };
 
-/** mapX(경도)/mapY(위도) 기준 주변 관광지/음식점/숙박 정보를 nearby-info Edge Function에서 가져온다. */
-export async function getNearbyInfo(mapX: number, mapY: number): Promise<NearbyInfo> {
+/**
+ * 주변 관광지/음식점/숙박 정보를 nearby-info Edge Function에서 가져온다.
+ * 관광지/음식점은 regionQuery(예: "충청남도 보령시")로 네이버 지역 검색을 하고,
+ * 숙박은 mapX(경도)/mapY(위도) 기준 좌표 반경 검색을 한다.
+ */
+export async function getNearbyInfo(mapX: number, mapY: number, regionQuery: string): Promise<NearbyInfo> {
   if (!supabase) return EMPTY_NEARBY_INFO;
 
   const { data, error } = await supabase.functions.invoke<NearbyInfo>("nearby-info", {
-    body: { mapX, mapY },
+    body: { mapX, mapY, regionQuery },
   });
 
   if (error) throw error;
