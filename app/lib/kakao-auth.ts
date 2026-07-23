@@ -1,9 +1,8 @@
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "~/lib/supabase/client";
-import type { Database } from "~/lib/supabase/types";
 
-type KakaoTokenInsert = Database["public"]["Tables"]["kakao_tokens"]["Insert"];
-type SubscriberInsert = Database["public"]["Tables"]["subscribers"]["Insert"];
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
 /**
  * 카카오 access token의 실제 만료 시각을 클라이언트에서 알 수 없어(Supabase가 provider
@@ -11,6 +10,40 @@ type SubscriberInsert = Database["public"]["Tables"]["subscribers"]["Insert"];
  * Edge Function이 이 값을 보고 필요하면 refresh_token으로 먼저 갱신한 뒤 보낸다.
  */
 const ASSUMED_TOKEN_LIFETIME_MS = 60 * 60 * 1000;
+
+/**
+ * supabase.from(...)은 매 요청마다 client.auth.getSession()으로 "현재" 세션을 다시
+ * 확인해 Authorization 헤더를 만든다. onAuthStateChange 콜백 안에서 곧바로 이걸 쓰면
+ * (내부 만료 재확인/리프레시 타이밍에 따라) 세션을 못 찾고 조용히 anon key로 폴백해
+ * auth.uid()가 비어 RLS를 통과 못하는 경우가 있었다("new row violates row-level
+ * security policy"). 이 함수는 그 경로를 완전히 우회해서, 방금 로그인 이벤트로 받은
+ * session.access_token을 REST 요청에 직접 실어보낸다 - 클라이언트의 세션 상태 판단에
+ * 의존하지 않으므로 위 문제와 무관하게 항상 이 사용자로 인증된다.
+ */
+async function restUpsert(
+  table: string,
+  accessToken: string,
+  body: Record<string, unknown>,
+  onConflict?: string,
+): Promise<string | null> {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return "Supabase 설정이 없습니다.";
+
+  const url = new URL(`${SUPABASE_URL}/rest/v1/${table}`);
+  if (onConflict) url.searchParams.set("on_conflict", onConflict);
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+      Prefer: "resolution=merge-duplicates,return=minimal",
+    },
+    body: JSON.stringify(body),
+  });
+
+  return res.ok ? null : await res.text();
+}
 
 /**
  * 카카오 로그인 직후 세션에 담겨오는 provider_token(talk_message 동의 시)을
@@ -30,41 +63,28 @@ export async function persistKakaoTokensFromSession(session: Session): Promise<v
     return;
   }
 
-  // onAuthStateChange 콜백 안에서 곧바로 REST 호출을 하면, 클라이언트가 이 세션을
-  // 내부 상태(및 이후 요청에 실어보낼 Authorization 헤더)에 완전히 반영하기 전에
-  // 요청이 나가 auth.uid()가 null로 잡혀 RLS를 통과 못하는 경우가 있다("new row
-  // violates row-level security policy"). setSession으로 이 세션을 명시적으로
-  // 확정지어 이후 요청이 반드시 이 사용자로 인증되게 한다.
-  const { error: setSessionError } = await supabase.auth.setSession({
-    access_token: session.access_token,
-    refresh_token: session.refresh_token,
-  });
-  if (setSessionError) {
-    console.error("[kakao-auth] 세션 확정 실패:", setSessionError.message);
-    return;
-  }
-
   const userId = session.user.id;
   const expiresAt = new Date(Date.now() + ASSUMED_TOKEN_LIFETIME_MS).toISOString();
 
-  const tokenPayload: KakaoTokenInsert = {
+  const tokenError = await restUpsert("kakao_tokens", session.access_token, {
     user_id: userId,
     access_token: accessToken,
     refresh_token: refreshToken,
     expires_at: expiresAt,
-  };
-  const { error: tokenError } = await supabase.from("kakao_tokens").upsert(tokenPayload);
+  });
   if (tokenError) {
-    console.error("[kakao-auth] 카카오 토큰 저장 실패:", tokenError.message);
+    console.error("[kakao-auth] 카카오 토큰 저장 실패:", tokenError);
     return;
   }
 
-  const subscriberPayload: SubscriberInsert = { user_id: userId, kakao_connected: true };
-  const { error: subscriberError } = await supabase
-    .from("subscribers")
-    .upsert(subscriberPayload, { onConflict: "user_id" });
+  const subscriberError = await restUpsert(
+    "subscribers",
+    session.access_token,
+    { user_id: userId, kakao_connected: true },
+    "user_id",
+  );
   if (subscriberError) {
-    console.error("[kakao-auth] 구독 정보 갱신 실패:", subscriberError.message);
+    console.error("[kakao-auth] 구독 정보 갱신 실패:", subscriberError);
   } else {
     console.info("[kakao-auth] 카카오 토큰 저장 및 kakao_connected 갱신 완료");
   }
