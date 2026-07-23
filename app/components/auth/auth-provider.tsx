@@ -32,10 +32,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
-      console.info(`[auth-provider] onAuthStateChange: ${event}`, {
-        hasSession: !!session,
-        hasProviderToken: !!session?.provider_token,
-      });
       // Supabase는 OAuth 리다이렉트 직후 페이지 로드 시 "SIGNED_IN"이 아니라
       // "INITIAL_SESSION"으로 세션을 알려준다 - provider_token도 이 이벤트에 실려오므로
       // 같이 처리해야 한다(SIGNED_IN만 보면 카카오 토큰을 영영 못 잡는다).

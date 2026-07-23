@@ -66,23 +66,6 @@ export async function persistKakaoTokensFromSession(session: Session): Promise<v
   const userId = session.user.id;
   const expiresAt = new Date(Date.now() + ASSUMED_TOKEN_LIFETIME_MS).toISOString();
 
-  // RLS(auth.uid() = user_id)가 계속 실패해서, 실제로 보내는 JWT의 sub 클레임이
-  // session.user.id와 정말 일치하는지, role이 authenticated인지 직접 눈으로 확인한다.
-  try {
-    const payloadBase64 = session.access_token.split(".")[1];
-    const payload = JSON.parse(atob(payloadBase64.replace(/-/g, "+").replace(/_/g, "/")));
-    console.info("[kakao-auth] JWT 확인:", {
-      jwtSub: payload.sub,
-      sessionUserId: userId,
-      subMatchesUserId: payload.sub === userId,
-      role: payload.role,
-      exp: payload.exp,
-      nowSec: Math.floor(Date.now() / 1000),
-    });
-  } catch (e) {
-    console.warn("[kakao-auth] JWT 디코딩 실패:", e);
-  }
-
   const tokenError = await restUpsert("kakao_tokens", session.access_token, {
     user_id: userId,
     access_token: accessToken,
