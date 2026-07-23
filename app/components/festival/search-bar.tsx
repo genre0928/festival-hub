@@ -13,9 +13,14 @@ interface SearchBarProps {
   onQueryChange: (value: string) => void;
   regionCode: string | null;
   onRegionChange: (value: string | null) => void;
+  sigungu: string | null;
+  onSigunguChange: (value: string | null) => void;
+  sigunguOptions: string[];
   date: string | null;
   onDateChange: (value: string | null) => void;
 }
+
+const ALL_SIGUNGU_VALUE = "all";
 
 const QUERY_DEBOUNCE_MS = 300;
 
@@ -24,6 +29,9 @@ export function SearchBar({
   onQueryChange,
   regionCode,
   onRegionChange,
+  sigungu,
+  onSigunguChange,
+  sigunguOptions,
   date,
   onDateChange,
 }: SearchBarProps) {
@@ -33,7 +41,7 @@ export function SearchBar({
   const [localQuery, setLocalQuery] = useState(query);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  const hasActiveFilters = localQuery || regionCode || date;
+  const hasActiveFilters = localQuery || regionCode || sigungu || date;
 
   useEffect(() => {
     setLocalQuery(query);
@@ -87,6 +95,27 @@ export function SearchBar({
         </Select>
       </div>
 
+      {regionCode && sigunguOptions.length > 0 && (
+        <div className="sm:w-36">
+          <Select
+            value={sigungu ?? ALL_SIGUNGU_VALUE}
+            onValueChange={(value) => onSigunguChange(value === ALL_SIGUNGU_VALUE ? null : value)}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ALL_SIGUNGU_VALUE}>전체 시/군/구</SelectItem>
+              {sigunguOptions.map((name) => (
+                <SelectItem key={name} value={name}>
+                  {name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
       <DatePicker value={date} onChange={onDateChange} placeholder="날짜 선택" className="sm:w-44" />
 
       {hasActiveFilters && (
@@ -97,6 +126,7 @@ export function SearchBar({
           onClick={() => {
             resetQuery();
             onRegionChange(null);
+            onSigunguChange(null);
             onDateChange(null);
           }}
         >

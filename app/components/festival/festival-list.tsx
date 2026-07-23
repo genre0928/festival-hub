@@ -6,11 +6,18 @@ import { BlurFade } from "~/components/magicui/blur-fade";
 interface FestivalListProps {
   festivals: Festival[];
   selectedRegion: string | null;
-  onSelectRegion: (regionCode: string) => void;
+  selectedSigungu: string | null;
+  onSelectRegion: (regionCode: string, sigungu?: string | null) => void;
   onOpenDetail: (festival: Festival) => void;
 }
 
-export function FestivalList({ festivals, selectedRegion, onSelectRegion, onOpenDetail }: FestivalListProps) {
+export function FestivalList({
+  festivals,
+  selectedRegion,
+  selectedSigungu,
+  onSelectRegion,
+  onOpenDetail,
+}: FestivalListProps) {
   if (festivals.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-season-border py-16 text-center text-season-muted">
@@ -26,7 +33,10 @@ export function FestivalList({ festivals, selectedRegion, onSelectRegion, onOpen
         <BlurFade key={festival.id} delay={Math.min(i, 8) * 0.03}>
           <FestivalCard
             festival={festival}
-            selected={selectedRegion === festival.regionCode}
+            selected={
+              selectedRegion === festival.regionCode &&
+              (!selectedSigungu || selectedSigungu === festival.sigungu)
+            }
             onSelectRegion={onSelectRegion}
             onOpenDetail={onOpenDetail}
           />

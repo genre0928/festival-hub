@@ -62,6 +62,12 @@ function resolveRegionCode({ areacode, lDongRegnCd, addr1 }) {
   return null;
 }
 
+function extractSigungu(addr1) {
+  if (!addr1) return null;
+  const candidate = addr1.trim().split(/\s+/)[1];
+  return candidate && /(시|군|구)$/.test(candidate) ? candidate : null;
+}
+
 function guessCategory(title) {
   for (const [keywords, category] of CATEGORY_KEYWORDS) {
     if (keywords.some((k) => title.includes(k))) return category;
@@ -142,6 +148,7 @@ while (pageNo <= MAX_PAGES && (pageNo - 1) * ROWS_PER_PAGE < totalCount) {
       name: item.title,
       description: "",
       regionCode,
+      sigungu: extractSigungu(item.addr1),
       address: [item.addr1, item.addr2].filter(Boolean).join(" "),
       startDate,
       endDate: endDate < startDate ? startDate : endDate,
@@ -179,6 +186,7 @@ export interface Festival {
   name: string;
   description: string;
   regionCode: string;
+  sigungu: string | null;
   address: string;
   startDate: string;
   endDate: string;
