@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  ExternalLink,
   Hotel,
   LayoutGrid,
   Landmark,
@@ -81,7 +82,10 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
     setError(null);
     setNearby(null);
 
-    getNearbyInfo(festival.longitude, festival.latitude)
+    const region = getRegionByCode(festival.regionCode);
+    const regionQuery = [region?.name, festival.sigungu].filter(Boolean).join(" ");
+
+    getNearbyInfo(festival.longitude, festival.latitude, regionQuery)
       .then((data) => {
         if (!cancelled) setNearby(data);
       })
@@ -306,6 +310,18 @@ function NearbyListItem({
           )}
         </div>
       </div>
+      {place.link && (
+        <a
+          href={place.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="flex shrink-0 items-center gap-1 rounded-full border border-season-border px-2 py-1 text-[11px] font-medium text-season-primary hover:bg-season-secondary"
+        >
+          <ExternalLink className="h-3 w-3" />
+          네이버
+        </a>
+      )}
     </div>
   );
 }
