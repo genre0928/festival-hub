@@ -37,6 +37,10 @@ export function InterestRegionModal({ open, onClose }: InterestRegionModalProps)
     setRegions((prev) => (prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]));
   }
 
+  function selectAllRegions() {
+    setRegions(REGIONS.map((region) => region.code));
+  }
+
   async function handleSave() {
     if (!user) return;
     setSaving(true);
@@ -69,9 +73,16 @@ export function InterestRegionModal({ open, onClose }: InterestRegionModalProps)
               <div className="mt-4 aspect-[4/3] w-full overflow-hidden rounded-xl border border-season-border bg-season-surface">
                 <RegionMap selectedRegions={regions} onToggleRegion={toggleRegion} />
               </div>
-              <p className="mt-1.5 text-center text-xs text-season-muted">
-                지도를 클릭해서 지역을 선택/해제할 수 있어요
-              </p>
+              <div className="mt-1.5 flex items-center justify-between">
+                <p className="text-xs text-season-muted">지도를 클릭해서 지역을 선택/해제할 수 있어요</p>
+                <button
+                  type="button"
+                  onClick={selectAllRegions}
+                  className="optical-center shrink-0 text-xs font-medium text-season-primary hover:underline"
+                >
+                  모두 선택
+                </button>
+              </div>
 
               <div className="mt-4 flex flex-wrap gap-1.5">
                 {REGIONS.map((region) => {
