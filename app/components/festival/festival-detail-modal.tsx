@@ -237,21 +237,21 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
                       )}
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent align="end" className="w-48 p-1.5">
+                  <PopoverContent align="end" className="w-max min-w-[13rem] p-1.5">
                     <button
                       type="button"
                       onClick={handleCopyLink}
-                      className="optical-center flex w-full items-center gap-2 rounded-xl px-2 py-2 text-left text-sm text-season-surface-foreground hover:bg-season-secondary"
+                      className="optical-center flex w-full items-center gap-2 whitespace-nowrap rounded-xl px-2 py-2 text-left text-sm text-season-surface-foreground hover:bg-season-secondary"
                     >
-                      <LinkIcon className="h-4 w-4 text-season-muted" />
+                      <LinkIcon className="h-4 w-4 shrink-0 text-season-muted" />
                       링크 복사하기
                     </button>
                     <button
                       type="button"
                       onClick={handleKakaoShare}
-                      className="optical-center flex w-full items-center gap-2 rounded-xl px-2 py-2 text-left text-sm text-season-surface-foreground hover:bg-season-secondary"
+                      className="optical-center flex w-full items-center gap-2 whitespace-nowrap rounded-xl px-2 py-2 text-left text-sm text-season-surface-foreground hover:bg-season-secondary"
                     >
-                      <MessageCircle className="h-4 w-4 text-season-muted" />
+                      <MessageCircle className="h-4 w-4 shrink-0 text-season-muted" />
                       카카오톡 친구에게 보내기
                     </button>
                     {kakaoShareError && (
