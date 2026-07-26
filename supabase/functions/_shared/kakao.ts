@@ -80,10 +80,95 @@ export async function getValidKakaoAccessToken(
   return newAccessToken;
 }
 
+/** 메시지에 담을 개별 축제 - 각자 고유한 상세페이지 링크(?festival=id)를 가진다. */
+export interface KakaoFestivalItem {
+  title: string;
+  description: string;
+  /** 이 축제 상세로 바로 이동하는 링크 (예: `${siteUrl}/?festival=${id}`) */
+  url: string;
+  imageUrl?: string | null;
+}
+
 export interface KakaoMessage {
-  text: string;
-  webUrl: string;
-  buttonTitle?: string;
+  /** 안내 문구(리스트 템플릿의 헤더 또는 텍스트 템플릿 본문 앞부분으로 쓰인다) */
+  heading: string;
+  /** 개별 축제 항목. 링크가 있는 축제들을 담으며, 카카오 리스트 템플릿 제약상 최대 3개까지만 실제로 나열된다. */
+  items: KakaoFestivalItem[];
+  /** items에 다 담기지 못한 나머지 건수(있으면 헤더에 "외 N건"으로 표시) */
+  moreCount?: number;
+  /** 버튼/헤더가 이동할 기본 링크(사이트 홈) */
+  siteUrl: string;
+}
+
+/** 카카오 리스트 템플릿은 최대 3개 항목까지만 지원한다(2개 미만이면 리스트 템플릿 자체를 못 씀). */
+const LIST_TEMPLATE_MAX_ITEMS = 3;
+
+function truncate(text: string, maxLength: number): string {
+  return text.length > maxLength ? `${text.slice(0, maxLength - 1)}…` : text;
+}
+
+function toLink(url: string) {
+  return { web_url: url, mobile_web_url: url };
+}
+
+/**
+ * 메시지 내용에 따라 알맞은 카카오 기본 템플릿(text/feed/list)의 template_object를 만든다.
+ * - 링크로 보여줄 축제가 없으면: 안내 문구 + 사이트 홈 링크로 된 text 템플릿.
+ * - 1건이면: 포스터가 있으면 feed(이미지+제목+설명+링크), 없으면 그 축제 링크가 달린 text 템플릿.
+ * - 2건 이상이면: list 템플릿(최대 3개, 각 항목이 자기 축제로 바로 이동하는 링크를 가짐).
+ */
+function buildTemplateObject(message: KakaoMessage): Record<string, unknown> {
+  const { heading, items, moreCount = 0, siteUrl } = message;
+  const siteLink = toLink(siteUrl);
+
+  if (items.length === 0) {
+    return {
+      object_type: "text",
+      text: truncate(heading, MESSAGE_MAX_LENGTH),
+      link: siteLink,
+      button_title: "축제 허브에서 보기",
+    };
+  }
+
+  if (items.length === 1) {
+    const item = items[0];
+    const itemLink = toLink(item.url);
+    if (item.imageUrl) {
+      return {
+        object_type: "feed",
+        content: {
+          title: item.title,
+          description: item.description,
+          image_url: item.imageUrl,
+          link: itemLink,
+        },
+        buttons: [{ title: "축제 정보 보기", link: itemLink }],
+      };
+    }
+    return {
+      object_type: "text",
+      text: truncate(`${heading}\n\n${item.title} (${item.description})`, MESSAGE_MAX_LENGTH),
+      link: itemLink,
+      button_title: "축제 정보 보기",
+    };
+  }
+
+  const shown = items.slice(0, LIST_TEMPLATE_MAX_ITEMS);
+  const extra = moreCount + Math.max(0, items.length - LIST_TEMPLATE_MAX_ITEMS);
+  const headerTitle = truncate(extra > 0 ? `${heading} (외 ${extra}건)` : heading, 190);
+
+  return {
+    object_type: "list",
+    header_title: headerTitle,
+    header_link: siteLink,
+    contents: shown.map((item) => ({
+      title: item.title,
+      description: item.description,
+      ...(item.imageUrl ? { image_url: item.imageUrl } : {}),
+      link: toLink(item.url),
+    })),
+    buttons: [{ title: "축제 허브에서 보기", link: siteLink }],
+  };
 }
 
 /**
@@ -92,17 +177,7 @@ export interface KakaoMessage {
  * 예외를 던지지 않고 결과를 값으로 돌려준다).
  */
 export async function sendKakaoMemo(accessToken: string, message: KakaoMessage): Promise<boolean> {
-  const text =
-    message.text.length > MESSAGE_MAX_LENGTH
-      ? `${message.text.slice(0, MESSAGE_MAX_LENGTH - 1)}…`
-      : message.text;
-
-  const templateObject = {
-    object_type: "text",
-    text,
-    link: { web_url: message.webUrl, mobile_web_url: message.webUrl },
-    button_title: message.buttonTitle ?? "자세히 보기",
-  };
+  const templateObject = buildTemplateObject(message);
 
   const res = await fetch(KAKAO_SEND_URL, {
     method: "POST",
