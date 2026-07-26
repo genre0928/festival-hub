@@ -3,6 +3,13 @@
 // 이전에 없던 external_id가 새로 들어오면 festival_new_detections에 기록해
 // "신규 축제 카카오톡 알림"을 위한 발송 대상 트래킹까지 처리한다 (발송 자체는 별도 구현 예정).
 //
+// description(행사 내용)은 searchFestival2 목록 API엔 없어서, detailCommon2(상세정보 조회)를
+// contentId로 별도 호출해 overview를 채운다. 매 실행마다 전체를 다시 부르면 느리고 API 호출도
+// 많아지므로, description이 이미 있는 축제는 재조회하지 않고, 매 실행당 최대
+// DEFAULT_MAX_OVERVIEW_FETCHES개까지만(신규 축제 우선) 채운다 - 기존 백로그는 매일 배치로
+// 조금씩 채워진다. 요청 본문에 { "maxOverviewFetches": N }을 주면 이 한도를 늘려 한 번에
+// 더 많이(수동 백필) 채울 수 있다.
+//
 // 필요한 시크릿:
 //   TOUR_API_KEY           data.go.kr에서 발급받은 서비스키(인코딩된 값 그대로)
 //   SUPABASE_URL            Edge Function 런타임이 자동 주입 (수동 설정 불필요)
@@ -11,12 +18,17 @@
 // 배포: supabase functions deploy sync-festivals
 // 시크릿 등록: supabase secrets set TOUR_API_KEY="<발급받은 인코딩 키>"
 // 수동 실행: supabase functions invoke sync-festivals
+// 수동 백필(예: 300개까지): supabase functions invoke sync-festivals --body '{"maxOverviewFetches":300}'
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const TOUR_API_BASE = "https://apis.data.go.kr/B551011/KorService2/searchFestival2";
+const TOUR_API_DETAIL_BASE = "https://apis.data.go.kr/B551011/KorService2/detailCommon2";
 const MAX_PAGES = 10;
 const ROWS_PER_PAGE = 100;
+/** 실행당 상세설명(overview) 조회를 이 개수까지만 한다(전체 백필은 매일 배치로 나눠서 진행). */
+const DEFAULT_MAX_OVERVIEW_FETCHES = 80;
+const OVERVIEW_FETCH_CONCURRENCY = 8;
 
 /**
  * 법정동 시도코드(lDongRegnCd, 행정안전부 표준) -> 이 프로젝트의 내부 지역 코드.
@@ -187,6 +199,65 @@ async function fetchFestivalPage(serviceKey: string, pageNo: number, eventStartD
   return { items, totalCount };
 }
 
+/** TourAPI overview 필드에 섞여오는 <br> 등 HTML 태그/엔티티를 정리한다. */
+function cleanOverviewText(text: string): string {
+  return text
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]*>/g, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, " ")
+    .trim();
+}
+
+/**
+ * detailCommon2(상세정보 조회)로 축제 개요(overview) 텍스트를 가져온다. 실패해도 빈 문자열로
+ * 넘어간다. 이 서비스키/버전에서는 defaultYN/overviewYN 같은 선택 파라미터를 전혀 안 받고
+ * (INVALID_REQUEST_PARAMETER_ERROR) 필수 파라미터만 주면 전체 상세를 기본으로 내려준다 -
+ * 실제 응답으로 확인함.
+ */
+async function fetchOverview(serviceKey: string, contentId: string): Promise<string> {
+  const url =
+    `${TOUR_API_DETAIL_BASE}?serviceKey=${serviceKey}` +
+    `&MobileOS=ETC&MobileApp=festivalhub&_type=json&contentId=${contentId}`;
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return "";
+    const json = await res.json();
+    if (json?.response?.header?.resultCode !== "0000") return "";
+    const raw = json?.response?.body?.items?.item;
+    const item = Array.isArray(raw) ? raw[0] : raw;
+    const overview: string | undefined = item?.overview;
+    return overview ? cleanOverviewText(overview) : "";
+  } catch {
+    return "";
+  }
+}
+
+/** targets를 OVERVIEW_FETCH_CONCURRENCY만큼 동시에 처리하며 overview를 채워준다. */
+async function fillOverviews(
+  serviceKey: string,
+  targets: { contentId: string; rowIndex: number }[],
+  rows: Record<string, unknown>[],
+): Promise<number> {
+  let filled = 0;
+  for (let i = 0; i < targets.length; i += OVERVIEW_FETCH_CONCURRENCY) {
+    const chunk = targets.slice(i, i + OVERVIEW_FETCH_CONCURRENCY);
+    const overviews = await Promise.all(chunk.map((t) => fetchOverview(serviceKey, t.contentId)));
+    chunk.forEach((t, idx) => {
+      if (overviews[idx]) {
+        rows[t.rowIndex].description = overviews[idx];
+        filled += 1;
+      }
+    });
+  }
+  return filled;
+}
+
 Deno.serve(async (req) => {
   try {
     const tourApiKey = Deno.env.get("TOUR_API_KEY");
@@ -202,6 +273,10 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
+    const body = await req.json().catch(() => null);
+    const maxOverviewFetches =
+      Number(body?.maxOverviewFetches) > 0 ? Number(body.maxOverviewFetches) : DEFAULT_MAX_OVERVIEW_FETCHES;
+
     const today = new Date();
     const windowStart = new Date(today);
     windowStart.setDate(windowStart.getDate() - 90);
@@ -211,14 +286,16 @@ Deno.serve(async (req) => {
     const eventStartDate = toYyyymmdd(windowStart);
     const eventEndDate = toYyyymmdd(windowEnd);
 
-    // upsert 전에 이미 존재하는 TourAPI 축제의 external_id를 조회해둔다.
-    // 여기 없는데 이번에 들어오는 항목 = 신규 축제 -> festival_new_detections에 기록할 대상.
+    // upsert 전에 이미 존재하는 TourAPI 축제의 external_id/description을 조회해둔다.
+    // - external_id: 여기 없는데 이번에 들어오는 항목 = 신규 축제 -> festival_new_detections에 기록
+    // - description: 이미 채워져 있으면 재조회하지 않고 그대로 재사용(매번 상세API를 다시 부르지 않게)
     const { data: existingRows, error: existingError } = await supabase
       .from("festivals")
-      .select("external_id")
+      .select("external_id, description")
       .eq("source", "tourapi");
     if (existingError) throw new Error(`기존 축제 조회 실패: ${existingError.message}`);
     const existingExternalIds = new Set((existingRows ?? []).map((r) => r.external_id));
+    const existingDescriptions = new Map((existingRows ?? []).map((r) => [r.external_id, r.description as string]));
 
     let pageNo = 1;
     let totalCount = Infinity;
@@ -226,6 +303,8 @@ Deno.serve(async (req) => {
     let skippedNoRegion = 0;
     const rows: Record<string, unknown>[] = [];
     const newExternalIds: string[] = [];
+    /** description이 비어있어 상세API로 채워야 하는 항목(신규를 우선 처리하도록 앞에 넣음) */
+    const needsOverview: { contentId: string; rowIndex: number; isNew: boolean }[] = [];
 
     while (pageNo <= MAX_PAGES && (pageNo - 1) * ROWS_PER_PAGE < totalCount) {
       const page = await fetchFestivalPage(tourApiKey, pageNo, eventStartDate, eventEndDate);
@@ -242,13 +321,14 @@ Deno.serve(async (req) => {
         const startDate = formatDate(item.eventstartdate, eventStartDate.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"));
         const endDate = formatDate(item.eventenddate, startDate);
 
-        if (!existingExternalIds.has(item.contentid)) {
-          newExternalIds.push(item.contentid);
-        }
+        const isNew = !existingExternalIds.has(item.contentid);
+        if (isNew) newExternalIds.push(item.contentid);
+
+        const description = existingDescriptions.get(item.contentid) || "";
 
         rows.push({
           name: item.title,
-          description: "",
+          description,
           region_code: regionCode,
           sigungu: extractSigungu(item.addr1),
           address: [item.addr1, item.addr2].filter(Boolean).join(" "),
@@ -262,10 +342,21 @@ Deno.serve(async (req) => {
           external_id: item.contentid,
           source: "tourapi",
         });
+
+        if (!description) {
+          needsOverview.push({ contentId: item.contentid, rowIndex: rows.length - 1, isNew });
+        }
       }
 
       pageNo += 1;
     }
+
+    // 신규 축제를 먼저 채우고, 남는 한도 안에서 기존 축제의 빈 description도 채운다.
+    const prioritizedOverviewTargets = [
+      ...needsOverview.filter((t) => t.isNew),
+      ...needsOverview.filter((t) => !t.isNew),
+    ].slice(0, maxOverviewFetches);
+    const overviewsFilled = await fillOverviews(tourApiKey, prioritizedOverviewTargets, rows);
 
     let upserted = 0;
     const batchSize = 200;
@@ -299,7 +390,7 @@ Deno.serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ totalCount, fetched, upserted, skippedNoRegion, newlyDetected }),
+      JSON.stringify({ totalCount, fetched, upserted, skippedNoRegion, newlyDetected, overviewsFilled, overviewBacklog: needsOverview.length - overviewsFilled }),
       { status: 200, headers: { "Content-Type": "application/json" } },
     );
   } catch (err) {
