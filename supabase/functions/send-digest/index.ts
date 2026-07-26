@@ -17,7 +17,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { sendToSubscribers, type ActiveSubscriber, type KakaoMessage } from "../_shared/kakao.ts";
 
 const DEFAULT_SITE_URL = "https://festival-hub-iota.vercel.app";
-const MAX_LISTED_FESTIVALS = 5;
+const MAX_LISTED_FESTIVALS = 3; // 카카오 리스트 템플릿 항목 최대 개수
 const WEEKLY_WINDOW_DAYS = 7;
 
 type Frequency = "weekly" | "monthly";
@@ -28,6 +28,7 @@ interface DigestFestivalRow {
   region_code: string;
   start_date: string;
   end_date: string;
+  image_url: string | null;
 }
 
 function toIsoDate(date: Date): string {
@@ -56,16 +57,18 @@ function buildDigestMessage(
   if (festivals.length === 0) return null;
 
   const heading = frequency === "weekly" ? "이번 주 축제 소식이에요!" : "이달의 축제 소식이에요!";
-  const lines = festivals
-    .slice(0, MAX_LISTED_FESTIVALS)
-    .map((f) => `- ${f.name} (${regionNames.get(f.region_code) ?? f.region_code})`);
-  const remaining = festivals.length - MAX_LISTED_FESTIVALS;
-  if (remaining > 0) lines.push(`외 ${remaining}건`);
+  const items = festivals.slice(0, MAX_LISTED_FESTIVALS).map((f) => ({
+    title: f.name,
+    description: regionNames.get(f.region_code) ?? f.region_code,
+    url: `${siteUrl}/?festival=${f.id}`,
+    imageUrl: f.image_url,
+  }));
 
   return {
-    text: `${heading}\n\n${lines.join("\n")}`,
-    webUrl: siteUrl,
-    buttonTitle: "축제 허브에서 보기",
+    heading,
+    items,
+    moreCount: Math.max(0, festivals.length - MAX_LISTED_FESTIVALS),
+    siteUrl,
   };
 }
 
@@ -104,7 +107,7 @@ Deno.serve(async (req) => {
     // 대상 기간과 겹치는 축제: start_date <= 윈도우 끝 AND end_date >= 윈도우 시작
     const { data: festivalRows, error: festivalError } = await supabase
       .from("festivals")
-      .select("id, name, region_code, start_date, end_date")
+      .select("id, name, region_code, start_date, end_date, image_url")
       .lte("start_date", to)
       .gte("end_date", from)
       .order("start_date", { ascending: true });

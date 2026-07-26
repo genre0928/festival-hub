@@ -17,13 +17,14 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { sendToSubscribers, type ActiveSubscriber, type KakaoMessage } from "../_shared/kakao.ts";
 
 const DEFAULT_SITE_URL = "https://festival-hub-iota.vercel.app";
-const MAX_LISTED_FESTIVALS = 5;
+const MAX_LISTED_FESTIVALS = 3; // 카카오 리스트 템플릿 항목 최대 개수
 
 interface PendingFestivalRow {
   detection_id: string;
   id: string;
   name: string;
   region_code: string;
+  image_url: string | null;
 }
 
 function buildMessageForSubscriber(
@@ -33,16 +34,18 @@ function buildMessageForSubscriber(
 ): KakaoMessage | null {
   if (festivals.length === 0) return null;
 
-  const lines = festivals
-    .slice(0, MAX_LISTED_FESTIVALS)
-    .map((f) => `- ${f.name} (${regionNames.get(f.region_code) ?? f.region_code})`);
-  const remaining = festivals.length - MAX_LISTED_FESTIVALS;
-  if (remaining > 0) lines.push(`외 ${remaining}건`);
+  const items = festivals.slice(0, MAX_LISTED_FESTIVALS).map((f) => ({
+    title: f.name,
+    description: regionNames.get(f.region_code) ?? f.region_code,
+    url: `${siteUrl}/?festival=${f.id}`,
+    imageUrl: f.image_url,
+  }));
 
   return {
-    text: `새로운 축제 소식이 도착했어요!\n\n${lines.join("\n")}`,
-    webUrl: siteUrl,
-    buttonTitle: "축제 허브에서 보기",
+    heading: "새로운 축제 소식이 도착했어요!",
+    items,
+    moreCount: Math.max(0, festivals.length - MAX_LISTED_FESTIVALS),
+    siteUrl,
   };
 }
 
@@ -65,7 +68,7 @@ Deno.serve(async (_req) => {
 
     const { data: pending, error: pendingError } = await supabase
       .from("pending_new_festival_notifications")
-      .select("detection_id, id, name, region_code");
+      .select("detection_id, id, name, region_code, image_url");
     if (pendingError) throw new Error(`신규 축제 조회 실패: ${pendingError.message}`);
 
     const pendingFestivals = (pending ?? []) as PendingFestivalRow[];
