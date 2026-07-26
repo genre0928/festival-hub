@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, MapPinned, Search, Star, X } from "lucide-react";
 import { REGIONS, getRegionByCode } from "~/components/map/region-data";
 import { Input } from "~/components/ui/input";
@@ -16,9 +16,13 @@ interface SearchBarProps {
   regionCodes: string[];
   onToggleRegion: (code: string) => void;
   onClearRegions: () => void;
-  /** 로그인 + 관심지역 설정이 있을 때만 넘겨주면 "관심지역으로 보기" 버튼이 뜬다 */
+  /** 로그인 + 관심지역 설정이 있을 때만 넘겨주면 "관심지역으로 보기" 버튼이 뜨고, 목록 최상단에 관심지역이 정렬된다 */
   myInterestRegions?: string[];
   onApplyInterestRegions?: () => void;
+  /** 관심지역이 없을 때(로그인 전/후 모두) 안내 CTA를 보여줄지 여부 */
+  showInterestRegionCta?: boolean;
+  isLoggedIn?: boolean;
+  onInterestRegionCtaClick?: () => void;
   sigungu: string | null;
   onSigunguChange: (value: string | null) => void;
   sigunguOptions: string[];
@@ -36,6 +40,9 @@ export function SearchBar({
   onClearRegions,
   myInterestRegions,
   onApplyInterestRegions,
+  showInterestRegionCta,
+  isLoggedIn,
+  onInterestRegionCtaClick,
   sigungu,
   onSigunguChange,
   sigunguOptions,
@@ -80,6 +87,18 @@ export function SearchBar({
         ? (getRegionByCode(regionCodes[0])?.name ?? "지역 1개")
         : `지역 ${regionCodes.length}개`;
 
+  // 관심지역이 있으면 목록 최상단에 오도록 정렬한다(나머지는 원래 순서 유지).
+  const sortedRegions = useMemo(() => {
+    if (!myInterestRegions || myInterestRegions.length === 0) return REGIONS;
+    const interestSet = new Set(myInterestRegions);
+    return [...REGIONS].sort((a, b) => {
+      const aInterest = interestSet.has(a.code) ? 0 : 1;
+      const bInterest = interestSet.has(b.code) ? 0 : 1;
+      return aInterest - bInterest;
+    });
+  }, [myInterestRegions]);
+  const hasInterestRegions = !!myInterestRegions && myInterestRegions.length > 0;
+
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
       <div className="relative flex-1">
@@ -103,7 +122,7 @@ export function SearchBar({
           </button>
         </PopoverTrigger>
         <PopoverContent align="start" className="max-h-80 w-56 overflow-y-auto p-1.5">
-          {myInterestRegions && myInterestRegions.length > 0 && onApplyInterestRegions && (
+          {hasInterestRegions && onApplyInterestRegions ? (
             <>
               <button
                 type="button"
@@ -117,6 +136,24 @@ export function SearchBar({
               </button>
               <div className="my-1 border-t border-season-border" />
             </>
+          ) : (
+            showInterestRegionCta &&
+            onInterestRegionCtaClick && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onInterestRegionCtaClick();
+                    setRegionMenuOpen(false);
+                  }}
+                  className="optical-center flex w-full items-center gap-2 rounded-xl px-2 py-2 text-left text-sm font-medium text-season-primary hover:bg-season-secondary"
+                >
+                  <Star className="h-4 w-4 shrink-0" />
+                  {isLoggedIn ? "관심지역 추가하기" : "로그인하고 관심지역 추가하기"}
+                </button>
+                <div className="my-1 border-t border-season-border" />
+              </>
+            )
           )}
           <button
             type="button"
@@ -136,24 +173,31 @@ export function SearchBar({
             </span>
             전체 지역
           </button>
-          {REGIONS.map((region) => {
+          {sortedRegions.map((region, index) => {
             const active = regionCodes.includes(region.code);
+            const isInterest = hasInterestRegions && myInterestRegions!.includes(region.code);
+            const isFirstNonInterest =
+              hasInterestRegions && !isInterest && index > 0 && sortedRegions[index - 1] &&
+              myInterestRegions!.includes(sortedRegions[index - 1].code);
             return (
-              <button
-                key={region.code}
-                type="button"
-                aria-pressed={active}
-                onClick={() => onToggleRegion(region.code)}
-                className={cn(
-                  "optical-center flex w-full items-center gap-2 rounded-xl px-2 py-2 text-left text-sm hover:bg-season-secondary",
-                  active ? "font-medium text-season-primary" : "text-season-surface-foreground",
-                )}
-              >
-                <span className="flex h-4 w-4 shrink-0 items-center justify-center">
-                  {active && <Check className="h-4 w-4" />}
-                </span>
-                {region.name}
-              </button>
+              <div key={region.code}>
+                {isFirstNonInterest && <div className="my-1 border-t border-season-border" />}
+                <button
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => onToggleRegion(region.code)}
+                  className={cn(
+                    "optical-center flex w-full items-center gap-2 rounded-xl px-2 py-2 text-left text-sm hover:bg-season-secondary",
+                    active ? "font-medium text-season-primary" : "text-season-surface-foreground",
+                  )}
+                >
+                  <span className="flex h-4 w-4 shrink-0 items-center justify-center">
+                    {active && <Check className="h-4 w-4" />}
+                  </span>
+                  {region.name}
+                  {isInterest && <Star className="ml-auto h-3 w-3 shrink-0 text-season-primary" />}
+                </button>
+              </div>
             );
           })}
         </PopoverContent>

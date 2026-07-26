@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Check,
+  EyeOff,
   ExternalLink,
   Hotel,
   LayoutGrid,
@@ -9,8 +10,10 @@ import {
   Loader2,
   MapPin,
   MessageCircle,
+  Navigation,
   Phone,
   Share2,
+  Star,
   Utensils,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "~/components/ui/dialog";
@@ -22,6 +25,7 @@ import type { Festival } from "~/lib/data/festivals.mock";
 import { getFestivalStatus, STATUS_LABELS, type FestivalStatus } from "~/lib/festivals";
 import { getRegionByCode } from "~/components/map/region-data";
 import { shareFestivalToKakao } from "~/lib/kakao-share";
+import type { FestivalPreference } from "~/lib/supabase/types";
 import {
   flattenNearbyInfo,
   getNearbyInfo,
@@ -55,6 +59,20 @@ function naverSearchUrl(query: string): string {
   return `https://search.naver.com/search.naver?query=${encodeURIComponent(query)}`;
 }
 
+/** 카카오맵 길찾기 - 행사 위치를 출발지, 주변 장소를 도착지로 하는 경로 링크. */
+function kakaoDirectionsUrl(params: {
+  fromLat: number;
+  fromLng: number;
+  fromName: string;
+  toLat: number;
+  toLng: number;
+  toName: string;
+}): string {
+  const from = `${encodeURIComponent(params.fromName)},${params.fromLat},${params.fromLng}`;
+  const to = `${encodeURIComponent(params.toName)},${params.toLat},${params.toLng}`;
+  return `https://map.kakao.com/link/from/${from}/to/${to}`;
+}
+
 type CategoryFilter = "all" | NearbyCategory;
 
 const FILTER_ITEMS: TabItem<CategoryFilter>[] = [
@@ -67,9 +85,16 @@ const FILTER_ITEMS: TabItem<CategoryFilter>[] = [
 interface FestivalDetailModalProps {
   festival: Festival | null;
   onClose: () => void;
+  preference?: FestivalPreference | null;
+  onTogglePreference?: (festival: Festival, next: FestivalPreference | null) => void;
 }
 
-export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalProps) {
+export function FestivalDetailModal({
+  festival,
+  onClose,
+  preference,
+  onTogglePreference,
+}: FestivalDetailModalProps) {
   const [nearby, setNearby] = useState<NearbyInfo | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -174,7 +199,13 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
 
   const status = festival ? getFestivalStatus(festival) : null;
   const region = festival ? getRegionByCode(festival.regionCode) : null;
-  const hasCoords = festival?.latitude != null && festival?.longitude != null;
+  // festival.latitude/longitude를 .map() 콜백 안에서 다시 접근하면 TS가 narrowing을 못
+  // 지켜줘서(클로저 경계를 넘으면 좁혀진 타입이 유지 안 됨) 여기서 로컬 상수로 뽑아둔다.
+  const festivalCoords =
+    festival && festival.latitude != null && festival.longitude != null
+      ? { lat: festival.latitude, lng: festival.longitude }
+      : null;
+  const hasCoords = festivalCoords != null;
 
   return (
     <Dialog open={!!festival} onOpenChange={(open) => !open && onClose()}>
@@ -205,6 +236,40 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
                   <Badge variant={STATUS_BADGE_VARIANT[status]}>{STATUS_LABELS[status]}</Badge>
                 )}
                 <Badge variant="soft">{festival.category}</Badge>
+                {onTogglePreference && (
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      aria-label={preference === "favorite" ? "즐겨찾기 해제" : "즐겨찾기 추가"}
+                      aria-pressed={preference === "favorite"}
+                      onClick={() => onTogglePreference(festival, preference === "favorite" ? null : "favorite")}
+                      className={cn(
+                        "flex h-7 w-7 items-center justify-center rounded-full transition-colors",
+                        preference === "favorite"
+                          ? "text-amber-500"
+                          : "text-season-muted hover:text-amber-500",
+                      )}
+                    >
+                      <Star className="h-4 w-4" fill={preference === "favorite" ? "currentColor" : "none"} />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={preference === "not_interested" ? "관심없음 해제" : "관심없음으로 표시"}
+                      aria-pressed={preference === "not_interested"}
+                      onClick={() =>
+                        onTogglePreference(festival, preference === "not_interested" ? null : "not_interested")
+                      }
+                      className={cn(
+                        "flex h-7 w-7 items-center justify-center rounded-full transition-colors",
+                        preference === "not_interested"
+                          ? "text-season-primary"
+                          : "text-season-muted hover:text-season-primary",
+                      )}
+                    >
+                      <EyeOff className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="flex shrink-0 items-center gap-2">
@@ -298,7 +363,7 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
                 </div>
               ) : error ? (
                 <p className="py-4 text-center text-sm text-season-muted">{error}</p>
-              ) : nearby && festival.latitude != null && festival.longitude != null ? (
+              ) : nearby && festivalCoords ? (
                 allPlaces.length === 0 ? (
                   <p className="py-4 text-center text-sm text-season-muted">
                     주변 20km 이내에서 관광지·음식점·숙소 정보를 찾지 못했어요.
@@ -321,8 +386,8 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
 
                     <div className="mt-3 grid gap-4 sm:grid-cols-2">
                       <NearbyMap
-                        festivalLat={festival.latitude}
-                        festivalLng={festival.longitude}
+                        festivalLat={festivalCoords.lat}
+                        festivalLng={festivalCoords.lng}
                         places={filteredPlaces}
                         selectedPlaceId={selectedPlaceId}
                         onSelectPlace={handleSelectPlace}
@@ -344,6 +409,18 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
                               itemRef={(el) => {
                                 listItemRefs.current[place.contentId] = el;
                               }}
+                              directionsUrl={
+                                place.latitude != null && place.longitude != null
+                                  ? kakaoDirectionsUrl({
+                                      fromLat: festivalCoords.lat,
+                                      fromLng: festivalCoords.lng,
+                                      fromName: festival.name,
+                                      toLat: place.latitude,
+                                      toLng: place.longitude,
+                                      toName: place.title,
+                                    })
+                                  : null
+                              }
                             />
                           ))
                         )}
@@ -365,11 +442,13 @@ function NearbyListItem({
   selected,
   onSelect,
   itemRef,
+  directionsUrl,
 }: {
   place: NearbyPlaceWithCategory;
   selected: boolean;
   onSelect: () => void;
   itemRef: (el: HTMLDivElement | null) => void;
+  directionsUrl: string | null;
 }) {
   const Icon = CATEGORY_ICONS[place.category];
 
@@ -413,18 +492,32 @@ function NearbyListItem({
           )}
         </div>
       </div>
-      {place.link && (
-        <a
-          href={place.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
-          className="flex shrink-0 items-center gap-1 rounded-full border border-season-border px-2 py-1 text-[11px] font-medium text-season-primary hover:bg-season-secondary"
-        >
-          <ExternalLink className="h-3 w-3" />
-          네이버
-        </a>
-      )}
+      <div className="flex shrink-0 flex-col gap-1">
+        {place.link && (
+          <a
+            href={place.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center gap-1 rounded-full border border-season-border px-2 py-1 text-[11px] font-medium text-season-primary hover:bg-season-secondary"
+          >
+            <ExternalLink className="h-3 w-3" />
+            네이버
+          </a>
+        )}
+        {directionsUrl && (
+          <a
+            href={directionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center gap-1 rounded-full border border-season-border px-2 py-1 text-[11px] font-medium text-season-surface-foreground hover:bg-season-secondary"
+          >
+            <Navigation className="h-3 w-3" />
+            길찾기
+          </a>
+        )}
+      </div>
     </div>
   );
 }
