@@ -1,9 +1,31 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { DayPicker } from "react-day-picker";
+import { DayPicker, type DayContentProps } from "react-day-picker";
 import { ko } from "date-fns/locale";
 import { cn } from "~/lib/utils";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+
+function isSameLocalDay(a: Date, b: Date): boolean {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
+/**
+ * 오늘 날짜 칸에는 숫자 위에 "오늘"이라고 작게 써서 한눈에 알아보게 한다.
+ * 2개월을 나란히 보여줄 때, 다음 달 첫 주 앞을 채우는 "지난달 꼬리"(outside) 칸이
+ * 오늘 날짜와 겹치는 경우가 있어(예: 8월 1일이 토요일이면 7/26~31이 8월 칸 앞에 딸려옴),
+ * 그 칸까지 "오늘"로 표시되면 두 번 나온 것처럼 보인다. outside 칸은 제외하고 실제
+ * 그 달에 속한 칸에서만 표시한다. 테두리는 배경색과 상관없이 보이도록 ring-current를 쓴다.
+ */
+function CalendarDayContent({ date, activeModifiers }: DayContentProps) {
+  const isToday = !activeModifiers.outside && isSameLocalDay(date, new Date());
+  if (!isToday) return <>{date.getDate()}</>;
+  return (
+    <span className="flex h-full w-full flex-col items-center justify-center rounded-full leading-none ring-1 ring-inset ring-current">
+      <span className="text-[8px] font-bold leading-none">오늘</span>
+      <span className="text-[11px] font-semibold leading-none">{date.getDate()}</span>
+    </span>
+  );
+}
 
 function Calendar({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) {
   return (
@@ -29,7 +51,9 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         day: "h-9 w-9 rounded-full p-0 font-normal text-season-surface-foreground hover:bg-season-secondary transition-colors aria-selected:opacity-100",
         day_selected:
           "bg-season-primary text-season-primary-foreground hover:bg-season-primary hover:text-season-primary-foreground focus:bg-season-primary focus:text-season-primary-foreground",
-        day_today: "border border-season-primary text-season-primary font-semibold",
+        // "오늘" 표시는 CalendarDayContent에서 직접 계산해 그려서(위 주석 참고), 여기서는
+        // react-day-picker의 today 모디파이어에 따른 기본 스타일을 주지 않는다.
+        day_today: "",
         day_outside: "text-season-muted opacity-40",
         day_disabled: "text-season-muted opacity-30",
         day_range_middle: "aria-selected:bg-season-secondary aria-selected:text-season-surface-foreground",
@@ -39,6 +63,7 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
       components={{
         IconLeft: () => <ChevronLeft className="h-4 w-4" />,
         IconRight: () => <ChevronRight className="h-4 w-4" />,
+        DayContent: CalendarDayContent,
       }}
       {...props}
     />
