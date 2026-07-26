@@ -59,9 +59,11 @@ export async function shareFestivalToKakao(params: { title: string; region: stri
   await loadKakaoSdk();
   if (!window.Kakao) throw new Error("카카오 SDK를 불러오지 못했어요.");
 
+  const text = `행사명 : ${params.title}\n행사지역 : ${params.region}\n네이버 검색 : ${params.url}`;
+
   window.Kakao.Share.sendDefault({
     objectType: "text",
-    text: `${params.title}\n${params.region}`,
+    text,
     link: { mobileWebUrl: params.url, webUrl: params.url },
   });
 }
