@@ -53,10 +53,18 @@ function buildDigestMessage(
   festivals: DigestFestivalRow[],
   regionNames: Map<string, string>,
   siteUrl: string,
+  alsoWeekly: boolean,
 ): KakaoMessage | null {
   if (festivals.length === 0) return null;
 
-  const heading = frequency === "weekly" ? "이번 주 축제 소식이에요!" : "이달의 축제 소식이에요!";
+  // 매달 첫날에 보내는 월간 다이제스트는 그 주의 매주 다이제스트와 항상 같은 주에 겹친다.
+  // 필터링 로직은 그대로 두고, 매주도 함께 받는 구독자에게는 문구로만 겹침을 알려준다.
+  const heading =
+    frequency === "weekly"
+      ? "이번 주 축제 소식이에요!"
+      : alsoWeekly
+        ? "이달의 축제 소식이에요! (이번 주 소식은 주간 알림으로 먼저 받으셨을 거예요)"
+        : "이달의 축제 소식이에요!";
   const items = festivals.slice(0, MAX_LISTED_FESTIVALS).map((f) => ({
     title: f.name,
     description: regionNames.get(f.region_code) ?? f.region_code,
@@ -121,12 +129,15 @@ Deno.serve(async (req) => {
 
     const { data: subscriberRows, error: subscriberError } = await supabase
       .from("subscribers")
-      .select("user_id, regions, kakao_connected")
+      .select("user_id, regions, kakao_connected, frequencies")
       .eq("is_active", true)
       .eq("kakao_connected", true)
-      .eq("frequency", frequency);
+      .contains("frequencies", [frequency]);
     if (subscriberError) throw new Error(`구독자 조회 실패: ${subscriberError.message}`);
 
+    const subscriberFrequencies = new Map<string, string[]>(
+      (subscriberRows ?? []).map((row) => [row.user_id as string, (row.frequencies ?? []) as string[]]),
+    );
     const subscribers = (subscriberRows ?? []) as ActiveSubscriber[];
 
     const { attempted, sent } = await sendToSubscribers(
@@ -139,7 +150,10 @@ Deno.serve(async (req) => {
           subscriber.regions.length === 0
             ? festivals
             : festivals.filter((f) => subscriber.regions.includes(f.region_code));
-        return buildDigestMessage(frequency, relevant, regionNames, siteUrl);
+        const alsoWeekly =
+          frequency === "monthly" &&
+          (subscriberFrequencies.get(subscriber.user_id) ?? []).includes("weekly");
+        return buildDigestMessage(frequency, relevant, regionNames, siteUrl, alsoWeekly);
       },
     );
 

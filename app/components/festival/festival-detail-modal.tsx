@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "~/components/ui/dialog";
 import { Badge } from "~/components/ui/badge";
+import { Calendar } from "~/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
 import { type TabItem } from "~/components/ui/tabs";
 import { NearbyMap } from "~/components/festival/nearby-map";
@@ -33,7 +34,7 @@ import {
   type NearbyInfo,
   type NearbyPlaceWithCategory,
 } from "~/lib/nearby";
-import { formatDateRange, cn } from "~/lib/utils";
+import { formatDateRange, parseIsoDate, cn } from "~/lib/utils";
 
 const STATUS_BADGE_VARIANT: Record<FestivalStatus, "solid" | "outline" | "soft"> = {
   ongoing: "solid",
@@ -374,6 +375,21 @@ export function FestivalDetailModal({
                 {festival.address}
               </p>
               <p className="text-season-muted">{formatDateRange(festival.startDate, festival.endDate)}</p>
+            </div>
+
+            {/* 진행 기간을 달력으로 - 오늘이 속한 달과 다음 달까지만 보여준다(그 이후는 표시 안 함).
+                모바일은 2개월 달력이 들어갈 폭이 부족해 기존처럼 텍스트만 보여주고, 데스크탑(sm+)에서만 표시한다. */}
+            <div className="mt-3 hidden justify-center overflow-x-auto rounded-2xl border border-season-border bg-season-surface p-2 pointer-events-none sm:flex">
+              <Calendar
+                mode="range"
+                numberOfMonths={2}
+                defaultMonth={new Date()}
+                disableNavigation
+                selected={{
+                  from: parseIsoDate(festival.startDate),
+                  to: parseIsoDate(festival.endDate),
+                }}
+              />
             </div>
 
             {festival.tags.length > 0 && (

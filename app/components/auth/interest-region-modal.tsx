@@ -19,7 +19,7 @@ export function InterestRegionModal({ open, onClose }: InterestRegionModalProps)
   const { user } = useAuth();
   const { showToast } = useToast();
   const [regions, setRegions] = useState<string[]>([]);
-  const [frequency, setFrequency] = useState<SubscriberFrequency>("monthly");
+  const [frequencies, setFrequencies] = useState<SubscriberFrequency[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -30,13 +30,17 @@ export function InterestRegionModal({ open, onClose }: InterestRegionModalProps)
     setSaveError(null);
     getMySubscriberSettings().then((settings) => {
       setRegions(settings.regions);
-      setFrequency(settings.frequency);
+      setFrequencies(settings.frequencies);
       setLoading(false);
     });
   }, [open]);
 
   function toggleRegion(code: string) {
     setRegions((prev) => (prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]));
+  }
+
+  function toggleFrequency(value: SubscriberFrequency) {
+    setFrequencies((prev) => (prev.includes(value) ? prev.filter((f) => f !== value) : [...prev, value]));
   }
 
   const allRegionsSelected = regions.length === REGIONS.length;
@@ -50,7 +54,9 @@ export function InterestRegionModal({ open, onClose }: InterestRegionModalProps)
     setSaving(true);
     setSaveError(null);
     try {
-      await saveMySubscriberSettings(user.id, { regions, frequency, isActive: true });
+      // 전체 지역을 하나씩 다 고른 것도 "전체 지역"(빈 배열)과 같은 뜻이라 그렇게 저장한다.
+      const regionsToSave = allRegionsSelected ? [] : regions;
+      await saveMySubscriberSettings(user.id, { regions: regionsToSave, frequencies, isActive: true });
       showToast("저장되었습니다");
       onClose();
     } catch (err) {
@@ -116,28 +122,35 @@ export function InterestRegionModal({ open, onClose }: InterestRegionModalProps)
 
               <div className="mt-5">
                 <p className="text-sm font-semibold text-season-surface-foreground">알림 주기</p>
+                <p className="mt-0.5 text-xs text-season-muted">
+                  둘 다 선택하면 매주 + 매달 소식을 모두 받아요. 아무것도 선택하지 않으면 정기
+                  소식은 받지 않고, 신규 축제 알림만 받아요.
+                </p>
                 <div className="mt-2 flex gap-2">
                   {(
                     [
                       { value: "weekly", label: "매주" },
                       { value: "monthly", label: "매달 (이달의 축제)" },
                     ] as const
-                  ).map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      aria-pressed={frequency === opt.value}
-                      onClick={() => setFrequency(opt.value)}
-                      className={cn(
-                        "optical-center rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
-                        frequency === opt.value
-                          ? "border-season-primary bg-season-primary text-season-primary-foreground"
-                          : "border-season-border bg-season-surface text-season-surface-foreground hover:bg-season-secondary",
-                      )}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
+                  ).map((opt) => {
+                    const active = frequencies.includes(opt.value);
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        aria-pressed={active}
+                        onClick={() => toggleFrequency(opt.value)}
+                        className={cn(
+                          "optical-center rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                          active
+                            ? "border-season-primary bg-season-primary text-season-primary-foreground"
+                            : "border-season-border bg-season-surface text-season-surface-foreground hover:bg-season-secondary",
+                        )}
+                      >
+                        {opt.label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
