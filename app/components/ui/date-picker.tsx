@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CalendarDays, X } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
 import { Calendar } from "~/components/ui/calendar";
-import { cn } from "~/lib/utils";
+import { cn, parseIsoDate } from "~/lib/utils";
 
 interface DatePickerProps {
   /** YYYY-MM-DD */
@@ -10,11 +10,6 @@ interface DatePickerProps {
   onChange: (value: string | null) => void;
   placeholder?: string;
   className?: string;
-}
-
-function parseIsoDate(value: string) {
-  const [y, m, d] = value.split("-").map(Number);
-  return new Date(y, m - 1, d);
 }
 
 function toIsoDate(date: Date) {
