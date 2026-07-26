@@ -230,22 +230,25 @@ export function SearchBar({
 
       <DatePicker value={date} onChange={onDateChange} placeholder="날짜 선택" className="sm:w-44" />
 
-      {hasActiveFilters && (
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => {
-            resetQuery();
-            onClearRegions();
-            onSigunguChange(null);
-            onDateChange(null);
-          }}
-        >
-          <X className="h-3.5 w-3.5" />
-          초기화
-        </Button>
-      )}
+      {/* 조건부로 마운트하면 첫 필터 선택 시 이 버튼이 새로 생기면서 아래 콘텐츠가 밀리므로,
+          자리는 항상 차지하되 활성 필터가 없을 때는 안 보이게만 처리한다. */}
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        onClick={() => {
+          resetQuery();
+          onClearRegions();
+          onSigunguChange(null);
+          onDateChange(null);
+        }}
+        className={cn(!hasActiveFilters && "invisible")}
+        tabIndex={hasActiveFilters ? 0 : -1}
+        aria-hidden={!hasActiveFilters}
+      >
+        <X className="h-3.5 w-3.5" />
+        초기화
+      </Button>
     </div>
   );
 }
