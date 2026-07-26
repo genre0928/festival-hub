@@ -19,7 +19,7 @@ export function Tabs<T extends string>({ items, value, onChange, className }: Ta
     <div
       role="tablist"
       className={cn(
-        "inline-flex flex-wrap items-center gap-1 rounded-full border border-season-border bg-season-surface/80 p-1",
+        "inline-flex flex-wrap items-center justify-center gap-1 rounded-full border border-season-border bg-season-surface/80 p-1",
         className,
       )}
     >
@@ -32,7 +32,7 @@ export function Tabs<T extends string>({ items, value, onChange, className }: Ta
             aria-selected={active}
             onClick={() => onChange(item.value)}
             className={cn(
-              "optical-center inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors duration-200",
+              "optical-center inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors duration-200",
               active
                 ? "bg-season-primary text-season-primary-foreground shadow-sm"
                 : "text-season-muted hover:text-season-surface-foreground",

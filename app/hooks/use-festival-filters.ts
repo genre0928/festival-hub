@@ -15,7 +15,9 @@ export function useFestivalFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const filters: FestivalFilters = useMemo(() => {
-    const rawStatus = searchParams.get("status") ?? "all";
+    // status 파라미터가 아예 없으면(처음 들어왔을 때) "오늘 진행중"을 기본값으로 보여준다.
+    // "전체"를 명시적으로 고르면 setStatus가 status=all을 URL에 그대로 써서 구분한다.
+    const rawStatus = searchParams.get("status");
     const regionParam = searchParams.get("region");
     const regionCodes = regionParam ? regionParam.split(",").filter(Boolean) : [];
     return {
@@ -23,9 +25,10 @@ export function useFestivalFilters() {
       regionCodes,
       sigungu: searchParams.get("sigungu"),
       date: searchParams.get("date"),
-      status: STATUS_VALUES.includes(rawStatus as StatusParam)
-        ? (rawStatus as StatusParam)
-        : "all",
+      status:
+        rawStatus && STATUS_VALUES.includes(rawStatus as StatusParam)
+          ? (rawStatus as StatusParam)
+          : "ongoing",
     };
   }, [searchParams]);
 
@@ -47,17 +50,18 @@ export function useFestivalFilters() {
     [setSearchParams],
   );
 
-  /** 선택 지역 목록을 통째로 교체한다. 지역이 정확히 1개일 때만 sigungu를 같이 반영, 그 외엔 지운다. */
+  /**
+   * 선택 지역 목록을 통째로 교체한다. 지역이 정확히 1개일 때만 sigungu를 같이 반영, 그 외엔 지운다.
+   * 비어 있어도 region 파라미터를 지우지 않고 빈 문자열로 명시적으로 남긴다 - "아직 아무 선택도
+   * 안 한 상태"(파라미터 자체가 없음, 관심지역 기본값 적용 대상)와 "사용자가 명시적으로 전체 지역을
+   * 골랐음"을 구분하기 위해서다.
+   */
   const setRegions = useCallback(
     (codes: string[], sigungu?: string | null) => {
       setSearchParams(
         (prev) => {
           const next = new URLSearchParams(prev);
-          if (codes.length > 0) {
-            next.set("region", codes.join(","));
-          } else {
-            next.delete("region");
-          }
+          next.set("region", codes.join(","));
           if (codes.length === 1 && sigungu) {
             next.set("sigungu", sigungu);
           } else {
@@ -82,11 +86,7 @@ export function useFestivalFilters() {
             ? current.filter((c) => c !== code)
             : [...current, code];
 
-          if (updated.length > 0) {
-            next.set("region", updated.join(","));
-          } else {
-            next.delete("region");
-          }
+          next.set("region", updated.join(","));
           // 지역이 정확히 1개가 아니게 되면 시/군/구 선택은 더 이상 유효하지 않다.
           if (updated.length !== 1) next.delete("sigungu");
           return next;
@@ -107,6 +107,8 @@ export function useFestivalFilters() {
     clearRegions,
     setSigungu: (value: string | null) => updateParam("sigungu", value),
     setDate: (value: string | null) => updateParam("date", value),
-    setStatus: (value: StatusParam) => updateParam("status", value === "all" ? null : value),
+    // "전체"도 status=all로 명시적으로 남겨서, 파라미터가 아예 없는 "아직 선택 안 함"(기본값
+    // "진행중" 적용 대상)과 구분한다.
+    setStatus: (value: StatusParam) => updateParam("status", value),
   };
 }
