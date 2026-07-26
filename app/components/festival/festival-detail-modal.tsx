@@ -8,17 +8,20 @@ import {
   Link as LinkIcon,
   Loader2,
   MapPin,
+  MessageCircle,
   Phone,
   Share2,
   Utensils,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "~/components/ui/dialog";
 import { Badge } from "~/components/ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
 import { Tabs, type TabItem } from "~/components/ui/tabs";
 import { NearbyMap } from "~/components/festival/nearby-map";
 import type { Festival } from "~/lib/data/festivals.mock";
 import { getFestivalStatus, STATUS_LABELS, type FestivalStatus } from "~/lib/festivals";
 import { getRegionByCode } from "~/components/map/region-data";
+import { shareFestivalToKakao } from "~/lib/kakao-share";
 import {
   flattenNearbyInfo,
   getNearbyInfo,
@@ -48,6 +51,10 @@ const CATEGORY_LABELS: Record<NearbyCategory, string> = {
 
 const DEFAULT_RADIUS_METERS = 5000;
 
+function naverSearchUrl(query: string): string {
+  return `https://search.naver.com/search.naver?query=${encodeURIComponent(query)}`;
+}
+
 type CategoryFilter = "all" | NearbyCategory;
 
 const FILTER_ITEMS: TabItem<CategoryFilter>[] = [
@@ -69,12 +76,15 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
+  const [shareMenuOpen, setShareMenuOpen] = useState(false);
+  const [kakaoShareError, setKakaoShareError] = useState<string | null>(null);
   const listItemRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
     setCategoryFilter("all");
     setSelectedPlaceId(null);
     setShareCopied(false);
+    setKakaoShareError(null);
 
     if (!festival || festival.latitude == null || festival.longitude == null) {
       setNearby(null);
@@ -130,27 +140,30 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
     listItemRefs.current[contentId]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
-  async function handleShare() {
+  async function handleCopyLink() {
     if (!festival) return;
     const shareUrl = `${window.location.origin}/?festival=${festival.id}`;
-    const region = getRegionByCode(festival.regionCode);
-    const shareText = `${region?.name ?? ""}${festival.sigungu ? ` ${festival.sigungu}` : ""} · ${formatDateRange(festival.startDate, festival.endDate)}`;
-
-    if (typeof navigator.share === "function") {
-      try {
-        await navigator.share({ title: festival.name, text: shareText, url: shareUrl });
-      } catch {
-        // 사용자가 공유를 취소한 경우 등 - 별도 처리 없이 무시
-      }
-      return;
-    }
-
     try {
       await navigator.clipboard.writeText(shareUrl);
       setShareCopied(true);
+      setShareMenuOpen(false);
       setTimeout(() => setShareCopied(false), 2000);
     } catch {
       // 클립보드 접근이 막힌 환경 - 조용히 무시
+    }
+  }
+
+  async function handleKakaoShare() {
+    if (!festival) return;
+    setKakaoShareError(null);
+    const region = getRegionByCode(festival.regionCode);
+    const regionText = `${region?.name ?? ""}${festival.sigungu ? ` ${festival.sigungu}` : ""}`;
+
+    try {
+      await shareFestivalToKakao({ title: festival.name, region: regionText, url: naverSearchUrl(festival.name) });
+      setShareMenuOpen(false);
+    } catch (err) {
+      setKakaoShareError(err instanceof Error ? err.message : "카카오톡 공유에 실패했어요.");
     }
   }
 
@@ -188,27 +201,60 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
                 )}
                 <Badge variant="soft">{festival.category}</Badge>
               </div>
-              <button
-                type="button"
-                onClick={handleShare}
-                className="optical-center flex shrink-0 items-center gap-1.5 rounded-full border border-season-border px-3 py-1.5 text-xs font-medium text-season-surface-foreground hover:bg-season-secondary"
-              >
-                {shareCopied ? (
-                  <>
-                    <Check className="h-3.5 w-3.5" />
-                    링크 복사됨
-                  </>
-                ) : (
-                  <>
-                    {typeof navigator.share === "function" ? (
-                      <Share2 className="h-3.5 w-3.5" />
-                    ) : (
-                      <LinkIcon className="h-3.5 w-3.5" />
+
+              <div className="flex shrink-0 items-center gap-2">
+                <a
+                  href={naverSearchUrl(festival.name)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="optical-center flex items-center gap-1.5 rounded-full border border-season-border px-3 py-1.5 text-xs font-medium text-season-surface-foreground hover:bg-season-secondary"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  네이버
+                </a>
+
+                <Popover open={shareMenuOpen} onOpenChange={setShareMenuOpen}>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      className="optical-center flex items-center gap-1.5 rounded-full border border-season-border px-3 py-1.5 text-xs font-medium text-season-surface-foreground hover:bg-season-secondary"
+                    >
+                      {shareCopied ? (
+                        <>
+                          <Check className="h-3.5 w-3.5" />
+                          링크 복사됨
+                        </>
+                      ) : (
+                        <>
+                          <Share2 className="h-3.5 w-3.5" />
+                          공유하기
+                        </>
+                      )}
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent align="end" className="w-48 p-1.5">
+                    <button
+                      type="button"
+                      onClick={handleCopyLink}
+                      className="optical-center flex w-full items-center gap-2 rounded-xl px-2 py-2 text-left text-sm text-season-surface-foreground hover:bg-season-secondary"
+                    >
+                      <LinkIcon className="h-4 w-4 text-season-muted" />
+                      링크 복사하기
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleKakaoShare}
+                      className="optical-center flex w-full items-center gap-2 rounded-xl px-2 py-2 text-left text-sm text-season-surface-foreground hover:bg-season-secondary"
+                    >
+                      <MessageCircle className="h-4 w-4 text-season-muted" />
+                      카카오톡 친구에게 보내기
+                    </button>
+                    {kakaoShareError && (
+                      <p className="mt-1 px-2 text-[11px] text-season-muted">{kakaoShareError}</p>
                     )}
-                    공유하기
-                  </>
-                )}
-              </button>
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
 
             {festival.description && (
@@ -278,7 +324,7 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
                         className="aspect-square w-full"
                       />
 
-                      <div className="flex max-h-80 flex-col gap-2 overflow-y-auto pr-1 sm:max-h-none">
+                      <div className="flex max-h-80 flex-col gap-2 overflow-y-auto p-1 sm:max-h-none">
                         {filteredPlaces.length === 0 ? (
                           <p className="py-6 text-center text-xs text-season-muted">
                             이 카테고리에는 주변 정보가 없어요.
