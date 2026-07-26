@@ -23,10 +23,13 @@ const DialogOverlay = forwardRef<
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
-const DialogContent = forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+interface DialogContentProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+  /** 기본 중앙 확대 애니메이션 대신 쓸 애니메이션 클래스(예: 카드→모달 flip 전환) */
+  animationClassName?: string;
+}
+
+const DialogContent = forwardRef<React.ElementRef<typeof DialogPrimitive.Content>, DialogContentProps>(
+  ({ className, animationClassName, children, ...props }, ref) => (
   <DialogPrimitive.Portal>
     <DialogOverlay />
     <DialogPrimitive.Content
@@ -34,7 +37,7 @@ const DialogContent = forwardRef<
       className={cn(
         "fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 -translate-y-1/2",
         "rounded-2xl border border-season-border bg-season-surface text-season-surface-foreground shadow-xl outline-none",
-        "data-[state=open]:animate-dialog-in data-[state=closed]:animate-dialog-out",
+        animationClassName ?? "data-[state=open]:animate-dialog-in data-[state=closed]:animate-dialog-out",
         className,
       )}
       {...props}

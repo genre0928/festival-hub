@@ -54,6 +54,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     useFestivalFilters();
   const { user, isAuthAvailable, signInWithKakao } = useAuth();
   const [selectedFestival, setSelectedFestival] = useState<Festival | null>(null);
+  const [modalOrigin, setModalOrigin] = useState<DOMRect | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [myInterestRegions, setMyInterestRegions] = useState<string[]>([]);
   const [hasInterestRegionsSet, setHasInterestRegionsSet] = useState(false);
@@ -103,8 +104,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     }
   }, [searchParams, user]);
 
-  function openFestivalDetail(festival: Festival) {
+  function openFestivalDetail(festival: Festival, originRect?: DOMRect) {
     setSelectedFestival(festival);
+    setModalOrigin(originRect ?? null);
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev);
@@ -312,6 +314,13 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               onOpenDetail={openFestivalDetail}
               preferences={user ? preferences : undefined}
               onTogglePreference={user ? handleTogglePreference : undefined}
+              emptyMessage={
+                preferenceFilter === "favorite"
+                  ? "즐겨찾기한 축제가 없어요. 마음에 드는 축제에 별표를 눌러보세요."
+                  : preferenceFilter === "not_interested"
+                    ? "관심없음으로 표시한 축제가 없어요."
+                    : undefined
+              }
             />
           </div>
         </div>
@@ -322,6 +331,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         onClose={closeFestivalDetail}
         preference={selectedFestival && user ? (preferences[selectedFestival.id] ?? null) : null}
         onTogglePreference={user ? handleTogglePreference : undefined}
+        originRect={modalOrigin}
       />
       <InterestRegionModal open={interestRegionModalOpen} onClose={closeInterestRegionModal} />
     </AppLayout>
