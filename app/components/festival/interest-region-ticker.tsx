@@ -8,12 +8,15 @@ interface InterestRegionTickerProps {
   festivals: Festival[];
   durationSeconds: number;
   onSelectFestival: (festival: Festival, originRect: DOMRect) => void;
+  /** 카드에서 연 모달이 떠 있는 동안 true로 줘서 슬라이드를 멈춘다(닫을 때 같은 자리로 축소되게). */
+  paused?: boolean;
 }
 
 export function InterestRegionTicker({
   festivals,
   durationSeconds,
   onSelectFestival,
+  paused,
 }: InterestRegionTickerProps) {
   if (festivals.length === 0) return null;
 
@@ -23,7 +26,7 @@ export function InterestRegionTicker({
         <PlayCircle className="h-4 w-4 shrink-0" />
         관심지역 진행중
       </div>
-      <Marquee className="[--gap:2.5rem]" durationSeconds={durationSeconds}>
+      <Marquee className="[--gap:2.5rem]" durationSeconds={durationSeconds} paused={paused}>
         {festivals.map((festival) => {
           const region = getRegionByCode(festival.regionCode);
           const address = `${region?.name ?? ""}${festival.sigungu ? ` ${festival.sigungu}` : ""}`;
