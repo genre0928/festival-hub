@@ -2,21 +2,26 @@ import { PartyPopper } from "lucide-react";
 import type { Festival } from "~/lib/data/festivals.mock";
 import { FestivalCard } from "~/components/festival/festival-card";
 import { BlurFade } from "~/components/magicui/blur-fade";
+import type { FestivalPreference } from "~/lib/supabase/types";
 
 interface FestivalListProps {
   festivals: Festival[];
-  selectedRegion: string | null;
+  selectedRegions: string[];
   selectedSigungu: string | null;
   onSelectRegion: (regionCode: string, sigungu?: string | null) => void;
   onOpenDetail: (festival: Festival) => void;
+  preferences?: Record<string, FestivalPreference>;
+  onTogglePreference?: (festival: Festival, next: FestivalPreference | null) => void;
 }
 
 export function FestivalList({
   festivals,
-  selectedRegion,
+  selectedRegions,
   selectedSigungu,
   onSelectRegion,
   onOpenDetail,
+  preferences,
+  onTogglePreference,
 }: FestivalListProps) {
   if (festivals.length === 0) {
     return (
@@ -34,11 +39,14 @@ export function FestivalList({
           <FestivalCard
             festival={festival}
             selected={
-              selectedRegion === festival.regionCode &&
+              selectedRegions.length === 1 &&
+              selectedRegions[0] === festival.regionCode &&
               (!selectedSigungu || selectedSigungu === festival.sigungu)
             }
             onSelectRegion={onSelectRegion}
             onOpenDetail={onOpenDetail}
+            preference={preferences?.[festival.id] ?? null}
+            onTogglePreference={onTogglePreference}
           />
         </BlurFade>
       ))}
