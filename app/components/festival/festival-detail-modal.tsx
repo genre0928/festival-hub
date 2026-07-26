@@ -59,8 +59,8 @@ function naverSearchUrl(query: string): string {
   return `https://search.naver.com/search.naver?query=${encodeURIComponent(query)}`;
 }
 
-/** 카카오맵 길찾기 - 행사 위치를 출발지, 주변 장소를 도착지로 하는 경로 링크. */
-function kakaoDirectionsUrl(params: {
+/** 네이버 지도 길찾기 - 행사 위치를 출발지, 주변 장소를 도착지로 하는 경로 링크. v5 경로는 WGS84 경위도(lng,lat)를 그대로 받는다. */
+function naverDirectionsUrl(params: {
   fromLat: number;
   fromLng: number;
   fromName: string;
@@ -68,9 +68,9 @@ function kakaoDirectionsUrl(params: {
   toLng: number;
   toName: string;
 }): string {
-  const from = `${encodeURIComponent(params.fromName)},${params.fromLat},${params.fromLng}`;
-  const to = `${encodeURIComponent(params.toName)},${params.toLat},${params.toLng}`;
-  return `https://map.kakao.com/link/from/${from}/to/${to}`;
+  const from = `${params.fromLng},${params.fromLat},${encodeURIComponent(params.fromName)}`;
+  const to = `${params.toLng},${params.toLat},${encodeURIComponent(params.toName)}`;
+  return `https://map.naver.com/v5/directions/${from}/${to}/-/car`;
 }
 
 type CategoryFilter = "all" | NearbyCategory;
@@ -411,7 +411,7 @@ export function FestivalDetailModal({
                               }}
                               directionsUrl={
                                 place.latitude != null && place.longitude != null
-                                  ? kakaoDirectionsUrl({
+                                  ? naverDirectionsUrl({
                                       fromLat: festivalCoords.lat,
                                       fromLng: festivalCoords.lng,
                                       fromName: festival.name,
@@ -502,7 +502,7 @@ function NearbyListItem({
             className="flex items-center gap-1 rounded-full border border-season-border px-2 py-1 text-[11px] font-medium text-season-primary hover:bg-season-secondary"
           >
             <ExternalLink className="h-3 w-3" />
-            네이버
+            지도
           </a>
         )}
         {directionsUrl && (
