@@ -38,7 +38,7 @@ export type SubscriberFrequency = "weekly" | "monthly";
 export type SubscriberRow = {
   id: string;
   user_id: string;
-  frequency: SubscriberFrequency;
+  frequencies: SubscriberFrequency[];
   regions: string[];
   is_active: boolean;
   kakao_connected: boolean;

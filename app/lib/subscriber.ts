@@ -3,14 +3,14 @@ import type { SubscriberFrequency } from "~/lib/supabase/types";
 
 export interface MySubscriberSettings {
   regions: string[];
-  frequency: SubscriberFrequency;
+  frequencies: SubscriberFrequency[];
   isActive: boolean;
   kakaoConnected: boolean;
 }
 
 const DEFAULT_SETTINGS: MySubscriberSettings = {
   regions: [],
-  frequency: "monthly",
+  frequencies: ["monthly"],
   isActive: true,
   kakaoConnected: false,
 };
@@ -21,14 +21,14 @@ export async function getMySubscriberSettings(): Promise<MySubscriberSettings> {
 
   const { data, error } = await supabase
     .from("subscribers")
-    .select("regions, frequency, is_active, kakao_connected")
+    .select("regions, frequencies, is_active, kakao_connected")
     .maybeSingle();
 
   if (error || !data) return DEFAULT_SETTINGS;
 
   return {
     regions: data.regions,
-    frequency: data.frequency,
+    frequencies: data.frequencies,
     isActive: data.is_active,
     kakaoConnected: data.kakao_connected,
   };
@@ -37,7 +37,7 @@ export async function getMySubscriberSettings(): Promise<MySubscriberSettings> {
 /** 관심 지역/알림 주기를 저장한다. 로그인한 사용자 본인 행만 RLS로 허용됨. */
 export async function saveMySubscriberSettings(
   userId: string,
-  settings: { regions: string[]; frequency: SubscriberFrequency; isActive: boolean },
+  settings: { regions: string[]; frequencies: SubscriberFrequency[]; isActive: boolean },
 ): Promise<void> {
   if (!supabase) return;
 
@@ -45,7 +45,7 @@ export async function saveMySubscriberSettings(
     {
       user_id: userId,
       regions: settings.regions,
-      frequency: settings.frequency,
+      frequencies: settings.frequencies,
       is_active: settings.isActive,
     },
     { onConflict: "user_id" },
