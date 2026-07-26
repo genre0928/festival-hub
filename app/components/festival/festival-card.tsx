@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  EyeOff,
   Landmark,
   Leaf,
   MapPin,
@@ -7,11 +8,13 @@ import {
   Palette,
   PartyPopper,
   Sparkles,
+  Star,
   UtensilsCrossed,
 } from "lucide-react";
 import type { Festival, FestivalCategory } from "~/lib/data/festivals.mock";
 import { getFestivalStatus, STATUS_LABELS, type FestivalStatus } from "~/lib/festivals";
 import { getRegionByCode } from "~/components/map/region-data";
+import type { FestivalPreference } from "~/lib/supabase/types";
 import { formatDateRange, cn } from "~/lib/utils";
 import { Card } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
@@ -37,9 +40,19 @@ interface FestivalCardProps {
   selected?: boolean;
   onSelectRegion?: (regionCode: string, sigungu?: string | null) => void;
   onOpenDetail?: (festival: Festival) => void;
+  /** 로그인한 사용자만 즐겨찾기/관심없음 버튼이 뜬다(비로그인이면 undefined로 안 넘기면 됨) */
+  preference?: FestivalPreference | null;
+  onTogglePreference?: (festival: Festival, next: FestivalPreference | null) => void;
 }
 
-export function FestivalCard({ festival, selected, onSelectRegion, onOpenDetail }: FestivalCardProps) {
+export function FestivalCard({
+  festival,
+  selected,
+  onSelectRegion,
+  onOpenDetail,
+  preference,
+  onTogglePreference,
+}: FestivalCardProps) {
   const status = getFestivalStatus(festival);
   const region = getRegionByCode(festival.regionCode);
   const Icon = CATEGORY_ICONS[festival.category];
@@ -82,9 +95,49 @@ export function FestivalCard({ festival, selected, onSelectRegion, onOpenDetail 
           <h3 className="truncate font-semibold text-season-surface-foreground">
             {festival.name}
           </h3>
-          <Badge variant={STATUS_BADGE_VARIANT[status]} className="shrink-0">
-            {STATUS_LABELS[status]}
-          </Badge>
+          <div className="flex shrink-0 items-center gap-1">
+            {onTogglePreference && (
+              <>
+                <button
+                  type="button"
+                  aria-label={preference === "favorite" ? "즐겨찾기 해제" : "즐겨찾기 추가"}
+                  aria-pressed={preference === "favorite"}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onTogglePreference(festival, preference === "favorite" ? null : "favorite");
+                  }}
+                  className={cn(
+                    "flex h-6 w-6 items-center justify-center rounded-full transition-colors",
+                    preference === "favorite"
+                      ? "text-amber-500"
+                      : "text-season-muted hover:text-amber-500",
+                  )}
+                >
+                  <Star className="h-4 w-4" fill={preference === "favorite" ? "currentColor" : "none"} />
+                </button>
+                <button
+                  type="button"
+                  aria-label={preference === "not_interested" ? "관심없음 해제" : "관심없음으로 표시"}
+                  aria-pressed={preference === "not_interested"}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onTogglePreference(festival, preference === "not_interested" ? null : "not_interested");
+                  }}
+                  className={cn(
+                    "flex h-6 w-6 items-center justify-center rounded-full transition-colors",
+                    preference === "not_interested"
+                      ? "text-season-primary"
+                      : "text-season-muted hover:text-season-primary",
+                  )}
+                >
+                  <EyeOff className="h-4 w-4" />
+                </button>
+              </>
+            )}
+            <Badge variant={STATUS_BADGE_VARIANT[status]} className="shrink-0">
+              {STATUS_LABELS[status]}
+            </Badge>
+          </div>
         </div>
 
         {festival.description && (

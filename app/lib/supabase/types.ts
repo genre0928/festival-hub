@@ -71,6 +71,16 @@ export type PendingNewFestivalNotificationRow = FestivalRow & {
   detected_at: string;
 };
 
+export type FestivalPreference = "favorite" | "not_interested";
+
+/** 로그인한 사용자의 축제별 즐겨찾기/관심없음 표시. RLS로 본인 행만 조회/수정 가능 */
+export type FestivalPreferenceRow = {
+  user_id: string;
+  festival_id: string;
+  preference: FestivalPreference;
+  created_at: string;
+};
+
 /**
  * supabase-js의 createClient<Database>()에 전달할 최소 스키마 타입.
  * @supabase/postgrest-js의 GenericTable/GenericSchema가 Relationships/Functions 필드를
@@ -111,6 +121,12 @@ export type Database = {
         Row: FestivalNewDetectionRow;
         Insert: Partial<FestivalNewDetectionRow> & Pick<FestivalNewDetectionRow, "festival_id">;
         Update: Partial<FestivalNewDetectionRow>;
+        Relationships: [];
+      };
+      festival_preferences: {
+        Row: FestivalPreferenceRow;
+        Insert: Pick<FestivalPreferenceRow, "user_id" | "festival_id" | "preference">;
+        Update: Partial<FestivalPreferenceRow>;
         Relationships: [];
       };
     };
