@@ -115,7 +115,7 @@ export function SearchBar({
         <PopoverTrigger asChild>
           <button
             type="button"
-            className="optical-center relative flex h-10 items-center gap-2 rounded-xl border border-season-border bg-season-surface pl-9 pr-3 text-sm text-season-surface-foreground hover:bg-season-secondary sm:w-44"
+            className="optical-center relative flex h-10 items-center gap-2 rounded-full border border-season-border bg-season-surface pl-9 pr-3 text-sm text-season-surface-foreground hover:bg-season-secondary sm:w-44"
           >
             <MapPinned className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-season-muted" />
             <span className="truncate">{regionTriggerLabel}</span>

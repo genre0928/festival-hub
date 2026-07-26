@@ -1,19 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
-import { PlayCircle, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import type { Route } from "./+types/home";
 import { AppLayout } from "~/components/layout/app-layout";
 import { SearchBar } from "~/components/festival/search-bar";
 import { FestivalFilters } from "~/components/festival/festival-filters";
 import { FestivalList } from "~/components/festival/festival-list";
 import { FestivalDetailModal } from "~/components/festival/festival-detail-modal";
+import { InterestRegionTicker } from "~/components/festival/interest-region-ticker";
 import { InterestRegionModal } from "~/components/auth/interest-region-modal";
 import { RegionMap } from "~/components/map/region-map";
 import { Card } from "~/components/ui/card";
-import { Marquee } from "~/components/magicui/marquee";
-import { Badge } from "~/components/ui/badge";
 import { Tabs, type TabItem } from "~/components/ui/tabs";
-import { getRegionByCode } from "~/components/map/region-data";
 import { useFestivalFilters } from "~/hooks/use-festival-filters";
 import { useAuth } from "~/hooks/use-auth";
 import { getMySubscriberSettings } from "~/lib/subscriber";
@@ -79,6 +77,16 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     });
     getMyFestivalPreferences().then(setPreferences);
   }, [user]);
+
+  // 메인화면 기본값: region 파라미터가 아예 없으면(=사용자가 아직 지역을 고른 적 없으면)
+  // 관심지역이 있는 로그인 사용자는 관심지역을, 그 외(비로그인/관심지역 없음)는 전국을 보여준다.
+  // region=(빈 문자열)로 명시적으로 "전체 지역"을 고른 경우는 건드리지 않는다.
+  useEffect(() => {
+    if (searchParams.get("region") !== null) return;
+    if (hasInterestRegionsSet && myInterestRegions.length > 0) {
+      setRegions(myInterestRegions);
+    }
+  }, [hasInterestRegionsSet, myInterestRegions, searchParams, setRegions]);
 
   // 공유된 링크(?festival=id)로 들어오면 해당 축제 상세를 자동으로 연다.
   useEffect(() => {
@@ -235,28 +243,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             </a>
           </Card>
         ) : (
-          popularOngoingFestivals.length > 0 && (
-            <Card className="flex items-center gap-3 px-4 py-2.5">
-              <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-season-primary">
-                <PlayCircle className="h-4 w-4" />
-                관심지역 진행중
-              </span>
-              <Marquee className="flex-1" durationSeconds={tickerDurationSeconds}>
-                {popularOngoingFestivals.map((f) => (
-                  <button
-                    key={f.id}
-                    onClick={() => setRegions([f.regionCode], f.sigungu)}
-                    className="shrink-0"
-                  >
-                    <Badge variant="soft">
-                      {getRegionByCode(f.regionCode)?.name}
-                      {f.sigungu ? ` ${f.sigungu}` : ""} · {f.name}
-                    </Badge>
-                  </button>
-                ))}
-              </Marquee>
-            </Card>
-          )
+          <InterestRegionTicker
+            festivals={popularOngoingFestivals}
+            durationSeconds={tickerDurationSeconds}
+            onSelectFestival={openFestivalDetail}
+          />
         )}
 
         <SearchBar
@@ -304,12 +295,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           </Card>
 
           <div className="flex min-w-0 flex-col gap-4">
-            <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <FestivalFilters value={filters.status} onChange={setStatus} />
               {user && (
                 <Tabs items={PREFERENCE_FILTER_ITEMS} value={preferenceFilter} onChange={setPreferenceFilter} />
               )}
-              <span className="shrink-0 text-sm text-season-muted">
+              <span className="ml-auto shrink-0 text-sm text-season-muted">
                 {filteredFestivals.length}건
               </span>
             </div>

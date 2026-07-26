@@ -10,7 +10,7 @@ export function LoginButton({ className }: { className?: string }) {
       type="button"
       onClick={signInWithKakao}
       className={cn(
-        "optical-center inline-flex h-8 items-center gap-1.5 rounded-full bg-[#FEE500] px-3 text-xs font-semibold text-[#191919] transition-opacity hover:opacity-90",
+        "optical-center inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#FEE500] px-3 text-xs font-semibold text-[#191919] transition-opacity hover:opacity-90",
         className,
       )}
     >
