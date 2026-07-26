@@ -217,7 +217,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   return (
     <AppLayout>
       <div className="flex flex-col gap-6">
-        {showInterestRegionPrompt && (
+        {showInterestRegionPrompt ? (
           <Card className="flex flex-wrap items-center justify-between gap-2 border-season-primary/30 bg-season-primary/5 px-4 py-2.5">
             <span className="flex items-center gap-1.5 text-sm text-season-surface-foreground">
               <Star className="h-4 w-4 shrink-0 text-season-primary" />
@@ -234,29 +234,29 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               {user ? "관심지역을 추가해주세요 →" : "로그인하고 추가하기 →"}
             </a>
           </Card>
-        )}
-
-        {popularOngoingFestivals.length > 0 && (
-          <Card className="flex items-center gap-3 px-4 py-2.5">
-            <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-season-primary">
-              <PlayCircle className="h-4 w-4" />
-              {hasInterestRegionsSet ? "관심지역 진행중" : "지금 진행중"}
-            </span>
-            <Marquee className="flex-1" durationSeconds={tickerDurationSeconds}>
-              {popularOngoingFestivals.map((f) => (
-                <button
-                  key={f.id}
-                  onClick={() => setRegions([f.regionCode], f.sigungu)}
-                  className="shrink-0"
-                >
-                  <Badge variant="soft">
-                    {getRegionByCode(f.regionCode)?.name}
-                    {f.sigungu ? ` ${f.sigungu}` : ""} · {f.name}
-                  </Badge>
-                </button>
-              ))}
-            </Marquee>
-          </Card>
+        ) : (
+          popularOngoingFestivals.length > 0 && (
+            <Card className="flex items-center gap-3 px-4 py-2.5">
+              <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-season-primary">
+                <PlayCircle className="h-4 w-4" />
+                관심지역 진행중
+              </span>
+              <Marquee className="flex-1" durationSeconds={tickerDurationSeconds}>
+                {popularOngoingFestivals.map((f) => (
+                  <button
+                    key={f.id}
+                    onClick={() => setRegions([f.regionCode], f.sigungu)}
+                    className="shrink-0"
+                  >
+                    <Badge variant="soft">
+                      {getRegionByCode(f.regionCode)?.name}
+                      {f.sigungu ? ` ${f.sigungu}` : ""} · {f.name}
+                    </Badge>
+                  </button>
+                ))}
+              </Marquee>
+            </Card>
+          )
         )}
 
         <SearchBar
@@ -267,6 +267,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           onClearRegions={clearRegions}
           myInterestRegions={hasInterestRegionsSet ? myInterestRegions : undefined}
           onApplyInterestRegions={() => setRegions(myInterestRegions)}
+          showInterestRegionCta={showInterestRegionPrompt}
+          isLoggedIn={!!user}
+          onInterestRegionCtaClick={handleInterestRegionPromptClick}
           sigungu={filters.sigungu}
           onSigunguChange={(value) => setSigungu(value)}
           sigunguOptions={sigunguOptions}
@@ -323,7 +326,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         </div>
       </div>
 
-      <FestivalDetailModal festival={selectedFestival} onClose={closeFestivalDetail} />
+      <FestivalDetailModal
+        festival={selectedFestival}
+        onClose={closeFestivalDetail}
+        preference={selectedFestival && user ? (preferences[selectedFestival.id] ?? null) : null}
+        onTogglePreference={user ? handleTogglePreference : undefined}
+      />
       <InterestRegionModal open={interestRegionModalOpen} onClose={closeInterestRegionModal} />
     </AppLayout>
   );
