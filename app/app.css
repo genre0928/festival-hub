@@ -99,6 +99,13 @@ html {
   transition: font-size 0.15s ease;
 }
 
+/* 브라우저 기본값은 button에 pointer 커서를 안 줘서, 카드처럼 div+role="button"으로
+   만든 요소들과 실제 button 요소 전부가 클릭 가능해 보이지 않았다. 한 곳에서 통일. */
+button:not(:disabled),
+[role="button"] {
+  cursor: pointer;
+}
+
 /* 접근성 큰 글자 모드 - rem 기반이라 앱 전체 텍스트/여백이 함께 커진다 */
 html[data-text-size="large"] {
   font-size: 120%;

@@ -249,6 +249,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             festivals={popularOngoingFestivals}
             durationSeconds={tickerDurationSeconds}
             onSelectFestival={openFestivalDetail}
+            paused={!!selectedFestival}
           />
         )}
 
