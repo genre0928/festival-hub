@@ -190,6 +190,7 @@ export function FestivalDetailModal({
         region: regionText,
         naverUrl: naverSearchUrl(festival.name),
         shareUrl: `${window.location.origin}/?festival=${festival.id}`,
+        imageUrl: festival.imageUrl,
       });
       setShareMenuOpen(false);
     } catch (err) {
