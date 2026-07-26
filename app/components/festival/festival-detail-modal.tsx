@@ -19,7 +19,7 @@ import {
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "~/components/ui/dialog";
 import { Badge } from "~/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
-import { Tabs, type TabItem } from "~/components/ui/tabs";
+import { type TabItem } from "~/components/ui/tabs";
 import { NearbyMap } from "~/components/festival/nearby-map";
 import type { Festival } from "~/lib/data/festivals.mock";
 import { getFestivalStatus, STATUS_LABELS, type FestivalStatus } from "~/lib/festivals";
@@ -408,12 +408,33 @@ export function FestivalDetailModal({
                   <>
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                       <h3 className="font-semibold text-season-surface-foreground">주변 정보</h3>
-                      <Tabs
-                        items={FILTER_ITEMS}
-                        value={categoryFilter}
-                        onChange={setCategoryFilter}
-                        className="w-full sm:w-auto"
-                      />
+                      {/*
+                        모바일에서는 4개 항목이 pill 그룹 하나에 다 안 들어가 줄바꿈되면서
+                        줄마다 시작 위치가 어긋나 보였다. 2x2 grid로 셀 너비를 맞춰 정렬을
+                        고정하고, 화면이 넓어지면(sm+) 한 줄 pill 그룹으로 되돌린다.
+                      */}
+                      <div className="grid grid-cols-2 gap-1.5 sm:flex sm:w-auto sm:flex-wrap sm:gap-1">
+                        {FILTER_ITEMS.map((item) => {
+                          const active = item.value === categoryFilter;
+                          return (
+                            <button
+                              key={item.value}
+                              type="button"
+                              aria-pressed={active}
+                              onClick={() => setCategoryFilter(item.value)}
+                              className={cn(
+                                "optical-center flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                                active
+                                  ? "border-season-primary bg-season-primary text-season-primary-foreground"
+                                  : "border-season-border bg-season-surface text-season-surface-foreground hover:bg-season-secondary",
+                              )}
+                            >
+                              {item.icon}
+                              {item.label}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
 
                     {expandedRadiusNotes.length > 0 && (
