@@ -19,7 +19,7 @@ export function Marquee({
   return (
     <div
       className={cn(
-        "group flex min-w-0 overflow-hidden [--gap:1.5rem] gap-[--gap]",
+        "group flex min-w-0 overflow-hidden [--gap:1.5rem] gap-[length:var(--gap)]",
         className,
       )}
     >
@@ -28,7 +28,7 @@ export function Marquee({
           key={i}
           aria-hidden={i === 1}
           className={cn(
-            "flex shrink-0 items-center justify-around gap-[--gap] animate-marquee",
+            "flex shrink-0 items-center justify-around gap-[length:var(--gap)] animate-marquee",
             reverse && "[animation-direction:reverse]",
             pauseOnHover && "group-hover:[animation-play-state:paused]",
           )}
