@@ -203,26 +203,30 @@ export function SearchBar({
         </PopoverContent>
       </Popover>
 
-      {canPickSigungu && (
-        <div className="sm:w-36">
-          <Select
-            value={sigungu ?? ALL_SIGUNGU_VALUE}
-            onValueChange={(value) => onSigunguChange(value === ALL_SIGUNGU_VALUE ? null : value)}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={ALL_SIGUNGU_VALUE}>전체 시/군/구</SelectItem>
-              {sigunguOptions.map((name) => (
-                <SelectItem key={name} value={name}>
-                  {name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
+      {/*
+        지역 선택에 따라 이 영역을 통째로 붙였다 뗐다 하면 뒤따르는 날짜/초기화 버튼의
+        위치가 매번 바뀌어서, 시간차를 두고 클릭하면 다른 버튼을 누르는 미스클릭이 났다.
+        그래서 항상 같은 자리에 렌더링하고, 선택 불가능할 때는 비활성화만 시킨다.
+      */}
+      <div className="sm:w-36">
+        <Select
+          value={sigungu ?? ALL_SIGUNGU_VALUE}
+          onValueChange={(value) => onSigunguChange(value === ALL_SIGUNGU_VALUE ? null : value)}
+          disabled={!canPickSigungu}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="상세지역" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ALL_SIGUNGU_VALUE}>전체 시/군/구</SelectItem>
+            {sigunguOptions.map((name) => (
+              <SelectItem key={name} value={name}>
+                {name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
       <DatePicker value={date} onChange={onDateChange} placeholder="날짜 선택" className="sm:w-44" />
 
