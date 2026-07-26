@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   Check,
   EyeOff,
@@ -87,6 +87,8 @@ interface FestivalDetailModalProps {
   onClose: () => void;
   preference?: FestivalPreference | null;
   onTogglePreference?: (festival: Festival, next: FestivalPreference | null) => void;
+  /** 이 위치/크기에서 카드가 확장되는 것처럼 열리는 애니메이션을 재생한다(없으면 중앙에서 확대). */
+  originRect?: DOMRect | null;
 }
 
 export function FestivalDetailModal({
@@ -94,9 +96,33 @@ export function FestivalDetailModal({
   onClose,
   preference,
   onTogglePreference,
+  originRect,
 }: FestivalDetailModalProps) {
   const [nearby, setNearby] = useState<NearbyInfo | null>(null);
   const [loading, setLoading] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [flipStyle, setFlipStyle] = useState<Record<string, string> | undefined>(undefined);
+
+  // 카드→모달 확장 애니메이션에 쓸 변수를 계산한다. 닫힐 때(festival이 null이 됨)는 손대지
+  // 않고 그대로 둬서, 축소 애니메이션이 같은 위치로 되돌아갈 수 있게 한다.
+  useLayoutEffect(() => {
+    if (!festival) return;
+    if (!originRect || !contentRef.current) {
+      setFlipStyle(undefined);
+      return;
+    }
+    const finalRect = contentRef.current.getBoundingClientRect();
+    const dx = originRect.left + originRect.width / 2 - (finalRect.left + finalRect.width / 2);
+    const dy = originRect.top + originRect.height / 2 - (finalRect.top + finalRect.height / 2);
+    const sx = originRect.width / finalRect.width;
+    const sy = originRect.height / finalRect.height;
+    setFlipStyle({
+      "--flip-dx": `${dx}px`,
+      "--flip-dy": `${dy}px`,
+      "--flip-sx": `${sx}`,
+      "--flip-sy": `${sy}`,
+    });
+  }, [festival, originRect]);
   const [error, setError] = useState<string | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
@@ -210,7 +236,16 @@ export function FestivalDetailModal({
 
   return (
     <Dialog open={!!festival} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-h-[85vh] max-w-3xl overflow-hidden p-0">
+      <DialogContent
+        ref={contentRef}
+        style={flipStyle as React.CSSProperties | undefined}
+        animationClassName={
+          flipStyle
+            ? "data-[state=open]:animate-flip-in data-[state=closed]:animate-flip-out"
+            : undefined
+        }
+        className="max-h-[85vh] max-w-3xl overflow-hidden p-0"
+      >
         {festival && (
           <div className="max-h-[85vh] overflow-y-auto p-6">
             <DialogTitle className="pr-8 text-lg font-bold text-season-surface-foreground">

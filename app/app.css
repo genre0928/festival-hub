@@ -10,6 +10,8 @@
   --animate-dialog-out: dialog-out 0.15s ease-in;
   --animate-toast-in: toast-in 0.2s ease-out;
   --animate-toast-out: toast-out 0.15s ease-in;
+  --animate-flip-in: flip-in 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-flip-out: flip-out 0.32s cubic-bezier(0.6, 0, 0.9, 0.2);
 
   /* 계절 테마 토큰 - 기본값은 봄(벚꽃). data-season 속성에 따라 :root 아래에서 오버라이드됨 */
   --color-season-primary: #db2777;
@@ -189,6 +191,37 @@ html[data-text-size="large"] {
   to {
     opacity: 0;
     transform: translateY(-0.5rem);
+  }
+}
+
+/*
+ * 카드에서 모달로 확장/축소되는 넷플릭스 스타일 전환. --flip-dx/dy/sx/sy는
+ * FestivalDetailModal이 클릭된 카드의 위치/크기를 측정해 인라인 스타일로 채워 넣는다
+ * (없으면 0px/1로 폴백해 그냥 중앙에서 나타난다).
+ */
+@keyframes flip-in {
+  from {
+    opacity: 0.5;
+    transform: translate(-50%, -50%)
+      translate(var(--flip-dx, 0px), var(--flip-dy, 0px))
+      scale(var(--flip-sx, 1), var(--flip-sy, 1));
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(0, 0) scale(1, 1);
+  }
+}
+
+@keyframes flip-out {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(0, 0) scale(1, 1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%)
+      translate(var(--flip-dx, 0px), var(--flip-dy, 0px))
+      scale(var(--flip-sx, 1), var(--flip-sy, 1));
   }
 }
 

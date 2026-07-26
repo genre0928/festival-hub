@@ -7,7 +7,7 @@ import type { Festival } from "~/lib/data/festivals.mock";
 interface InterestRegionTickerProps {
   festivals: Festival[];
   durationSeconds: number;
-  onSelectFestival: (festival: Festival) => void;
+  onSelectFestival: (festival: Festival, originRect: DOMRect) => void;
 }
 
 export function InterestRegionTicker({
@@ -23,7 +23,7 @@ export function InterestRegionTicker({
         <PlayCircle className="h-4 w-4 shrink-0" />
         관심지역 진행중
       </div>
-      <Marquee durationSeconds={durationSeconds}>
+      <Marquee className="[--gap:2.5rem]" durationSeconds={durationSeconds}>
         {festivals.map((festival) => {
           const region = getRegionByCode(festival.regionCode);
           const address = `${region?.name ?? ""}${festival.sigungu ? ` ${festival.sigungu}` : ""}`;
@@ -31,7 +31,7 @@ export function InterestRegionTicker({
             <button
               key={festival.id}
               type="button"
-              onClick={() => onSelectFestival(festival)}
+              onClick={(e) => onSelectFestival(festival, e.currentTarget.getBoundingClientRect())}
               className="w-28 shrink-0 overflow-hidden rounded-2xl border border-season-border bg-season-surface text-left shadow-sm transition-shadow hover:shadow-md sm:w-32"
             >
               <div className="aspect-[4/3] w-full overflow-hidden bg-season-secondary">
