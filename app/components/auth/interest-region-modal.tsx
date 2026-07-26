@@ -7,6 +7,7 @@ import { RegionMap } from "~/components/map/region-map";
 import { useAuth } from "~/hooks/use-auth";
 import { getMySubscriberSettings, saveMySubscriberSettings } from "~/lib/subscriber";
 import type { SubscriberFrequency } from "~/lib/supabase/types";
+import { useToast } from "~/components/ui/toast";
 import { cn } from "~/lib/utils";
 
 interface InterestRegionModalProps {
@@ -16,17 +17,16 @@ interface InterestRegionModalProps {
 
 export function InterestRegionModal({ open, onClose }: InterestRegionModalProps) {
   const { user } = useAuth();
+  const { showToast } = useToast();
   const [regions, setRegions] = useState<string[]>([]);
   const [frequency, setFrequency] = useState<SubscriberFrequency>("monthly");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) return;
     setLoading(true);
-    setSaved(false);
     setSaveError(null);
     getMySubscriberSettings().then((settings) => {
       setRegions(settings.regions);
@@ -51,7 +51,8 @@ export function InterestRegionModal({ open, onClose }: InterestRegionModalProps)
     setSaveError(null);
     try {
       await saveMySubscriberSettings(user.id, { regions, frequency, isActive: true });
-      setSaved(true);
+      showToast("저장되었습니다");
+      onClose();
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : "저장에 실패했어요.");
     } finally {
@@ -141,11 +142,7 @@ export function InterestRegionModal({ open, onClose }: InterestRegionModalProps)
               </div>
 
               <div className="mt-6 flex items-center justify-end gap-2">
-                {saveError ? (
-                  <span className="text-xs text-red-500">{saveError}</span>
-                ) : (
-                  saved && <span className="text-xs text-season-muted">저장됐어요</span>
-                )}
+                {saveError && <span className="text-xs text-red-500">{saveError}</span>}
                 <Button type="button" size="sm" onClick={handleSave} disabled={saving}>
                   {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "저장"}
                 </Button>
