@@ -48,15 +48,19 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         head_cell: "text-season-muted rounded-md w-9 font-normal text-xs",
         row: "flex w-full mt-1",
         cell: "relative p-0 text-center text-sm focus-within:relative focus-within:z-20",
-        day: "h-9 w-9 rounded-full p-0 font-normal text-season-surface-foreground hover:bg-season-secondary transition-colors aria-selected:opacity-100",
+        day: "h-9 w-9 p-0 font-normal text-season-surface-foreground hover:bg-season-secondary transition-colors aria-selected:opacity-100",
         day_selected:
-          "bg-season-primary text-season-primary-foreground hover:bg-season-primary hover:text-season-primary-foreground focus:bg-season-primary focus:text-season-primary-foreground",
+          "rounded-full bg-season-primary text-season-primary-foreground hover:bg-season-primary hover:text-season-primary-foreground focus:bg-season-primary focus:text-season-primary-foreground",
         // "오늘" 표시는 CalendarDayContent에서 직접 계산해 그려서(위 주석 참고), 여기서는
         // react-day-picker의 today 모디파이어에 따른 기본 스타일을 주지 않는다.
         day_today: "",
         day_outside: "text-season-muted opacity-40",
         day_disabled: "text-season-muted opacity-30",
-        day_range_middle: "aria-selected:bg-season-secondary aria-selected:text-season-surface-foreground",
+        // 기간(range) 선택은 하루하루를 따로 동그라미 치면 산만해서, 시작/끝만 둥글게 캡을
+        // 씌우고 가운데는 각지게 이어 붙여 하나의 띠처럼 보이게 한다.
+        day_range_start: "rounded-l-full rounded-r-none bg-season-primary text-season-primary-foreground",
+        day_range_end: "rounded-r-full rounded-l-none bg-season-primary text-season-primary-foreground",
+        day_range_middle: "rounded-none bg-season-secondary text-season-surface-foreground",
         day_hidden: "invisible",
         ...classNames,
       }}
