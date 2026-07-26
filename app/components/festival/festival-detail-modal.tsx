@@ -160,7 +160,12 @@ export function FestivalDetailModal({ festival, onClose }: FestivalDetailModalPr
     const regionText = `${region?.name ?? ""}${festival.sigungu ? ` ${festival.sigungu}` : ""}`;
 
     try {
-      await shareFestivalToKakao({ title: festival.name, region: regionText, url: naverSearchUrl(festival.name) });
+      await shareFestivalToKakao({
+        title: festival.name,
+        region: regionText,
+        naverUrl: naverSearchUrl(festival.name),
+        shareUrl: `${window.location.origin}/?festival=${festival.id}`,
+      });
       setShareMenuOpen(false);
     } catch (err) {
       setKakaoShareError(err instanceof Error ? err.message : "카카오톡 공유에 실패했어요.");
