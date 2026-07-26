@@ -377,8 +377,9 @@ export function FestivalDetailModal({
               <p className="text-season-muted">{formatDateRange(festival.startDate, festival.endDate)}</p>
             </div>
 
-            {/* 진행 기간을 달력으로 - 오늘이 속한 달과 다음 달까지만 보여준다(그 이후는 표시 안 함). */}
-            <div className="mt-3 flex justify-center overflow-x-auto rounded-2xl border border-season-border bg-season-surface p-2 pointer-events-none">
+            {/* 진행 기간을 달력으로 - 오늘이 속한 달과 다음 달까지만 보여준다(그 이후는 표시 안 함).
+                모바일은 2개월 달력이 들어갈 폭이 부족해 기존처럼 텍스트만 보여주고, 데스크탑(sm+)에서만 표시한다. */}
+            <div className="mt-3 hidden justify-center overflow-x-auto rounded-2xl border border-season-border bg-season-surface p-2 pointer-events-none sm:flex">
               <Calendar
                 mode="range"
                 numberOfMonths={2}
