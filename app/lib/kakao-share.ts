@@ -55,24 +55,38 @@ function loadKakaoSdk(): Promise<void> {
 }
 
 /**
- * 축제명/행사지역/네이버 검색 링크로 된 텍스트 템플릿을 카카오톡 공유 시트로 띄운다.
+ * 축제명/행사지역/네이버 검색 링크로 된 템플릿을 카카오톡 공유 시트로 띄운다.
  * 카드(및 텍스트 안의 링크) 자체는 shareUrl(우리 사이트의 ?festival= 링크)로 연결해서,
  * 눌렀을 때 축제 상세(모달)가 바로 열리게 한다. naverUrl은 텍스트 안내용으로만 쓰인다.
+ * 포스터 이미지(imageUrl)가 있으면 이미지가 상단에 붙는 카드형(feed) 템플릿을,
+ * 없으면 기존 텍스트 템플릿을 쓴다(카카오 feed 템플릿은 imageUrl이 필수).
  */
 export async function shareFestivalToKakao(params: {
   title: string;
   region: string;
   naverUrl: string;
   shareUrl: string;
+  imageUrl?: string | null;
 }): Promise<void> {
   await loadKakaoSdk();
   if (!window.Kakao) throw new Error("카카오 SDK를 불러오지 못했어요.");
 
-  const text = `행사명 : ${params.title}\n행사지역 : ${params.region}\n네이버 검색 : ${params.naverUrl}`;
+  const link = { mobileWebUrl: params.shareUrl, webUrl: params.shareUrl };
 
-  window.Kakao.Share.sendDefault({
-    objectType: "text",
-    text,
-    link: { mobileWebUrl: params.shareUrl, webUrl: params.shareUrl },
-  });
+  if (params.imageUrl) {
+    window.Kakao.Share.sendDefault({
+      objectType: "feed",
+      content: {
+        title: params.title,
+        description: `행사지역 : ${params.region}\n네이버 검색 : ${params.naverUrl}`,
+        imageUrl: params.imageUrl,
+        link,
+      },
+      buttons: [{ title: "축제 정보 보기", link }],
+    });
+    return;
+  }
+
+  const text = `행사명 : ${params.title}\n행사지역 : ${params.region}\n네이버 검색 : ${params.naverUrl}`;
+  window.Kakao.Share.sendDefault({ objectType: "text", text, link });
 }
