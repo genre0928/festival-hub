@@ -74,8 +74,9 @@ function toDateOnly(date: Date) {
 
 export interface FestivalFilters {
   status: FestivalStatus | "all";
-  regionCode: string | null;
-  /** regionCode 안에서 더 좁힐 시/군/구. regionCode가 없으면 무시된다. */
+  /** 복수 선택 가능. 빈 배열이면 전체 지역. */
+  regionCodes: string[];
+  /** regionCodes가 정확히 1개일 때만 의미가 있는 시/군/구. 복수 지역이면 항상 무시(validation). */
   sigungu: string | null;
   query: string;
   /** YYYY-MM-DD. 지정 시 해당 날짜에 열리는 축제만 남김 */
@@ -88,17 +89,19 @@ export function filterFestivals(
   referenceDate: Date = new Date(),
 ): Festival[] {
   const query = filters.query.trim().toLowerCase();
+  // 시/군/구는 지역이 정확히 하나 선택된 경우에만 유효하다 - 복수 지역이면 상세지역 필터는 적용하지 않는다.
+  const effectiveSigungu = filters.regionCodes.length === 1 ? filters.sigungu : null;
 
   return festivals.filter((festival) => {
     if (filters.status !== "all") {
       if (getFestivalStatus(festival, referenceDate) !== filters.status) return false;
     }
 
-    if (filters.regionCode && festival.regionCode !== filters.regionCode) {
+    if (filters.regionCodes.length > 0 && !filters.regionCodes.includes(festival.regionCode)) {
       return false;
     }
 
-    if (filters.regionCode && filters.sigungu && festival.sigungu !== filters.sigungu) {
+    if (effectiveSigungu && festival.sigungu !== effectiveSigungu) {
       return false;
     }
 
@@ -119,9 +122,10 @@ export function filterFestivals(
   });
 }
 
-/** 선택된 regionCode 안에 존재하는 시/군/구 목록(가나다순)을 돌려준다. regionCode가 없으면 빈 배열. */
-export function getSigunguOptions(festivals: Festival[], regionCode: string | null): string[] {
-  if (!regionCode) return [];
+/** 지역이 정확히 하나 선택됐을 때 그 안에 존재하는 시/군/구 목록(가나다순)을 돌려준다. */
+export function getSigunguOptions(festivals: Festival[], regionCodes: string[]): string[] {
+  if (regionCodes.length !== 1) return [];
+  const [regionCode] = regionCodes;
   const values = new Set<string>();
   for (const festival of festivals) {
     if (festival.regionCode === regionCode && festival.sigungu) {
