@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useNavigation, useSearchParams } from "react-router";
 import { Hotel, LayoutGrid, Landmark, Loader2, MapPin, Search, Utensils, X } from "lucide-react";
 import type { Route } from "./+types/places";
 import { AppLayout } from "~/components/layout/app-layout";
 import { PlaceCard } from "~/components/places/place-card";
+import { PlaceMap } from "~/components/places/place-map";
 import { Card } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
@@ -14,8 +15,9 @@ import {
   getPlaceSigunguOptions,
   getPlaces,
   filterPlaces,
-  searchPlaceLocation,
+  searchPlaceLocations,
   sortPlacesByDistance,
+  type LocationMatch,
   type PlaceCategory,
   type PlaceFilters,
 } from "~/lib/places";
@@ -57,8 +59,11 @@ export default function Places({ loaderData }: Route.ComponentProps) {
   const [locationQuery, setLocationQuery] = useState("");
   const [locationSearching, setLocationSearching] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
+  const [candidates, setCandidates] = useState<LocationMatch[]>([]);
+  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
   const navigation = useNavigation();
   const isLoadingRegion = navigation.state === "loading";
+  const listItemRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const regionCode = searchParams.get("region");
   const sigungu = searchParams.get("sigungu");
@@ -68,9 +73,58 @@ export default function Places({ loaderData }: Route.ComponentProps) {
   const refLng = searchParams.get("lng");
   const referencePoint = refLat && refLng ? { lat: Number(refLat), lng: Number(refLng) } : null;
 
-  useEffect(() => {
-    setLocalQuery(searchParams.get("q") ?? "");
-  }, [searchParams]);
+  function applyLocation(match: LocationMatch) {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.set("region", match.regionCode);
+        if (match.sigungu) next.set("sigungu", match.sigungu);
+        else next.delete("sigungu");
+        next.set("lat", String(match.latitude));
+        next.set("lng", String(match.longitude));
+        next.delete("q"); // 이전 지역 안에서 검색하던 이름/주소 검색어는 새 지역엔 안 맞으니 지운다
+        return next;
+      },
+      { replace: true, preventScrollReset: true },
+    );
+    setLocalQuery("");
+    setCandidates([]);
+    setLocationError(null);
+    setSelectedPlaceId(null);
+  }
+
+  function resetAll() {
+    setSearchParams(new URLSearchParams(), { replace: true, preventScrollReset: true });
+    setLocationQuery("");
+    setLocalQuery("");
+    setCandidates([]);
+    setLocationError(null);
+  }
+
+  async function handleLocationSearch(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = locationQuery.trim();
+    if (!trimmed) return;
+
+    setLocationSearching(true);
+    setLocationError(null);
+    setCandidates([]);
+    try {
+      const matches = await searchPlaceLocations(trimmed);
+      if (matches.length === 0) {
+        setLocationError("일치하는 위치를 찾지 못했어요. 지역명(예: 구미시)이나 근처 장소명(예: 구미시청)으로 다시 시도해보세요.");
+        return;
+      }
+      if (matches.length === 1) {
+        applyLocation(matches[0]);
+        return;
+      }
+      // 같은 지명이 여러 지역에 있을 수 있어(예: "송정") 후보가 여럿이면 골라잡게 한다.
+      setCandidates(matches);
+    } finally {
+      setLocationSearching(false);
+    }
+  }
 
   function updateParam(key: string, value: string | null) {
     setSearchParams(
@@ -82,51 +136,6 @@ export default function Places({ loaderData }: Route.ComponentProps) {
       },
       { replace: true, preventScrollReset: true },
     );
-  }
-
-  function clearRegion() {
-    setSearchParams(
-      (prev) => {
-        const next = new URLSearchParams(prev);
-        for (const key of ["region", "sigungu", "lat", "lng", "category", "q"]) next.delete(key);
-        return next;
-      },
-      { replace: true, preventScrollReset: true },
-    );
-    setLocationQuery("");
-    setLocationError(null);
-  }
-
-  async function handleLocationSearch(e: React.FormEvent) {
-    e.preventDefault();
-    const trimmed = locationQuery.trim();
-    if (!trimmed) return;
-
-    setLocationSearching(true);
-    setLocationError(null);
-    try {
-      const match = await searchPlaceLocation(trimmed);
-      if (!match) {
-        setLocationError(
-          "일치하는 위치를 찾지 못했어요. 지역명(예: 구미시)이나 근처 장소명(예: 구미시청)으로 다시 시도해보세요.",
-        );
-        return;
-      }
-      setSearchParams(
-        (prev) => {
-          const next = new URLSearchParams(prev);
-          next.set("region", match.regionCode);
-          if (match.sigungu) next.set("sigungu", match.sigungu);
-          else next.delete("sigungu");
-          next.set("lat", String(match.latitude));
-          next.set("lng", String(match.longitude));
-          return next;
-        },
-        { replace: true, preventScrollReset: true },
-      );
-    } finally {
-      setLocationSearching(false);
-    }
   }
 
   const filters: PlaceFilters = useMemo(
@@ -143,6 +152,11 @@ export default function Places({ loaderData }: Route.ComponentProps) {
 
   const region = regionCode ? getRegionByCode(regionCode) : null;
 
+  function handleSelectPlace(id: string) {
+    setSelectedPlaceId(id);
+    listItemRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
   return (
     <AppLayout>
       <div className="flex flex-col gap-6">
@@ -153,41 +167,66 @@ export default function Places({ loaderData }: Route.ComponentProps) {
           </p>
         </div>
 
-        {!regionCode ? (
-          <Card className="p-4">
-            <form onSubmit={handleLocationSearch} className="flex flex-col gap-2 sm:flex-row">
-              <div className="relative flex-1">
-                <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-season-muted" />
-                <Input
-                  value={locationQuery}
-                  onChange={(e) => setLocationQuery(e.target.value)}
-                  placeholder="지역명, 장소명으로 검색 (예: 구미시, 구미시청)"
-                  className="pl-9"
-                />
-              </div>
-              <Button type="submit" disabled={locationSearching || !locationQuery.trim()}>
-                {locationSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : "검색"}
-              </Button>
-            </form>
-            {locationError && <p className="mt-2 text-xs text-red-500">{locationError}</p>}
-          </Card>
-        ) : (
-          <Card className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5">
-            <span className="flex items-center gap-1.5 text-sm text-season-surface-foreground">
-              <MapPin className="h-4 w-4 shrink-0 text-season-primary" />
-              {region?.name}
-              {sigungu ? ` ${sigungu}` : ""}
-            </span>
-            <button
-              type="button"
-              onClick={clearRegion}
-              className="flex shrink-0 items-center gap-1 text-xs text-season-muted hover:text-season-primary"
-            >
-              <X className="h-3.5 w-3.5" />
-              다른 지역 검색
-            </button>
-          </Card>
-        )}
+        {/* 지역을 이미 골랐어도 항상 열려 있어서, 새 검색어를 입력하면 바로 새 지역으로 바뀐다. */}
+        <Card className="p-4">
+          <form onSubmit={handleLocationSearch} className="flex flex-col gap-2 sm:flex-row">
+            <div className="relative flex-1">
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-season-muted" />
+              <Input
+                value={locationQuery}
+                onChange={(e) => setLocationQuery(e.target.value)}
+                placeholder="지역명, 장소명으로 검색 (예: 구미시, 구미시청)"
+                className="pl-9"
+              />
+            </div>
+            <Button type="submit" disabled={locationSearching || !locationQuery.trim()}>
+              {locationSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : "검색"}
+            </Button>
+          </form>
+
+          {locationError && <p className="mt-2 text-xs text-red-500">{locationError}</p>}
+
+          {candidates.length > 1 && (
+            <div className="mt-3 flex flex-col gap-1 border-t border-season-border pt-3">
+              <p className="text-xs text-season-muted">같은 이름의 장소가 여러 지역에 있어요. 하나를 골라주세요.</p>
+              {candidates.map((candidate) => {
+                const candidateRegion = getRegionByCode(candidate.regionCode);
+                return (
+                  <button
+                    key={`${candidate.regionCode}-${candidate.sigungu}`}
+                    type="button"
+                    onClick={() => applyLocation(candidate)}
+                    className="optical-center flex items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-sm hover:bg-season-secondary"
+                  >
+                    <span className="font-medium text-season-surface-foreground">
+                      {candidateRegion?.name}
+                      {candidate.sigungu ? ` ${candidate.sigungu}` : ""}
+                    </span>
+                    <span className="truncate text-xs text-season-muted">{candidate.matchedName}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {regionCode && (
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-season-border pt-3">
+              <span className="flex items-center gap-1.5 text-sm text-season-surface-foreground">
+                <MapPin className="h-4 w-4 shrink-0 text-season-primary" />
+                {region?.name}
+                {sigungu ? ` ${sigungu}` : ""}
+              </span>
+              <button
+                type="button"
+                onClick={resetAll}
+                className="flex shrink-0 items-center gap-1 text-xs text-season-muted hover:text-season-primary"
+              >
+                <X className="h-3.5 w-3.5" />
+                초기화
+              </button>
+            </div>
+          )}
+        </Card>
 
         {regionCode && (
           <>
@@ -243,10 +282,43 @@ export default function Places({ loaderData }: Route.ComponentProps) {
                 <p className="text-sm">조건에 맞는 정보가 없어요. 필터를 조정해보세요.</p>
               </div>
             ) : (
-              <div className="flex flex-col gap-3">
-                {sortedPlaces.map((place) => (
-                  <PlaceCard key={place.id} place={place} distanceMeters={place.distanceMeters} />
-                ))}
+              <div className="grid min-w-0 gap-6 lg:grid-cols-2">
+                <Card className="flex min-w-0 flex-col gap-2 p-4 lg:sticky lg:top-24 lg:h-[calc(100vh-7.5rem)]">
+                  <h2 className="text-sm font-semibold text-season-surface-foreground">지도로 보기</h2>
+                  <div className="min-h-[280px] flex-1 lg:min-h-0">
+                    {referencePoint ? (
+                      <PlaceMap
+                        centerLat={referencePoint.lat}
+                        centerLng={referencePoint.lng}
+                        places={sortedPlaces}
+                        selectedPlaceId={selectedPlaceId}
+                        onSelectPlace={handleSelectPlace}
+                        className="h-full w-full"
+                      />
+                    ) : (
+                      <p className="flex h-full items-center justify-center text-center text-xs text-season-muted">
+                        검색 위치 좌표가 없어 지도를 표시할 수 없어요.
+                      </p>
+                    )}
+                  </div>
+                </Card>
+
+                <div className="flex min-w-0 flex-col gap-3">
+                  {sortedPlaces.map((place) => (
+                    <div
+                      key={place.id}
+                      ref={(el) => {
+                        listItemRefs.current[place.id] = el;
+                      }}
+                      onClick={() => setSelectedPlaceId(place.id)}
+                      className={
+                        place.id === selectedPlaceId ? "rounded-2xl ring-2 ring-season-ring" : "rounded-2xl"
+                      }
+                    >
+                      <PlaceCard place={place} distanceMeters={place.distanceMeters} />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </>

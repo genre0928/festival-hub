@@ -72,36 +72,28 @@ export interface LocationMatch {
   latitude: number;
   longitude: number;
   matchedName: string;
+  address: string;
 }
 
 /**
- * 지역명/지명(장소명)으로 검색해서 지역(+시군구)과 기준 좌표를 찾는다. 지도 클릭 대신 이
- * 검색으로 지역을 정한다. geocode-address Edge Function이 네이버 지역 검색으로 지오코딩한다.
+ * 지역명/지명(장소명)으로 검색해서 지역(+시군구)+기준 좌표 후보 목록을 찾는다. 지도 클릭
+ * 대신 이 검색으로 지역을 정한다. geocode-address Edge Function이 네이버 지역 검색(+부족한
+ * 부분은 우리 자체 places 데이터)으로 지오코딩한다. 같은 지명이 여러 지역에 있을 수 있어
+ * (예: "송정" - 부산/서울/대구/광주 등에 다 있음) 후보가 여럿이면 배열로 돌아온다 -
+ * 호출측에서 1개면 바로 적용, 여러 개면 골라잡게 한다.
  * 네이버 지역 검색은 업체/장소 위주 데이터라 "구미시", "구미시청"처럼 지역명이나 장소명은
- * 잘 찾지만, 상호 없이 순수 도로명 주소(예: "신시로10길 71")만 검색하면 못 찾을 수 있다 -
- * 그런 경우 지역명이나 근처 장소명으로 다시 검색하도록 안내한다.
+ * 잘 찾지만, 상호 없이 순수 도로명 주소(예: "신시로10길 71")만 검색하면 못 찾을 수 있다.
  */
-export async function searchPlaceLocation(query: string): Promise<LocationMatch | null> {
+export async function searchPlaceLocations(query: string): Promise<LocationMatch[]> {
   const trimmed = query.trim();
-  if (!supabase || !trimmed) return null;
+  if (!supabase || !trimmed) return [];
 
-  const { data, error } = await supabase.functions.invoke<{
-    regionCode: string;
-    sigungu: string | null;
-    latitude: number;
-    longitude: number;
-    matchedName: string;
-  }>("geocode-address", { body: { query: trimmed } });
+  const { data, error } = await supabase.functions.invoke<{ candidates: LocationMatch[] }>("geocode-address", {
+    body: { query: trimmed },
+  });
 
-  if (error || !data) return null;
-
-  return {
-    regionCode: data.regionCode,
-    sigungu: data.sigungu,
-    latitude: data.latitude,
-    longitude: data.longitude,
-    matchedName: data.matchedName,
-  };
+  if (error || !data) return [];
+  return data.candidates ?? [];
 }
 
 /** 두 좌표 사이의 대략적인 거리(m). 정렬용이라 지구를 완전한 구로 가정하는 하버사인 공식이면 충분하다. */
