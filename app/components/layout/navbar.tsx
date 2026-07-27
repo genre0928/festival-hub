@@ -1,5 +1,5 @@
 import { PartyPopper } from "lucide-react";
-import { Link } from "react-router";
+import { Link, NavLink } from "react-router";
 import { SeasonToggle } from "~/components/season/season-toggle";
 import { TextSizeToggle } from "~/components/settings/text-size-toggle";
 import { LoginButton } from "~/components/auth/login-button";
@@ -7,6 +7,12 @@ import { UserMenu } from "~/components/auth/user-menu";
 import { SEASON_LABELS } from "~/lib/season";
 import { useSeason } from "~/hooks/use-season";
 import { useAuth } from "~/hooks/use-auth";
+import { cn } from "~/lib/utils";
+
+const NAV_ITEMS = [
+  { to: "/", label: "축제" },
+  { to: "/places", label: "지역 정보" },
+];
 
 export function Navbar() {
   const { season } = useSeason();
@@ -24,6 +30,26 @@ export function Navbar() {
             지금은 {SEASON_LABELS[season]}
           </span>
         </Link>
+
+        <nav className="flex items-center gap-1">
+          {NAV_ITEMS.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.to === "/"}
+              className={({ isActive }) =>
+                cn(
+                  "optical-center rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+                  isActive
+                    ? "bg-season-primary text-season-primary-foreground"
+                    : "text-season-muted hover:bg-season-secondary hover:text-season-surface-foreground",
+                )
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
 
         <div className="flex flex-wrap items-center justify-end gap-2">
           <TextSizeToggle />
