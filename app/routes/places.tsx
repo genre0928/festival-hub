@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigation, useSearchParams } from "react-router";
 import { Hotel, LayoutGrid, Landmark, Loader2, MapPin, Search, Utensils, X } from "lucide-react";
 import type { Route } from "./+types/places";
@@ -7,7 +7,6 @@ import { PlaceCard } from "~/components/places/place-card";
 import { PlaceMap } from "~/components/places/place-map";
 import { Card } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { Tabs, type TabItem } from "~/components/ui/tabs";
 import { getRegionByCode } from "~/components/map/region-data";
@@ -44,6 +43,7 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 type CategoryFilter = PlaceCategory | "all";
 
 const ALL_SIGUNGU_VALUE = "all";
+const LOCATION_SEARCH_DEBOUNCE_MS = 500;
 
 const CATEGORY_ITEMS: TabItem<CategoryFilter>[] = [
   { value: "all", label: "전체", icon: <LayoutGrid className="h-3.5 w-3.5" /> },
@@ -101,30 +101,45 @@ export default function Places({ loaderData }: Route.ComponentProps) {
     setLocationError(null);
   }
 
-  async function handleLocationSearch(e: React.FormEvent) {
-    e.preventDefault();
+  // 검색 버튼 없이, 입력이 잠시 멈추면(디바운스) 자동으로 찾는다 - 매 타이핑마다 API를
+  // 부르면 요청 수가 너무 많아지니 일정 시간 입력이 없을 때만 실행한다.
+  useEffect(() => {
     const trimmed = locationQuery.trim();
-    if (!trimmed) return;
+    if (!trimmed) {
+      setCandidates([]);
+      setLocationError(null);
+      return;
+    }
 
     setLocationSearching(true);
-    setLocationError(null);
-    setCandidates([]);
-    try {
-      const matches = await searchPlaceLocations(trimmed);
-      if (matches.length === 0) {
-        setLocationError("일치하는 위치를 찾지 못했어요. 지역명(예: 구미시)이나 근처 장소명(예: 구미시청)으로 다시 시도해보세요.");
-        return;
+    const timer = setTimeout(async () => {
+      setLocationError(null);
+      setCandidates([]);
+      try {
+        const matches = await searchPlaceLocations(trimmed);
+        if (matches.length === 0) {
+          setLocationError(
+            "일치하는 위치를 찾지 못했어요. 지역명(예: 구미시)이나 근처 장소명(예: 구미시청)으로 다시 시도해보세요.",
+          );
+          return;
+        }
+        if (matches.length === 1) {
+          applyLocation(matches[0]);
+          return;
+        }
+        // 같은 지명이 여러 지역에 있을 수 있어(예: "송정") 후보가 여럿이면 골라잡게 한다.
+        setCandidates(matches);
+      } finally {
+        setLocationSearching(false);
       }
-      if (matches.length === 1) {
-        applyLocation(matches[0]);
-        return;
-      }
-      // 같은 지명이 여러 지역에 있을 수 있어(예: "송정") 후보가 여럿이면 골라잡게 한다.
-      setCandidates(matches);
-    } finally {
+    }, LOCATION_SEARCH_DEBOUNCE_MS);
+
+    return () => {
+      clearTimeout(timer);
       setLocationSearching(false);
-    }
-  }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locationQuery]);
 
   function updateParam(key: string, value: string | null) {
     setSearchParams(
@@ -167,22 +182,21 @@ export default function Places({ loaderData }: Route.ComponentProps) {
           </p>
         </div>
 
-        {/* 지역을 이미 골랐어도 항상 열려 있어서, 새 검색어를 입력하면 바로 새 지역으로 바뀐다. */}
+        {/* 지역을 이미 골랐어도 항상 열려 있어서, 새 검색어를 입력하면 바로 새 지역으로 바뀐다.
+            버튼 없이 입력이 멈추면(디바운스) 자동으로 검색해서 아래에 결과/후보를 보여준다. */}
         <Card className="p-4">
-          <form onSubmit={handleLocationSearch} className="flex flex-col gap-2 sm:flex-row">
-            <div className="relative flex-1">
-              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-season-muted" />
-              <Input
-                value={locationQuery}
-                onChange={(e) => setLocationQuery(e.target.value)}
-                placeholder="지역명, 장소명으로 검색 (예: 구미시, 구미시청)"
-                className="pl-9"
-              />
-            </div>
-            <Button type="submit" disabled={locationSearching || !locationQuery.trim()}>
-              {locationSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : "검색"}
-            </Button>
-          </form>
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-season-muted" />
+            <Input
+              value={locationQuery}
+              onChange={(e) => setLocationQuery(e.target.value)}
+              placeholder="지역명, 장소명으로 검색 (예: 구미시, 구미시청)"
+              className="pl-9 pr-9"
+            />
+            {locationSearching && (
+              <Loader2 className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-season-muted" />
+            )}
+          </div>
 
           {locationError && <p className="mt-2 text-xs text-red-500">{locationError}</p>}
 
@@ -196,13 +210,12 @@ export default function Places({ loaderData }: Route.ComponentProps) {
                     key={`${candidate.regionCode}-${candidate.sigungu}`}
                     type="button"
                     onClick={() => applyLocation(candidate)}
-                    className="optical-center flex items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-sm hover:bg-season-secondary"
+                    className="optical-center flex items-center gap-2 rounded-xl px-3 py-2 text-left text-sm hover:bg-season-secondary"
                   >
                     <span className="font-medium text-season-surface-foreground">
                       {candidateRegion?.name}
                       {candidate.sigungu ? ` ${candidate.sigungu}` : ""}
                     </span>
-                    <span className="truncate text-xs text-season-muted">{candidate.matchedName}</span>
                   </button>
                 );
               })}

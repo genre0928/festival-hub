@@ -40,14 +40,26 @@ export function PlaceMap({ centerLat, centerLng, places, selectedPlaceId, onSele
         return { place: p, dx, dy, dist: Math.hypot(dx, dy) };
       });
 
-    const maxDist = Math.max(1e-9, ...withOffsets.map((o) => o.dist));
-    const scale = MAX_RADIUS / maxDist;
+    // 가장 먼 점 하나를 기준으로 스케일을 잡으면, 그 점이 유독 멀리 떨어져 있을 때
+    // 나머지 대부분이 중심 근처에 겹쳐 찍혀 "1개만 보이는" 것처럼 보이는 문제가 있었다.
+    // 90번째 백분위 거리를 기준으로 스케일을 잡고, 그보다 먼 점은 화면 가장자리에
+    // 붙여서(clamp) 소수의 원거리 이상치가 전체 스케일을 망치지 않게 한다.
+    const sortedDist = withOffsets.map((o) => o.dist).sort((a, b) => a - b);
+    const percentileIdx = Math.min(sortedDist.length - 1, Math.floor(sortedDist.length * 0.9));
+    const referenceDist = Math.max(1e-9, sortedDist[percentileIdx] ?? 1e-9);
+    const scale = MAX_RADIUS / referenceDist;
 
-    return withOffsets.map(({ place, dx, dy }) => ({
-      ...place,
-      x: CENTER + dx * scale,
-      y: CENTER + dy * scale,
-    }));
+    return withOffsets.map(({ place, dx, dy }) => {
+      const rawX = dx * scale;
+      const rawY = dy * scale;
+      const rawDist = Math.hypot(rawX, rawY);
+      const clamp = rawDist > MAX_RADIUS ? MAX_RADIUS / rawDist : 1;
+      return {
+        ...place,
+        x: CENTER + rawX * clamp,
+        y: CENTER + rawY * clamp,
+      };
+    });
   }, [places, centerLat, centerLng]);
 
   return (
@@ -106,7 +118,9 @@ export function PlaceMap({ centerLat, centerLng, places, selectedPlaceId, onSele
         <circle cx={CENTER} cy={CENTER} r={3} fill="white" />
       </svg>
 
-      <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-season-muted">
+      {/* 4개 항목이 좁은 폭에서 flex-wrap으로 줄바꿈되면 2+1+1처럼 삐뚤빼뚤해 보여서,
+          2x2 grid로 고정하고 넓어지면(sm+) 원래대로 한 줄 flex로 되돌린다. */}
+      <div className="mt-2 grid grid-cols-2 justify-items-center gap-x-3 gap-y-1 text-[11px] text-season-muted sm:flex sm:flex-wrap sm:justify-center">
         <LegendItem color="var(--color-season-primary)" label="검색 위치" />
         {(Object.keys(PLACE_CATEGORY_LABELS) as PlaceCategory[]).map((c) => (
           <LegendItem key={c} color={CATEGORY_COLORS[c]} label={PLACE_CATEGORY_LABELS[c]} />
