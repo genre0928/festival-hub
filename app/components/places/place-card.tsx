@@ -5,7 +5,6 @@ import { PLACE_CATEGORY_LABELS } from "~/lib/places";
 import { getRegionByCode } from "~/components/map/region-data";
 import { Card } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
-import { cn } from "~/lib/utils";
 
 const CATEGORY_ICONS: Record<PlaceCategory, typeof Landmark> = {
   attraction: Landmark,
@@ -23,12 +22,17 @@ function naverMapSearchUrl(query: string): string {
   return `https://map.naver.com/v5/search/${encodeURIComponent(query)}`;
 }
 
-interface PlaceCardProps {
-  place: Place;
-  onSelectRegion?: (regionCode: string, sigungu?: string | null) => void;
+function formatDistance(distanceMeters: number): string {
+  return distanceMeters < 1000 ? `${Math.round(distanceMeters)}m` : `${(distanceMeters / 1000).toFixed(1)}km`;
 }
 
-export function PlaceCard({ place, onSelectRegion }: PlaceCardProps) {
+interface PlaceCardProps {
+  place: Place;
+  /** 기준 좌표에서의 거리(m). 있으면 배지로 표시한다(검색으로 지역을 찾았을 때). */
+  distanceMeters?: number;
+}
+
+export function PlaceCard({ place, distanceMeters }: PlaceCardProps) {
   const region = getRegionByCode(place.regionCode);
   const Icon = CATEGORY_ICONS[place.category];
   const [imageFailed, setImageFailed] = useState(false);
@@ -52,26 +56,23 @@ export function PlaceCard({ place, onSelectRegion }: PlaceCardProps) {
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-2">
           <h3 className="truncate font-semibold text-season-surface-foreground">{place.name}</h3>
-          <Badge variant={CATEGORY_BADGE_VARIANT[place.category]} className="shrink-0">
-            {PLACE_CATEGORY_LABELS[place.category]}
-          </Badge>
+          <div className="flex shrink-0 items-center gap-1.5">
+            {distanceMeters != null && (
+              <span className="whitespace-nowrap text-xs text-season-muted">{formatDistance(distanceMeters)}</span>
+            )}
+            <Badge variant={CATEGORY_BADGE_VARIANT[place.category]} className="shrink-0">
+              {PLACE_CATEGORY_LABELS[place.category]}
+            </Badge>
+          </div>
         </div>
 
         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-season-muted">
           <span className="inline-flex min-w-0 items-center gap-1">
             <MapPin className="h-3.5 w-3.5 shrink-0" />
-            {region ? (
-              <button
-                type="button"
-                onClick={() => onSelectRegion?.(place.regionCode, place.sigungu)}
-                className={cn("truncate", onSelectRegion && "hover:text-season-primary hover:underline")}
-              >
-                {region.name}
-                {place.sigungu ? ` ${place.sigungu}` : ""}
-              </button>
-            ) : (
-              <span className="truncate">{place.address}</span>
-            )}
+            <span className="truncate">
+              {region?.name}
+              {place.sigungu ? ` ${place.sigungu}` : ""}
+            </span>
           </span>
           {place.tel && (
             <span className="inline-flex items-center gap-1">
