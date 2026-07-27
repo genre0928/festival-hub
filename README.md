@@ -78,6 +78,16 @@ npm run dev
    );
    ```
 
+## 지역 정보 페이지 (관광지·숙소·음식점)
+
+`/places`는 축제가 아니라 **지역을 기준**으로 관광지/숙소/음식점을 모아보는 페이지다([`app/routes/places.tsx`](app/routes/places.tsx)). 지역 하나를 고르면 그 지역의 `places`만 Supabase에 쿼리해서 가져온다(전체를 한 번에 불러오면 PostgREST 기본 행 제한 1000건에 걸려 일부만 조회되는 문제가 있었음).
+
+데이터는 [`supabase/functions/sync-places`](supabase/functions/sync-places/index.ts) Edge Function이 TourAPI **`areaBasedList2`**(지역기반 관광정보 조회, `searchFestival2`와 다른 엔드포인트)로 지역×콘텐츠타입(관광지=12, 숙박=32, 음식점=39) 조합마다 채운다. 지역 코드는 TourAPI 자체 `areaCode` 체계(서울=1, 부산=6, 경기=31 ...)를 쓰는데, 이는 `sync-festivals`가 쓰는 법정동 시도코드(`lDongRegnCd`)와 **다른 체계**라 별도로 매핑해뒀다([`supabase/functions/_shared/tour-area-codes.ts`](supabase/functions/_shared/tour-area-codes.ts)).
+
+- 배포: `supabase functions deploy sync-places`
+- 수동 실행(조합당 페이지 수 조절, 기본 1페이지=최대 100건/조합): `supabase functions invoke sync-places --body '{"maxPagesPerCombo":2}'`
+- 자동 실행: `sync-places-daily` cron이 매일 UTC 19:30(KST 04:30, `sync-festivals`/`send-new-festival-alerts`보다 뒤)에 실행되도록 이미 등록돼 있음.
+
 ## 축제 상세 모달 (주변 관광지·음식점·숙소)
 
 축제 카드를 클릭하면 상세 모달이 열린다([`app/components/festival/festival-detail-modal.tsx`](app/components/festival/festival-detail-modal.tsx)):
