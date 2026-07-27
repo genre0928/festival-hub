@@ -1,12 +1,12 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigation, useSearchParams } from "react-router";
-import { Hotel, LayoutGrid, Landmark, Loader2, Search, Utensils } from "lucide-react";
+import { Hotel, LayoutGrid, Landmark, Loader2, MapPin, Search, Utensils, X } from "lucide-react";
 import type { Route } from "./+types/places";
 import { AppLayout } from "~/components/layout/app-layout";
-import { RegionMap } from "~/components/map/region-map";
 import { PlaceCard } from "~/components/places/place-card";
 import { Card } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { Tabs, type TabItem } from "~/components/ui/tabs";
 import { getRegionByCode } from "~/components/map/region-data";
@@ -14,7 +14,8 @@ import {
   getPlaceSigunguOptions,
   getPlaces,
   filterPlaces,
-  type Place,
+  searchPlaceLocation,
+  sortPlacesByDistance,
   type PlaceCategory,
   type PlaceFilters,
 } from "~/lib/places";
@@ -53,6 +54,9 @@ export default function Places({ loaderData }: Route.ComponentProps) {
   const places = loaderData.places;
   const [searchParams, setSearchParams] = useSearchParams();
   const [localQuery, setLocalQuery] = useState(searchParams.get("q") ?? "");
+  const [locationQuery, setLocationQuery] = useState("");
+  const [locationSearching, setLocationSearching] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
   const navigation = useNavigation();
   const isLoadingRegion = navigation.state === "loading";
 
@@ -60,6 +64,13 @@ export default function Places({ loaderData }: Route.ComponentProps) {
   const sigungu = searchParams.get("sigungu");
   const category = (searchParams.get("category") as CategoryFilter | null) ?? "all";
   const query = searchParams.get("q") ?? "";
+  const refLat = searchParams.get("lat");
+  const refLng = searchParams.get("lng");
+  const referencePoint = refLat && refLng ? { lat: Number(refLat), lng: Number(refLng) } : null;
+
+  useEffect(() => {
+    setLocalQuery(searchParams.get("q") ?? "");
+  }, [searchParams]);
 
   function updateParam(key: string, value: string | null) {
     setSearchParams(
@@ -73,18 +84,49 @@ export default function Places({ loaderData }: Route.ComponentProps) {
     );
   }
 
-  function selectRegion(code: string | null, nextSigungu?: string | null) {
+  function clearRegion() {
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev);
-        if (code) next.set("region", code);
-        else next.delete("region");
-        if (code && nextSigungu) next.set("sigungu", nextSigungu);
-        else next.delete("sigungu");
+        for (const key of ["region", "sigungu", "lat", "lng", "category", "q"]) next.delete(key);
         return next;
       },
       { replace: true, preventScrollReset: true },
     );
+    setLocationQuery("");
+    setLocationError(null);
+  }
+
+  async function handleLocationSearch(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = locationQuery.trim();
+    if (!trimmed) return;
+
+    setLocationSearching(true);
+    setLocationError(null);
+    try {
+      const match = await searchPlaceLocation(trimmed);
+      if (!match) {
+        setLocationError(
+          "일치하는 위치를 찾지 못했어요. 지역명(예: 구미시)이나 근처 장소명(예: 구미시청)으로 다시 시도해보세요.",
+        );
+        return;
+      }
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.set("region", match.regionCode);
+          if (match.sigungu) next.set("sigungu", match.sigungu);
+          else next.delete("sigungu");
+          next.set("lat", String(match.latitude));
+          next.set("lng", String(match.longitude));
+          return next;
+        },
+        { replace: true, preventScrollReset: true },
+      );
+    } finally {
+      setLocationSearching(false);
+    }
   }
 
   const filters: PlaceFilters = useMemo(
@@ -94,6 +136,10 @@ export default function Places({ loaderData }: Route.ComponentProps) {
 
   const sigunguOptions = useMemo(() => getPlaceSigunguOptions(places, regionCode), [places, regionCode]);
   const filteredPlaces = useMemo(() => filterPlaces(places, filters), [places, filters]);
+  const sortedPlaces = useMemo(
+    () => sortPlacesByDistance(filteredPlaces, referencePoint),
+    [filteredPlaces, referencePoint],
+  );
 
   const region = regionCode ? getRegionByCode(regionCode) : null;
 
@@ -103,68 +149,83 @@ export default function Places({ loaderData }: Route.ComponentProps) {
         <div>
           <h1 className="text-xl font-bold text-season-surface-foreground">지역 정보</h1>
           <p className="mt-1 text-sm text-season-muted">
-            지역을 선택하면 그 지역의 관광지·숙소·음식점 정보를 모아볼 수 있어요.
+            지역명이나 장소명으로 검색하면 그 지역의 관광지·숙소·음식점을 가까운 순으로 모아볼 수 있어요.
           </p>
         </div>
 
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <div className="relative flex-1">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-season-muted" />
-            <Input
-              value={localQuery}
-              onChange={(e) => {
-                setLocalQuery(e.target.value);
-                updateParam("q", e.target.value || null);
-              }}
-              placeholder="이름, 주소로 검색"
-              className="pl-9"
-            />
-          </div>
-
-          <div className="sm:w-40">
-            <Select
-              value={sigungu ?? ALL_SIGUNGU_VALUE}
-              onValueChange={(value) => updateParam("sigungu", value === ALL_SIGUNGU_VALUE ? null : value)}
-              disabled={!regionCode || sigunguOptions.length === 0}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="상세지역" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={ALL_SIGUNGU_VALUE}>전체 시/군/구</SelectItem>
-                {sigunguOptions.map((name) => (
-                  <SelectItem key={name} value={name}>
-                    {name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <div className="grid min-w-0 gap-6 lg:grid-cols-2">
-          <Card className="flex min-w-0 flex-col gap-3 p-4 lg:sticky lg:top-24 lg:h-[calc(100vh-7.5rem)]">
-            <div className="flex items-center justify-between">
-              <h2 className="font-semibold text-season-surface-foreground">
-                {region ? `${region.name}${sigungu ? ` ${sigungu}` : ""}` : "지역을 선택해주세요"}
-              </h2>
-              {regionCode && (
-                <button
-                  type="button"
-                  onClick={() => selectRegion(null)}
-                  className="text-xs text-season-muted hover:text-season-primary"
-                >
-                  선택 해제
-                </button>
-              )}
-            </div>
-            <div className="min-h-[320px] flex-1 lg:min-h-0">
-              <RegionMap selectedRegion={regionCode} onSelectRegion={(code) => selectRegion(code)} />
-            </div>
-            <p className="text-center text-xs text-season-muted">지역을 클릭해서 그 지역 정보만 볼 수 있어요</p>
+        {!regionCode ? (
+          <Card className="p-4">
+            <form onSubmit={handleLocationSearch} className="flex flex-col gap-2 sm:flex-row">
+              <div className="relative flex-1">
+                <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-season-muted" />
+                <Input
+                  value={locationQuery}
+                  onChange={(e) => setLocationQuery(e.target.value)}
+                  placeholder="지역명, 장소명으로 검색 (예: 구미시, 구미시청)"
+                  className="pl-9"
+                />
+              </div>
+              <Button type="submit" disabled={locationSearching || !locationQuery.trim()}>
+                {locationSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : "검색"}
+              </Button>
+            </form>
+            {locationError && <p className="mt-2 text-xs text-red-500">{locationError}</p>}
           </Card>
+        ) : (
+          <Card className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5">
+            <span className="flex items-center gap-1.5 text-sm text-season-surface-foreground">
+              <MapPin className="h-4 w-4 shrink-0 text-season-primary" />
+              {region?.name}
+              {sigungu ? ` ${sigungu}` : ""}
+            </span>
+            <button
+              type="button"
+              onClick={clearRegion}
+              className="flex shrink-0 items-center gap-1 text-xs text-season-muted hover:text-season-primary"
+            >
+              <X className="h-3.5 w-3.5" />
+              다른 지역 검색
+            </button>
+          </Card>
+        )}
 
-          <div className="flex min-w-0 flex-col gap-4">
+        {regionCode && (
+          <>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <div className="relative flex-1">
+                <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-season-muted" />
+                <Input
+                  value={localQuery}
+                  onChange={(e) => {
+                    setLocalQuery(e.target.value);
+                    updateParam("q", e.target.value || null);
+                  }}
+                  placeholder="이 지역 안에서 이름, 주소로 검색"
+                  className="pl-9"
+                />
+              </div>
+
+              <div className="sm:w-40">
+                <Select
+                  value={sigungu ?? ALL_SIGUNGU_VALUE}
+                  onValueChange={(value) => updateParam("sigungu", value === ALL_SIGUNGU_VALUE ? null : value)}
+                  disabled={sigunguOptions.length === 0}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="상세지역" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={ALL_SIGUNGU_VALUE}>전체 시/군/구</SelectItem>
+                    {sigunguOptions.map((name) => (
+                      <SelectItem key={name} value={name}>
+                        {name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
             <div className="flex flex-wrap items-center gap-2">
               <Tabs
                 items={CATEGORY_ITEMS}
@@ -173,27 +234,23 @@ export default function Places({ loaderData }: Route.ComponentProps) {
               />
               <span className="ml-auto flex shrink-0 items-center gap-1.5 text-sm text-season-muted">
                 {isLoadingRegion && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                {filteredPlaces.length}건
+                {sortedPlaces.length}건
               </span>
             </div>
 
-            {!regionCode ? (
-              <div className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-season-border py-16 text-center text-season-muted">
-                <p className="text-sm">지도에서 지역을 선택하면 정보를 볼 수 있어요.</p>
-              </div>
-            ) : filteredPlaces.length === 0 ? (
+            {sortedPlaces.length === 0 ? (
               <div className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-season-border py-16 text-center text-season-muted">
                 <p className="text-sm">조건에 맞는 정보가 없어요. 필터를 조정해보세요.</p>
               </div>
             ) : (
               <div className="flex flex-col gap-3">
-                {filteredPlaces.map((place: Place) => (
-                  <PlaceCard key={place.id} place={place} onSelectRegion={selectRegion} />
+                {sortedPlaces.map((place) => (
+                  <PlaceCard key={place.id} place={place} distanceMeters={place.distanceMeters} />
                 ))}
               </div>
             )}
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </AppLayout>
   );
