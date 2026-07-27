@@ -92,16 +92,32 @@ Deno.serve(async (_req) => {
 
     const subscribers = (subscriberRows ?? []) as ActiveSubscriber[];
 
+    // 관심없음으로 표시한 축제는 그 사람에게 보내는 안내에서는 빼준다.
+    const { data: notInterestedRows, error: notInterestedError } = await supabase
+      .from("festival_preferences")
+      .select("user_id, festival_id")
+      .eq("preference", "not_interested");
+    if (notInterestedError) throw new Error(`관심없음 조회 실패: ${notInterestedError.message}`);
+
+    const notInterestedByUser = new Map<string, Set<string>>();
+    for (const row of notInterestedRows ?? []) {
+      const set = notInterestedByUser.get(row.user_id) ?? new Set<string>();
+      set.add(row.festival_id);
+      notInterestedByUser.set(row.user_id, set);
+    }
+
     const { attempted, sent } = await sendToSubscribers(
       supabase,
       subscribers,
       kakaoRestApiKey,
       kakaoClientSecret,
       (subscriber) => {
-        const relevant =
+        const notInterested = notInterestedByUser.get(subscriber.user_id);
+        const relevant = (
           subscriber.regions.length === 0
             ? pendingFestivals
-            : pendingFestivals.filter((f) => subscriber.regions.includes(f.region_code));
+            : pendingFestivals.filter((f) => subscriber.regions.includes(f.region_code))
+        ).filter((f) => !notInterested?.has(f.id));
         return buildMessageForSubscriber(relevant, regionNames, siteUrl);
       },
     );
