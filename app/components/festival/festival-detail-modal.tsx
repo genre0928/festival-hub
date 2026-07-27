@@ -376,16 +376,22 @@ export function FestivalDetailModal({
                   {region && !festival.address.startsWith(region.name) ? `${region.name} ` : ""}
                   {festival.address}
                 </span>
-                {region && (
-                  <Link
-                    to={`/places?region=${region.code}${festival.sigungu ? `&sigungu=${encodeURIComponent(festival.sigungu)}` : ""}`}
-                    onClick={(e) => e.stopPropagation()}
-                    className="shrink-0 whitespace-nowrap text-xs font-medium text-season-primary hover:underline"
-                  >
-                    이 지역 정보 보기 →
-                  </Link>
-                )}
               </p>
+              {/*
+                주소가 길면 여러 줄로 줄바꿈되는데, 링크를 주소와 한 줄에 나란히 두면(flex
+                items-center) 줄바꿈된 주소 블록 한가운데에 링크가 떠 있는 것처럼 보였다.
+                주소 길이와 무관하게 항상 깔끔하도록 링크를 아예 별도 줄로 빼고, 아이콘 폭만큼
+                들여써서 주소 텍스트와 같은 시작선에 맞춘다.
+              */}
+              {region && (
+                <Link
+                  to={`/places?region=${region.code}${festival.sigungu ? `&sigungu=${encodeURIComponent(festival.sigungu)}` : ""}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="ml-[22px] inline-block text-xs font-medium text-season-primary hover:underline"
+                >
+                  이 지역 정보 보기 →
+                </Link>
+              )}
               <p className="text-season-muted">{formatDateRange(festival.startDate, festival.endDate)}</p>
             </div>
 
