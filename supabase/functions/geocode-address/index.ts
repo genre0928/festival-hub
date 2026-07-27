@@ -7,13 +7,28 @@
 // 최대 100건만 동기화해둔 표본이라 커버리지가 좁아(예: 특정 도로명이 표본에 없으면
 // 매칭 실패) 실제 임의의 주소 검색에는 부적합했다.
 //
-// 요청: POST { query: string }
-// 응답: { regionCode, sigungu, latitude, longitude, matchedName, address } | { error }
+// 같은 지명이 여러 지역에 있을 수 있어(예: "송정" - 부산 송정, 구미 송정동 등) 검색
+// 결과를 하나로 단정하지 않고, 네이버 지역검색 결과(최대 5개, API 자체 한도)를 지역+
+// 시군구 기준으로 중복 제거해 후보 목록으로 돌려준다. 프론트에서 후보가 여럿이면
+// 드롭다운으로 고르게 하고, 하나뿐이면 바로 적용한다.
 //
-// 필요한 시크릿: NAVER_CLIENT_ID, NAVER_CLIENT_SECRET (nearby-info와 동일)
+// 요청: POST { query: string }
+// 응답: { candidates: Array<{ regionCode, sigungu, latitude, longitude, matchedName, address }> } | { error }
+//
+// 네이버 지역검색은 인기도/관련도 순으로 최대 5개만 주기 때문에, 같은 지명이 여러
+// 지역에 있어도 유명한 한 지역(예: "송정" -> 부산 송정해수욕장)만 상위에 몰릴 수 있다.
+// 이를 보완하려고 우리 자체 places 테이블(sigungu/주소에 검색어가 들어간 것)도 함께
+// 찾아서 후보에 합친다 - 이미 4천 건 넘게 동기화해둔 실제 지역 데이터라 네이버 결과에
+// 없는 지역을 추가로 드러내줄 수 있다.
+//
+// 필요한 시크릿: NAVER_CLIENT_ID, NAVER_CLIENT_SECRET (nearby-info와 동일),
+//   SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY (런타임 자동 주입)
 // 배포: supabase functions deploy geocode-address
 
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
 const NAVER_LOCAL_SEARCH_URL = "https://openapi.naver.com/v1/search/local.json";
+const MAX_CANDIDATES = 8;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -95,7 +110,7 @@ Deno.serve(async (req) => {
 
     const url = new URL(NAVER_LOCAL_SEARCH_URL);
     url.searchParams.set("query", query);
-    url.searchParams.set("display", "1");
+    url.searchParams.set("display", "5"); // 네이버 지역검색 자체 한도(최대 5)
 
     const res = await fetch(url, {
       headers: {
@@ -109,34 +124,77 @@ Deno.serve(async (req) => {
     }
     const json = await res.json();
     const items: NaverLocalItem[] = json.items ?? [];
-    const match = items[0];
 
-    if (!match) {
+    const seen = new Set<string>();
+    const candidates: {
+      regionCode: string;
+      sigungu: string | null;
+      latitude: number;
+      longitude: number;
+      matchedName: string;
+      address: string;
+    }[] = [];
+
+    for (const item of items) {
+      const addressText = (item.roadAddress || item.address).trim();
+      const regionCode = resolveRegionCode(addressText);
+      if (!regionCode) continue;
+
+      const sigungu = extractSigungu(addressText);
+      const dedupeKey = `${regionCode}|${sigungu ?? ""}`;
+      if (seen.has(dedupeKey)) continue;
+      seen.add(dedupeKey);
+
+      // 네이버 지역검색은 mapx/mapy를 WGS84 좌표 * 10^7 정수로 준다(nearby-info와 동일 규칙).
+      candidates.push({
+        regionCode,
+        sigungu,
+        latitude: Number(item.mapy) / 10000000,
+        longitude: Number(item.mapx) / 10000000,
+        matchedName: stripHtmlTags(item.title),
+        address: addressText,
+      });
+    }
+
+    // 네이버 결과에 없는 지역을 우리 자체 places 데이터로 보완한다.
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (supabaseUrl && serviceRoleKey && candidates.length < MAX_CANDIDATES) {
+      const supabase = createClient(supabaseUrl, serviceRoleKey);
+      const { data: placeRows } = await supabase
+        .from("places")
+        .select("name, region_code, sigungu, address, latitude, longitude")
+        .or(`sigungu.ilike.%${query}%,address.ilike.%${query}%`)
+        .not("latitude", "is", null)
+        .not("longitude", "is", null)
+        .limit(20);
+
+      for (const row of placeRows ?? []) {
+        if (candidates.length >= MAX_CANDIDATES) break;
+        const dedupeKey = `${row.region_code}|${row.sigungu ?? ""}`;
+        if (seen.has(dedupeKey)) continue;
+        seen.add(dedupeKey);
+
+        candidates.push({
+          regionCode: row.region_code,
+          sigungu: row.sigungu,
+          latitude: row.latitude,
+          longitude: row.longitude,
+          matchedName: row.name,
+          address: row.address,
+        });
+      }
+    }
+
+    if (candidates.length === 0) {
       return new Response(
         JSON.stringify({ error: "일치하는 위치를 찾지 못했습니다." }),
         { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
 
-    const addressText = (match.roadAddress || match.address).trim();
-    const regionCode = resolveRegionCode(addressText);
-    if (!regionCode) {
-      return new Response(
-        JSON.stringify({ error: "검색 결과의 지역을 판별하지 못했습니다." }),
-        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
-    }
-
-    // 네이버 지역검색은 mapx/mapy를 WGS84 좌표 * 10^7 정수로 준다(nearby-info와 동일 규칙).
     return new Response(
-      JSON.stringify({
-        regionCode,
-        sigungu: extractSigungu(addressText),
-        latitude: Number(match.mapy) / 10000000,
-        longitude: Number(match.mapx) / 10000000,
-        matchedName: stripHtmlTags(match.title),
-        address: addressText,
-      }),
+      JSON.stringify({ candidates }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {
