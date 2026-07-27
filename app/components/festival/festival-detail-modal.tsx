@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router";
 import {
   Check,
   EyeOff,
@@ -371,8 +372,19 @@ export function FestivalDetailModal({
             <div className="mt-4 space-y-1.5 text-sm">
               <p className="flex items-start gap-1.5 text-season-surface-foreground">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-season-muted" />
-                {region && !festival.address.startsWith(region.name) ? `${region.name} ` : ""}
-                {festival.address}
+                <span>
+                  {region && !festival.address.startsWith(region.name) ? `${region.name} ` : ""}
+                  {festival.address}
+                </span>
+                {region && (
+                  <Link
+                    to={`/places?region=${region.code}${festival.sigungu ? `&sigungu=${encodeURIComponent(festival.sigungu)}` : ""}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="shrink-0 whitespace-nowrap text-xs font-medium text-season-primary hover:underline"
+                  >
+                    이 지역 정보 보기 →
+                  </Link>
+                )}
               </p>
               <p className="text-season-muted">{formatDateRange(festival.startDate, festival.endDate)}</p>
             </div>

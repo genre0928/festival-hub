@@ -81,6 +81,29 @@ export type FestivalPreferenceRow = {
   created_at: string;
 };
 
+export type PlaceCategory = "attraction" | "lodging" | "restaurant";
+
+/** 지역별 관광지/숙소/음식점 정보(TourAPI areaBasedList2 동기화) */
+export type PlaceRow = {
+  id: string;
+  name: string;
+  description: string;
+  category: PlaceCategory;
+  region_code: string;
+  sigungu: string | null;
+  address: string;
+  tel: string | null;
+  tags: string[];
+  image_url: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  source_url: string | null;
+  external_id: string;
+  source: string;
+  created_at: string;
+  updated_at: string;
+};
+
 /**
  * supabase-js의 createClient<Database>()에 전달할 최소 스키마 타입.
  * @supabase/postgrest-js의 GenericTable/GenericSchema가 Relationships/Functions 필드를
@@ -127,6 +150,12 @@ export type Database = {
         Row: FestivalPreferenceRow;
         Insert: Pick<FestivalPreferenceRow, "user_id" | "festival_id" | "preference">;
         Update: Partial<FestivalPreferenceRow>;
+        Relationships: [];
+      };
+      places: {
+        Row: PlaceRow;
+        Insert: Partial<PlaceRow> & Pick<PlaceRow, "name" | "category" | "region_code" | "external_id">;
+        Update: Partial<PlaceRow>;
         Relationships: [];
       };
     };
