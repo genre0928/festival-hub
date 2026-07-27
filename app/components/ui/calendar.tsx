@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { DayPicker, type DayContentProps } from "react-day-picker";
+import { DayPicker, type DateRange, type DayContentProps } from "react-day-picker";
 import { ko } from "date-fns/locale";
 import { cn } from "~/lib/utils";
 
@@ -27,12 +27,38 @@ function CalendarDayContent({ date, activeModifiers }: DayContentProps) {
   );
 }
 
-function Calendar({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) {
+function Calendar({
+  className,
+  classNames,
+  showOutsideDays = true,
+  modifiers,
+  modifiersClassNames,
+  ...props
+}: CalendarProps) {
+  // range 선택에서 한 주가 전부 범위에 포함되면 그 줄의 일요일/토요일 칸도 둥글게 캡을
+  // 씌워서, 여러 주에 걸친 긴 기간이 주 단위로 끊어진 알약 모양의 띠처럼 보이게 한다.
+  const selectedRange = props.mode === "range" ? (props.selected as DateRange | undefined) : undefined;
+  function isInSelectedRange(date: Date): boolean {
+    if (!selectedRange?.from) return false;
+    const to = selectedRange.to ?? selectedRange.from;
+    return date >= selectedRange.from && date <= to;
+  }
+
   return (
     <DayPicker
       locale={ko}
       showOutsideDays={showOutsideDays}
       className={cn("p-1", className)}
+      modifiers={{
+        ...modifiers,
+        weekRowStart: (date) => isInSelectedRange(date) && date.getDay() === 0,
+        weekRowEnd: (date) => isInSelectedRange(date) && date.getDay() === 6,
+      }}
+      modifiersClassNames={{
+        ...modifiersClassNames,
+        weekRowStart: "rounded-l-full",
+        weekRowEnd: "rounded-r-full",
+      }}
       classNames={{
         months: "flex flex-col sm:flex-row gap-2",
         month: "flex flex-col gap-3",
@@ -57,10 +83,12 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         day_outside: "text-season-muted opacity-40",
         day_disabled: "text-season-muted opacity-30",
         // 기간(range) 선택은 하루하루를 따로 동그라미 치면 산만해서, 시작/끝만 둥글게 캡을
-        // 씌우고 가운데는 각지게 이어 붙여 하나의 띠처럼 보이게 한다.
+        // 씌우고 가운데는 각지게 이어 붙여 하나의 띠처럼 보이게 한다. 시작일/종료일을 굳이
+        // 구분할 필요는 없어서 셋 다 같은 색으로 채운다(주 전체가 범위에 포함되면
+        // weekRowStart/End 모디파이어가 그 줄의 일/토요일 칸도 마저 둥글게 캡을 씌워준다).
         day_range_start: "rounded-l-full rounded-r-none bg-season-primary text-season-primary-foreground",
         day_range_end: "rounded-r-full rounded-l-none bg-season-primary text-season-primary-foreground",
-        day_range_middle: "rounded-none bg-season-secondary text-season-surface-foreground",
+        day_range_middle: "rounded-none bg-season-primary text-season-primary-foreground",
         day_hidden: "invisible",
         ...classNames,
       }}
