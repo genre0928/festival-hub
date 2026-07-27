@@ -385,7 +385,7 @@ export function FestivalDetailModal({
               */}
               {region && (
                 <Link
-                  to={`/places?region=${region.code}${festival.sigungu ? `&sigungu=${encodeURIComponent(festival.sigungu)}` : ""}`}
+                  to={`/places?region=${region.code}${festival.sigungu ? `&sigungu=${encodeURIComponent(festival.sigungu)}` : ""}${festivalCoords ? `&lat=${festivalCoords.lat}&lng=${festivalCoords.lng}` : ""}`}
                   onClick={(e) => e.stopPropagation()}
                   className="ml-[22px] inline-block text-xs font-medium text-season-primary hover:underline"
                 >
