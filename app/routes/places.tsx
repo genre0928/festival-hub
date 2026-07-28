@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { useNavigation, useSearchParams } from "react-router";
 import { Hotel, LayoutGrid, Landmark, Loader2, MapPin, Search, Utensils, X } from "lucide-react";
 import type { Route } from "./+types/places";
@@ -10,6 +10,7 @@ import { Input } from "~/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { Tabs, type TabItem } from "~/components/ui/tabs";
 import { getRegionByCode } from "~/components/map/region-data";
+import { cn } from "~/lib/utils";
 import {
   getPlaceSigunguOptions,
   getPlaces,
@@ -60,6 +61,7 @@ export default function Places({ loaderData }: Route.ComponentProps) {
   const [locationSearching, setLocationSearching] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [candidates, setCandidates] = useState<LocationMatch[]>([]);
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
   const navigation = useNavigation();
   const isLoadingRegion = navigation.state === "loading";
@@ -87,6 +89,7 @@ export default function Places({ loaderData }: Route.ComponentProps) {
       },
       { replace: true, preventScrollReset: true },
     );
+    setLocationQuery("");
     setLocalQuery("");
     setCandidates([]);
     setLocationError(null);
@@ -103,6 +106,8 @@ export default function Places({ loaderData }: Route.ComponentProps) {
 
   // 검색 버튼 없이, 입력이 잠시 멈추면(디바운스) 자동으로 찾는다 - 매 타이핑마다 API를
   // 부르면 요청 수가 너무 많아지니 일정 시간 입력이 없을 때만 실행한다.
+  // 결과는 개수와 상관없이(1개여도) 드롭다운으로 보여주고, 화살표 키/클릭/Enter로
+  // 직접 골라야 지역이 바뀐다 - 검색만 했는데 바로 지역이 전환돼버리는 걸 막기 위함.
   useEffect(() => {
     const trimmed = locationQuery.trim();
     if (!trimmed) {
@@ -115,6 +120,7 @@ export default function Places({ loaderData }: Route.ComponentProps) {
     const timer = setTimeout(async () => {
       setLocationError(null);
       setCandidates([]);
+      setHighlightedIndex(0);
       try {
         const matches = await searchPlaceLocations(trimmed);
         if (matches.length === 0) {
@@ -123,11 +129,6 @@ export default function Places({ loaderData }: Route.ComponentProps) {
           );
           return;
         }
-        if (matches.length === 1) {
-          applyLocation(matches[0]);
-          return;
-        }
-        // 같은 지명이 여러 지역에 있을 수 있어(예: "송정") 후보가 여럿이면 골라잡게 한다.
         setCandidates(matches);
       } finally {
         setLocationSearching(false);
@@ -140,6 +141,24 @@ export default function Places({ loaderData }: Route.ComponentProps) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locationQuery]);
+
+  function handleLocationKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (candidates.length === 0) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedIndex((i) => (i + 1) % candidates.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex((i) => (i - 1 + candidates.length) % candidates.length);
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const match = candidates[highlightedIndex] ?? candidates[0];
+      if (match) applyLocation(match);
+    } else if (e.key === "Escape") {
+      setCandidates([]);
+    }
+  }
 
   function updateParam(key: string, value: string | null) {
     setSearchParams(
@@ -190,8 +209,12 @@ export default function Places({ loaderData }: Route.ComponentProps) {
             <Input
               value={locationQuery}
               onChange={(e) => setLocationQuery(e.target.value)}
+              onKeyDown={handleLocationKeyDown}
               placeholder="지역명, 장소명으로 검색 (예: 구미시, 구미시청)"
               className="pl-9 pr-9"
+              role="combobox"
+              aria-expanded={candidates.length > 0}
+              aria-activedescendant={candidates.length > 0 ? `location-candidate-${highlightedIndex}` : undefined}
             />
             {locationSearching && (
               <Loader2 className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-season-muted" />
@@ -200,17 +223,31 @@ export default function Places({ loaderData }: Route.ComponentProps) {
 
           {locationError && <p className="mt-2 text-xs text-red-500">{locationError}</p>}
 
-          {candidates.length > 1 && (
-            <div className="mt-3 flex flex-col gap-1 border-t border-season-border pt-3">
-              <p className="text-xs text-season-muted">같은 이름의 장소가 여러 지역에 있어요. 하나를 골라주세요.</p>
-              {candidates.map((candidate) => {
+          {/* 결과가 1개여도 바로 지역이 바뀌지 않고 여기 드롭다운으로 뜬다 - 화살표
+              위/아래 + Enter로 고르거나 마우스로 클릭해서 선택해야 지역이 적용된다. */}
+          {candidates.length > 0 && (
+            <div className="mt-3 flex flex-col gap-1 border-t border-season-border pt-3" role="listbox">
+              {candidates.length > 1 && (
+                <p className="text-xs text-season-muted">
+                  같은 이름의 장소가 여러 지역에 있어요. 화살표 키와 Enter로 고르거나 클릭해서 선택하세요.
+                </p>
+              )}
+              {candidates.map((candidate, index) => {
                 const candidateRegion = getRegionByCode(candidate.regionCode);
+                const isHighlighted = index === highlightedIndex;
                 return (
                   <button
                     key={`${candidate.regionCode}-${candidate.sigungu}`}
+                    id={`location-candidate-${index}`}
+                    role="option"
+                    aria-selected={isHighlighted}
                     type="button"
                     onClick={() => applyLocation(candidate)}
-                    className="optical-center flex items-center gap-2 rounded-xl px-3 py-2 text-left text-sm hover:bg-season-secondary"
+                    onMouseEnter={() => setHighlightedIndex(index)}
+                    className={cn(
+                      "optical-center flex items-center gap-2 rounded-xl px-3 py-2 text-left text-sm",
+                      isHighlighted ? "bg-season-secondary" : "hover:bg-season-secondary",
+                    )}
                   >
                     <span className="font-medium text-season-surface-foreground">
                       {candidateRegion?.name}
