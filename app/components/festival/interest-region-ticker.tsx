@@ -6,7 +6,7 @@ import { isFestivalNewToday } from "~/lib/festivals";
 import type { Festival } from "~/lib/data/festivals.mock";
 
 /** festival.startDate/endDate는 항상 "YYYY-MM-DD"라 문자열만 잘라 "MM/DD~MM/DD"로 표시한다. */
-function formatCompactDateRange(startDate: string, endDate: string): string {
+export function formatCompactDateRange(startDate: string, endDate: string): string {
   const toMonthDay = (iso: string) => iso.slice(5).replace("-", "/");
   return `${toMonthDay(startDate)}~${toMonthDay(endDate)}`;
 }

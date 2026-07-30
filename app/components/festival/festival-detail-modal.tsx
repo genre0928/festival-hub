@@ -12,6 +12,7 @@ import {
   MapPin,
   MessageCircle,
   Navigation,
+  PartyPopper,
   Phone,
   Share2,
   Star,
@@ -23,8 +24,15 @@ import { Calendar } from "~/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
 import { type TabItem } from "~/components/ui/tabs";
 import { NearbyMap } from "~/components/festival/nearby-map";
+import { formatCompactDateRange } from "~/components/festival/interest-region-ticker";
 import type { Festival } from "~/lib/data/festivals.mock";
-import { getFestivalStatus, isFestivalNewToday, STATUS_LABELS, type FestivalStatus } from "~/lib/festivals";
+import {
+  getFestivalStatus,
+  getSimilarFestivals,
+  isFestivalNewToday,
+  STATUS_LABELS,
+  type FestivalStatus,
+} from "~/lib/festivals";
 import { getRegionByCode } from "~/components/map/region-data";
 import { shareFestivalToKakao } from "~/lib/kakao-share";
 import type { FestivalPreference } from "~/lib/supabase/types";
@@ -100,6 +108,10 @@ interface FestivalDetailModalProps {
   onTogglePreference?: (festival: Festival, next: FestivalPreference | null) => void;
   /** 이 위치/크기에서 카드가 확장되는 것처럼 열리는 애니메이션을 재생한다(없으면 중앙에서 확대). */
   originRect?: DOMRect | null;
+  /** "비슷한 축제" 추천 계산용 전체 축제 목록. 없으면 추천 섹션 자체를 숨긴다. */
+  festivals?: Festival[];
+  /** "비슷한 축제" 카드를 클릭하면 그 축제로 모달 내용을 교체한다. */
+  onSelectFestival?: (festival: Festival) => void;
 }
 
 export function FestivalDetailModal({
@@ -108,6 +120,8 @@ export function FestivalDetailModal({
   preference,
   onTogglePreference,
   originRect,
+  festivals,
+  onSelectFestival,
 }: FestivalDetailModalProps) {
   const [nearby, setNearby] = useState<NearbyInfo | null>(null);
   const [loading, setLoading] = useState(false);
@@ -248,6 +262,11 @@ export function FestivalDetailModal({
       ? { lat: festival.latitude, lng: festival.longitude }
       : null;
   const hasCoords = festivalCoords != null;
+
+  const similarFestivals = useMemo(
+    () => (festival && festivals ? getSimilarFestivals(festival, festivals) : []),
+    [festival, festivals],
+  );
 
   return (
     <Dialog open={!!festival} onOpenChange={(open) => !open && onClose()}>
@@ -436,6 +455,48 @@ export function FestivalDetailModal({
                     #{tag}
                   </Badge>
                 ))}
+              </div>
+            )}
+
+            {/* 비슷한 축제 - 같은 카테고리/지역 기반 추천. 주변 정보(위치 기반)보다 앞에 둬서
+                콘텐츠 기반 추천과 위치 기반 정보를 개념적으로 분리했다. 좌표가 없는 축제에도
+                항상 뜬다(주변 정보는 좌표 필수라 일부 축제엔 아예 안 보임). */}
+            {similarFestivals.length > 0 && onSelectFestival && (
+              <div className="mt-4">
+                <h3 className="text-sm font-semibold text-season-surface-foreground">비슷한 축제</h3>
+                <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+                  {similarFestivals.map((f) => {
+                    const fRegion = getRegionByCode(f.regionCode);
+                    const fAddress = `${fRegion?.name ?? ""}${f.sigungu ? ` ${f.sigungu}` : ""}`;
+                    return (
+                      <button
+                        key={f.id}
+                        type="button"
+                        onClick={() => onSelectFestival(f)}
+                        className="w-24 shrink-0 overflow-hidden rounded-xl border border-season-border bg-season-surface text-left shadow-sm transition-shadow hover:shadow-md"
+                      >
+                        <div className="aspect-[4/3] w-full overflow-hidden bg-season-secondary">
+                          {f.imageUrl ? (
+                            <img src={f.imageUrl} alt="" className="h-full w-full object-cover" />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center text-season-muted">
+                              <PartyPopper className="h-5 w-5" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-1.5">
+                          <p className="truncate text-[11px] font-medium text-season-surface-foreground">
+                            {f.name}
+                          </p>
+                          <p className="truncate text-[10px] text-season-muted">{fAddress}</p>
+                          <p className="truncate text-[10px] text-season-muted">
+                            {formatCompactDateRange(f.startDate, f.endDate)}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             )}
 

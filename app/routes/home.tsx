@@ -369,6 +369,8 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
       <FestivalDetailModal
         festival={selectedFestival}
+        festivals={allFestivals}
+        onSelectFestival={(f) => openFestivalDetail(f)}
         onClose={closeFestivalDetail}
         preference={selectedFestival && user ? (preferences[selectedFestival.id] ?? null) : null}
         onTogglePreference={user ? handleTogglePreference : undefined}

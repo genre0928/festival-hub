@@ -213,6 +213,39 @@ export function filterFestivals(
   });
 }
 
+/**
+ * 상세 모달의 "비슷한 축제" 추천용 - 같은 카테고리(+2점), 같은 지역(+1점)인 축제를
+ * 점수순으로 추린다. tags는 대부분 비어있고(있어도 NEW_FESTIVAL_TAG뿐인 경우가 많아)
+ * 신뢰할 만한 유사도 신호가 아니라서 점수에 반영하지 않는다. 점수가 같으면 진행중·진행예정을
+ * 종료보다 우선하고, 그다음 시작일이 빠른 순으로 정렬한다.
+ */
+export function getSimilarFestivals(
+  festival: Festival,
+  allFestivals: Festival[],
+  referenceDate: Date = new Date(),
+  limit = 10,
+): Festival[] {
+  const scored = allFestivals
+    .filter((f) => f.id !== festival.id)
+    .map((f) => {
+      let score = 0;
+      if (f.category === festival.category) score += 2;
+      if (f.regionCode === festival.regionCode) score += 1;
+      return { festival: f, score };
+    })
+    .filter((s) => s.score > 0);
+
+  scored.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    const aEnded = getFestivalStatus(a.festival, referenceDate) === "ended";
+    const bEnded = getFestivalStatus(b.festival, referenceDate) === "ended";
+    if (aEnded !== bEnded) return aEnded ? 1 : -1;
+    return a.festival.startDate.localeCompare(b.festival.startDate);
+  });
+
+  return scored.slice(0, limit).map((s) => s.festival);
+}
+
 /** 지역이 정확히 하나 선택됐을 때 그 안에 존재하는 시/군/구 목록(가나다순)을 돌려준다. */
 export function getSigunguOptions(festivals: Festival[], regionCodes: string[]): string[] {
   if (regionCodes.length !== 1) return [];
