@@ -79,7 +79,9 @@ export function FestivalCard({
       )}
     >
       {isNew && (
-        <span className="absolute left-2 top-2 z-10 rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow-sm">
+        // 카드 안쪽(left-2/top-2)에 두면 왼쪽의 축제 사진 썸네일 모서리를 가려서, 카드
+        // 바깥쪽 모서리에 걸리도록 더 북서쪽(-left/-top)으로 뺐다.
+        <span className="absolute -left-2 -top-2 z-10 rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow-sm">
           New
         </span>
       )}

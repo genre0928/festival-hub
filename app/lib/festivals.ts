@@ -165,7 +165,7 @@ export interface FestivalFilters {
   query: string;
   /** YYYY-MM-DD. 지정 시 해당 날짜에 열리는 축제만 남김 */
   date: string | null;
-  /** true면 "이번달 신규 모아보기" - status와 무관하게 이번 달 신규 감지 축제만 남긴다. */
+  /** true면 "이번달 신규 모아보기" - 이번 달 신규 감지 축제 중 진행중·진행예정만 남긴다. */
   newOnly: boolean;
 }
 
@@ -180,8 +180,10 @@ export function filterFestivals(
 
   return festivals.filter((festival) => {
     if (filters.newOnly) {
-      // 이번달 신규 모아보기는 축제상태와 무관하게 보여준다 - status 필터는 건너뛴다.
+      // 이번달 신규 모아보기는 종료된 축제는 필요 없어서 진행중·진행예정만 남긴다 - status
+      // 탭 선택값과는 무관하다(탭은 이 모드에서 비활성화됨).
       if (!isFestivalNewThisMonth(festival, referenceDate)) return false;
+      if (getFestivalStatus(festival, referenceDate) === "ended") return false;
     } else if (filters.status !== "all") {
       if (getFestivalStatus(festival, referenceDate) !== filters.status) return false;
     }

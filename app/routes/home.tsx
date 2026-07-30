@@ -311,9 +311,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
           <div className="flex min-w-0 flex-col gap-4">
             <div className="flex flex-wrap items-center gap-2">
-              {/* 이번달 신규 모아보기는 축제상태와 무관하게 전체를 보여주는 기능이라 status
-                  필터는 의미가 없어진다 - 그런데도 탭이 그대로 활성화된 채로 보이면 "진행중을
-                  골랐는데 왜 종료된 축제가 나오지"처럼 헷갈릴 수 있어 흐리게 비활성화한다. */}
+              {/* 이번달 신규 모아보기는 진행중·진행예정만 고정으로 보여주는 기능이라 status
+                  탭 선택값은 무시된다 - 그런데도 탭이 그대로 활성화된 채로 보이면 헷갈릴 수
+                  있어 흐리게 비활성화한다. */}
               <div
                 className={cn(filters.newOnly && "pointer-events-none opacity-40")}
                 aria-disabled={filters.newOnly}
@@ -327,7 +327,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                 type="button"
                 aria-pressed={filters.newOnly}
                 onClick={() => setNewOnly(!filters.newOnly)}
-                title="이번 달에 새로 등록된 축제만 모아 보여줘요(축제상태 무관)"
+                title="이번 달에 새로 등록된 축제 중 진행중·진행예정만 모아 보여줘요"
                 className={cn(
                   "optical-center inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors duration-200",
                   filters.newOnly
@@ -344,7 +344,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             </div>
             {filters.newOnly && (
               <p className="-mt-2 text-xs text-season-muted">
-                이번달 신규는 진행중·진행예정·종료 상태와 무관하게 이번 달에 새로 등록된 축제를 모두 보여줘요.
+                이번달 신규는 이번 달에 새로 등록된 축제 중 진행중·진행예정만 보여줘요(종료된 축제는 제외).
               </p>
             )}
             <FestivalList

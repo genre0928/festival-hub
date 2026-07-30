@@ -2,11 +2,11 @@ import { useState } from "react";
 import { MAP_VIEWBOX, REGION_BOUNDARIES } from "./region-boundaries";
 import { cn } from "~/lib/utils";
 
-// REGION_BOUNDARIES의 원본 좌표는 실제 육지가 y축 75~345 안에만 있고 그 위아래로는 빈
-// 공간이라(전체 viewBox는 0~420), 그대로 쓰면 지도 위아래로 넓은 여백이 생긴다. 실제 육지
-// 범위에 여유를 조금만 두고 잘라서 지도가 컨테이너를 꽉 채우도록 한다.
-const MAP_CROP_Y = 65;
-const MAP_CROP_HEIGHT = 290;
+// REGION_BOUNDARIES의 원본 좌표는 실제 육지가 y축 75.4~344.6 안에만 있고 그 위아래로는 빈
+// 공간이라(전체 viewBox는 0~420), 그대로 쓰면 지도 위아래로 넓은 여백이 생긴다. 라벨이
+// 잘리지 않을 만큼만(약 2 단위) 여유를 두고 실제 육지 범위에 바짝 잘라 채운다.
+const MAP_CROP_Y = 73;
+const MAP_CROP_HEIGHT = 274;
 
 interface RegionMapProps {
   /** 지역별 축제 건수 (색 농도용). 다중 선택 모드(관심지역 관리 등)에서는 필요 없음 */
