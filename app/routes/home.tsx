@@ -311,7 +311,15 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
           <div className="flex min-w-0 flex-col gap-4">
             <div className="flex flex-wrap items-center gap-2">
-              <FestivalFilters value={filters.status} onChange={setStatus} />
+              {/* 이번달 신규 모아보기는 축제상태와 무관하게 전체를 보여주는 기능이라 status
+                  필터는 의미가 없어진다 - 그런데도 탭이 그대로 활성화된 채로 보이면 "진행중을
+                  골랐는데 왜 종료된 축제가 나오지"처럼 헷갈릴 수 있어 흐리게 비활성화한다. */}
+              <div
+                className={cn(filters.newOnly && "pointer-events-none opacity-40")}
+                aria-disabled={filters.newOnly}
+              >
+                <FestivalFilters value={filters.status} onChange={setStatus} />
+              </div>
               {user && (
                 <Tabs items={PREFERENCE_FILTER_ITEMS} value={preferenceFilter} onChange={setPreferenceFilter} />
               )}
@@ -334,6 +342,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                 {filteredFestivals.length}건
               </span>
             </div>
+            {filters.newOnly && (
+              <p className="-mt-2 text-xs text-season-muted">
+                이번달 신규는 진행중·진행예정·종료 상태와 무관하게 이번 달에 새로 등록된 축제를 모두 보여줘요.
+              </p>
+            )}
             <FestivalList
               festivals={filteredFestivals}
               selectedRegions={filters.regionCodes}
