@@ -1,4 +1,4 @@
-import { MapPin, PlayCircle } from "lucide-react";
+import { Calendar, MapPin, PlayCircle } from "lucide-react";
 import { Marquee } from "~/components/magicui/marquee";
 import { Card } from "~/components/ui/card";
 import { getRegionByCode } from "~/components/map/region-data";
@@ -60,7 +60,8 @@ export function InterestRegionTicker({
                   <MapPin className="h-2.5 w-2.5 shrink-0" />
                   {address}
                 </p>
-                <p className="mt-0.5 truncate text-[11px] text-season-muted">
+                <p className="mt-0.5 flex items-center gap-0.5 truncate text-[11px] text-season-muted">
+                  <Calendar className="h-2.5 w-2.5 shrink-0" />
                   {formatCompactDateRange(festival.startDate, festival.endDate)}
                 </p>
               </div>

@@ -1,10 +1,17 @@
 import { useCallback, useMemo } from "react";
 import { useSearchParams } from "react-router";
 import type { FestivalFilters, FestivalStatus } from "~/lib/festivals";
+import { REGIONS } from "~/components/map/region-data";
 
 type StatusParam = FestivalStatus | "all";
 
 const STATUS_VALUES: StatusParam[] = ["all", "ongoing", "upcoming", "ended"];
+const TOTAL_REGION_COUNT = REGIONS.length;
+
+/** 지역을 하나씩 다 골라 전체 지역과 같아진 경우도 "전체 지역"(빈 배열)과 동일하게 다룬다. */
+function normalizeRegionCodes(codes: string[]): string[] {
+  return new Set(codes).size >= TOTAL_REGION_COUNT ? [] : codes;
+}
 
 /**
  * 필터 상태를 URL 쿼리 파라미터(q, region, sigungu, date, status)와 동기화 - 공유 가능한
@@ -19,7 +26,7 @@ export function useFestivalFilters() {
     // "전체"를 명시적으로 고르면 setStatus가 status=all을 URL에 그대로 써서 구분한다.
     const rawStatus = searchParams.get("status");
     const regionParam = searchParams.get("region");
-    const regionCodes = regionParam ? regionParam.split(",").filter(Boolean) : [];
+    const regionCodes = normalizeRegionCodes(regionParam ? regionParam.split(",").filter(Boolean) : []);
     return {
       query: searchParams.get("q") ?? "",
       regionCodes,
@@ -62,8 +69,9 @@ export function useFestivalFilters() {
       setSearchParams(
         (prev) => {
           const next = new URLSearchParams(prev);
-          next.set("region", codes.join(","));
-          if (codes.length === 1 && sigungu) {
+          const normalized = normalizeRegionCodes(codes);
+          next.set("region", normalized.join(","));
+          if (normalized.length === 1 && sigungu) {
             next.set("sigungu", sigungu);
           } else {
             next.delete("sigungu");
@@ -86,10 +94,11 @@ export function useFestivalFilters() {
           const updated = current.includes(code)
             ? current.filter((c) => c !== code)
             : [...current, code];
+          const normalized = normalizeRegionCodes(updated);
 
-          next.set("region", updated.join(","));
+          next.set("region", normalized.join(","));
           // 지역이 정확히 1개가 아니게 되면 시/군/구 선택은 더 이상 유효하지 않다.
-          if (updated.length !== 1) next.delete("sigungu");
+          if (normalized.length !== 1) next.delete("sigungu");
           return next;
         },
         { replace: true, preventScrollReset: true },

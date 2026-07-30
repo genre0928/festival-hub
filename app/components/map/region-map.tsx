@@ -2,6 +2,12 @@ import { useState } from "react";
 import { MAP_VIEWBOX, REGION_BOUNDARIES } from "./region-boundaries";
 import { cn } from "~/lib/utils";
 
+// REGION_BOUNDARIES의 원본 좌표는 실제 육지가 y축 75~345 안에만 있고 그 위아래로는 빈
+// 공간이라(전체 viewBox는 0~420), 그대로 쓰면 지도 위아래로 넓은 여백이 생긴다. 실제 육지
+// 범위에 여유를 조금만 두고 잘라서 지도가 컨테이너를 꽉 채우도록 한다.
+const MAP_CROP_Y = 65;
+const MAP_CROP_HEIGHT = 290;
+
 interface RegionMapProps {
   /** 지역별 축제 건수 (색 농도용). 다중 선택 모드(관심지역 관리 등)에서는 필요 없음 */
   regionCounts?: Record<string, number>;
@@ -29,10 +35,15 @@ export function RegionMap({
   // 항상 맨 위에 오도록 별도 pass로 그린다 - hover 상태도 그래서 CSS group-hover
   // 대신 React state로 관리한다(두 pass가 서로 다른 <g>라 group-hover가 안 통함).
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
+  // 여러 지역이 한꺼번에 선택되면(다중 선택 모드) 서로 가까운 지역의 라벨이 겹쳐서 잘 안
+  // 보이는 문제가 있었다. z-index를 조정해도 겹치는 두 라벨이 동시에 보여야 하는 이상 근본
+  // 해결이 안 돼서, 선택된 지역이 정확히 1개일 때만 라벨을 항상 표시하고 그 외엔 마우스
+  // 오버(한 번에 하나만 뜨니 절대 겹치지 않음)로만 이름을 확인하도록 방식을 바꿨다.
+  const selectedCount = isMultiSelect ? (selectedRegions ?? []).length : selectedRegion ? 1 : 0;
 
   return (
     <svg
-      viewBox={`0 0 ${MAP_VIEWBOX.width} ${MAP_VIEWBOX.height}`}
+      viewBox={`0 ${MAP_CROP_Y} ${MAP_VIEWBOX.width} ${MAP_CROP_HEIGHT}`}
       className={cn("h-full w-full", className)}
       role="img"
       aria-label="대한민국 시도 행정구역 경계 지도, 지역별 축제 개최 현황"
@@ -97,7 +108,9 @@ export function RegionMap({
         const isSelected = isMultiSelect
           ? (selectedRegions ?? []).includes(region.code)
           : selectedRegion === region.code;
-        const showLabel = isSelected || (hoveredRegion === region.code && (isMultiSelect || count > 0));
+        const showLabel =
+          (isSelected && selectedCount === 1) ||
+          (hoveredRegion === region.code && (isMultiSelect || count > 0));
         if (!showLabel) return null;
 
         return (
