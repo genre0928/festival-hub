@@ -26,6 +26,8 @@ export interface Festival {
   imageUrl?: string;
   latitude?: number;
   longitude?: number;
+  /** festival_new_detections에 기록된 최초 감지 시각(ISO). 감지된 적 없으면 null/undefined. */
+  newDetectedAt?: string | null;
 }
 
 export const FESTIVALS: Festival[] = [

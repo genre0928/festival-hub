@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
-import { Star } from "lucide-react";
+import { Sparkles, Star } from "lucide-react";
 import type { Route } from "./+types/home";
 import { AppLayout } from "~/components/layout/app-layout";
 import { SearchBar } from "~/components/festival/search-bar";
@@ -24,7 +24,9 @@ import {
   getFestivalStatus,
   getFestivals,
   getSigunguOptions,
+  sortNewFirst,
 } from "~/lib/festivals";
+import { cn } from "~/lib/utils";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -50,8 +52,17 @@ const PREFERENCE_FILTER_ITEMS: TabItem<PreferenceFilter>[] = [
 ];
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const { filters, setQuery, setRegions, toggleRegion, clearRegions, setSigungu, setDate, setStatus } =
-    useFestivalFilters();
+  const {
+    filters,
+    setQuery,
+    setRegions,
+    toggleRegion,
+    clearRegions,
+    setSigungu,
+    setDate,
+    setStatus,
+    setNewOnly,
+  } = useFestivalFilters();
   const { user, isAuthAvailable, signInWithKakao } = useAuth();
   const [selectedFestival, setSelectedFestival] = useState<Festival | null>(null);
   const [modalOrigin, setModalOrigin] = useState<DOMRect | null>(null);
@@ -188,15 +199,16 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
   const filteredFestivals = useMemo(() => {
     const base = filterFestivals(allFestivals, filters);
-    if (!user) return base;
-    if (preferenceFilter === "favorite") {
-      return base.filter((f) => preferences[f.id] === "favorite");
-    }
-    if (preferenceFilter === "not_interested") {
-      return base.filter((f) => preferences[f.id] === "not_interested");
-    }
-    // "전체"에서는 관심없음으로 표시한 축제는 기본적으로 숨긴다.
-    return base.filter((f) => preferences[f.id] !== "not_interested");
+    const withPreference = !user
+      ? base
+      : preferenceFilter === "favorite"
+        ? base.filter((f) => preferences[f.id] === "favorite")
+        : preferenceFilter === "not_interested"
+          ? base.filter((f) => preferences[f.id] === "not_interested")
+          // "전체"에서는 관심없음으로 표시한 축제는 기본적으로 숨긴다.
+          : base.filter((f) => preferences[f.id] !== "not_interested");
+    // 오늘 신규로 감지된 축제는 축제상태와 무관하게 항상 최상단에 노출한다.
+    return sortNewFirst(withPreference);
   }, [allFestivals, filters, user, preferenceFilter, preferences]);
 
   const regionCounts = useMemo(
@@ -303,6 +315,21 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               {user && (
                 <Tabs items={PREFERENCE_FILTER_ITEMS} value={preferenceFilter} onChange={setPreferenceFilter} />
               )}
+              <button
+                type="button"
+                aria-pressed={filters.newOnly}
+                onClick={() => setNewOnly(!filters.newOnly)}
+                title="이번 달에 새로 등록된 축제만 모아 보여줘요(축제상태 무관)"
+                className={cn(
+                  "optical-center inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors duration-200",
+                  filters.newOnly
+                    ? "border-transparent bg-rose-500 text-white shadow-sm"
+                    : "border-season-border bg-season-surface/80 text-season-muted hover:text-season-surface-foreground",
+                )}
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                이번달 신규
+              </button>
               <span className="ml-auto shrink-0 text-sm text-season-muted">
                 {filteredFestivals.length}건
               </span>

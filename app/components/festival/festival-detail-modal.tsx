@@ -24,7 +24,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover
 import { type TabItem } from "~/components/ui/tabs";
 import { NearbyMap } from "~/components/festival/nearby-map";
 import type { Festival } from "~/lib/data/festivals.mock";
-import { getFestivalStatus, STATUS_LABELS, type FestivalStatus } from "~/lib/festivals";
+import { getFestivalStatus, isFestivalNewToday, STATUS_LABELS, type FestivalStatus } from "~/lib/festivals";
 import { getRegionByCode } from "~/components/map/region-data";
 import { shareFestivalToKakao } from "~/lib/kakao-share";
 import type { FestivalPreference } from "~/lib/supabase/types";
@@ -270,6 +270,9 @@ export function FestivalDetailModal({
 
             <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-2">
+                {isFestivalNewToday(festival) && (
+                  <Badge className="bg-rose-500 text-white">New</Badge>
+                )}
                 {status && (
                   <Badge variant={STATUS_BADGE_VARIANT[status]}>{STATUS_LABELS[status]}</Badge>
                 )}

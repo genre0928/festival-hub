@@ -12,6 +12,17 @@ export const STATUS_LABELS: Record<FestivalStatus, string> = {
 
 const VALID_CATEGORIES = new Set<string>(["전통", "음악", "음식", "자연", "불꽃", "예술", "기타"]);
 
+/** 한 번이라도 신규로 감지된 축제에 붙는 태그. 검색창에서 "신규"로 찾을 수 있게 tags에 포함시킨다. */
+export const NEW_FESTIVAL_TAG = "신규";
+
+/**
+ * 이 날짜(로컬 기준) 이전에 기록된 감지는 "신규" 태그 대상에서 제외한다. NEW 라벨 기능을
+ * 붙이면서 festival_new_detections 읽기 권한을 새로 열었더니, 그 전까지 쌓여있던 감지
+ * 기록(초기 동기화 백로그 등)이 한꺼번에 다 "신규" 태그를 달게 되는 문제가 있어 도입한
+ * 컷오프 - 이 날짜 이후 새로 감지된 축제부터만 태그가 붙는다.
+ */
+const NEW_TAG_CUTOFF_DATE = new Date(2026, 6, 30);
+
 function normalizeCategory(value: string): FestivalCategory {
   return VALID_CATEGORIES.has(value) ? (value as FestivalCategory) : "기타";
 }
@@ -48,11 +59,48 @@ export async function getFestivals(): Promise<Festival[]> {
     if (error) {
       console.error("Supabase festivals 조회 실패, mock 데이터로 대체합니다:", error.message);
     } else if (data) {
-      return data.map(mapRowToFestival);
+      return attachNewDetections(data.map(mapRowToFestival));
     }
   }
 
   return FESTIVALS;
+}
+
+/**
+ * festival_new_detections를 조회해 각 축제에 최초 감지 시각(newDetectedAt)을 붙이고,
+ * 한 번이라도 신규로 감지된 적 있는 축제엔 NEW_FESTIVAL_TAG를 tags에 추가한다(검색용).
+ * 조회에 실패해도 신규 표시만 빠질 뿐이라 festivals 자체는 그대로 돌려준다.
+ */
+async function attachNewDetections(festivals: Festival[]): Promise<Festival[]> {
+  if (!supabase) return festivals;
+
+  const { data, error } = await supabase.from("festival_new_detections").select("festival_id, detected_at");
+  if (error) {
+    console.error("신규 축제 감지 정보 조회 실패:", error.message);
+    return festivals;
+  }
+  if (!data || data.length === 0) return festivals;
+
+  const firstDetectedAtByFestivalId = new Map<string, string>();
+  for (const row of data) {
+    const existing = firstDetectedAtByFestivalId.get(row.festival_id);
+    if (!existing || row.detected_at < existing) {
+      firstDetectedAtByFestivalId.set(row.festival_id, row.detected_at);
+    }
+  }
+
+  return festivals.map((festival) => {
+    const detectedAt = firstDetectedAtByFestivalId.get(festival.id);
+    if (!detectedAt) return festival;
+
+    const withDetection = { ...festival, newDetectedAt: detectedAt };
+    if (toDateOnly(new Date(detectedAt)) < toDateOnly(NEW_TAG_CUTOFF_DATE)) return withDetection;
+
+    return {
+      ...withDetection,
+      tags: festival.tags.includes(NEW_FESTIVAL_TAG) ? festival.tags : [...festival.tags, NEW_FESTIVAL_TAG],
+    };
+  });
 }
 
 export function getFestivalStatus(
@@ -72,6 +120,42 @@ function toDateOnly(date: Date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
 }
 
+/** NEW 라벨 표시 여부 - 신규로 감지된 당일에만 true (트래킹 db 생성일 기준). */
+export function isFestivalNewToday(
+  festival: Pick<Festival, "newDetectedAt">,
+  referenceDate: Date = new Date(),
+): boolean {
+  if (!festival.newDetectedAt) return false;
+  return toDateOnly(new Date(festival.newDetectedAt)) === toDateOnly(referenceDate);
+}
+
+/** "이번달 신규 모아보기"용 - referenceDate와 같은 연/월에 신규로 감지됐으면 true. */
+export function isFestivalNewThisMonth(
+  festival: Pick<Festival, "newDetectedAt">,
+  referenceDate: Date = new Date(),
+): boolean {
+  if (!festival.newDetectedAt) return false;
+  const detected = new Date(festival.newDetectedAt);
+  return (
+    detected.getFullYear() === referenceDate.getFullYear() && detected.getMonth() === referenceDate.getMonth()
+  );
+}
+
+/**
+ * 오늘 신규로 감지된 축제를 축제상태와 무관하게 목록 최상단으로 끌어올린다.
+ * Array.sort는 안정 정렬이라 신규/비신규 그룹 내부의 기존 순서는 그대로 유지된다.
+ */
+export function sortNewFirst<T extends Pick<Festival, "newDetectedAt">>(
+  festivals: T[],
+  referenceDate: Date = new Date(),
+): T[] {
+  return [...festivals].sort((a, b) => {
+    const aNew = isFestivalNewToday(a, referenceDate) ? 1 : 0;
+    const bNew = isFestivalNewToday(b, referenceDate) ? 1 : 0;
+    return bNew - aNew;
+  });
+}
+
 export interface FestivalFilters {
   status: FestivalStatus | "all";
   /** 복수 선택 가능. 빈 배열이면 전체 지역. */
@@ -81,6 +165,8 @@ export interface FestivalFilters {
   query: string;
   /** YYYY-MM-DD. 지정 시 해당 날짜에 열리는 축제만 남김 */
   date: string | null;
+  /** true면 "이번달 신규 모아보기" - status와 무관하게 이번 달 신규 감지 축제만 남긴다. */
+  newOnly: boolean;
 }
 
 export function filterFestivals(
@@ -93,7 +179,10 @@ export function filterFestivals(
   const effectiveSigungu = filters.regionCodes.length === 1 ? filters.sigungu : null;
 
   return festivals.filter((festival) => {
-    if (filters.status !== "all") {
+    if (filters.newOnly) {
+      // 이번달 신규 모아보기는 축제상태와 무관하게 보여준다 - status 필터는 건너뛴다.
+      if (!isFestivalNewThisMonth(festival, referenceDate)) return false;
+    } else if (filters.status !== "all") {
       if (getFestivalStatus(festival, referenceDate) !== filters.status) return false;
     }
 

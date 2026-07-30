@@ -29,6 +29,7 @@ export function useFestivalFilters() {
         rawStatus && STATUS_VALUES.includes(rawStatus as StatusParam)
           ? (rawStatus as StatusParam)
           : "ongoing",
+      newOnly: searchParams.get("new") === "1",
     };
   }, [searchParams]);
 
@@ -110,5 +111,6 @@ export function useFestivalFilters() {
     // "전체"도 status=all로 명시적으로 남겨서, 파라미터가 아예 없는 "아직 선택 안 함"(기본값
     // "진행중" 적용 대상)과 구분한다.
     setStatus: (value: StatusParam) => updateParam("status", value),
+    setNewOnly: (value: boolean) => updateParam("new", value ? "1" : null),
   };
 }

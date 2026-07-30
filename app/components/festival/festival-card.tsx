@@ -12,7 +12,7 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 import type { Festival, FestivalCategory } from "~/lib/data/festivals.mock";
-import { getFestivalStatus, STATUS_LABELS, type FestivalStatus } from "~/lib/festivals";
+import { getFestivalStatus, isFestivalNewToday, STATUS_LABELS, type FestivalStatus } from "~/lib/festivals";
 import { getRegionByCode } from "~/components/map/region-data";
 import type { FestivalPreference } from "~/lib/supabase/types";
 import { formatDateRange, cn } from "~/lib/utils";
@@ -58,6 +58,7 @@ export function FestivalCard({
   const Icon = CATEGORY_ICONS[festival.category];
   const [imageFailed, setImageFailed] = useState(false);
   const showImage = festival.imageUrl && !imageFailed;
+  const isNew = isFestivalNewToday(festival);
 
   return (
     <Card
@@ -71,12 +72,18 @@ export function FestivalCard({
         }
       }}
       className={cn(
-        "flex gap-3 p-4 transition-colors duration-300",
+        "relative flex gap-3 p-4 transition-colors duration-300",
         onOpenDetail && "cursor-pointer hover:border-season-primary/50",
         selected && "ring-2 ring-season-ring",
         status === "ended" && "opacity-70",
       )}
     >
+      {isNew && (
+        <span className="absolute left-2 top-2 z-10 rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow-sm">
+          New
+        </span>
+      )}
+
       {showImage ? (
         <img
           src={festival.imageUrl}

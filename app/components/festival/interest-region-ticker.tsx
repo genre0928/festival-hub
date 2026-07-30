@@ -4,6 +4,12 @@ import { Card } from "~/components/ui/card";
 import { getRegionByCode } from "~/components/map/region-data";
 import type { Festival } from "~/lib/data/festivals.mock";
 
+/** festival.startDate/endDate는 항상 "YYYY-MM-DD"라 문자열만 잘라 "MM/DD~MM/DD"로 표시한다. */
+function formatCompactDateRange(startDate: string, endDate: string): string {
+  const toMonthDay = (iso: string) => iso.slice(5).replace("-", "/");
+  return `${toMonthDay(startDate)}~${toMonthDay(endDate)}`;
+}
+
 interface InterestRegionTickerProps {
   festivals: Festival[];
   durationSeconds: number;
@@ -53,6 +59,9 @@ export function InterestRegionTicker({
                 <p className="mt-0.5 flex items-center gap-0.5 truncate text-[11px] text-season-muted">
                   <MapPin className="h-2.5 w-2.5 shrink-0" />
                   {address}
+                </p>
+                <p className="mt-0.5 truncate text-[11px] text-season-muted">
+                  {formatCompactDateRange(festival.startDate, festival.endDate)}
                 </p>
               </div>
             </button>
