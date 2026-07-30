@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router";
+import { useSearchParams, type ShouldRevalidateFunctionArgs } from "react-router";
 import { Sparkles, Star } from "lucide-react";
 import type { Route } from "./+types/home";
 import { AppLayout } from "~/components/layout/app-layout";
@@ -41,6 +41,19 @@ export function meta({}: Route.MetaArgs) {
 export async function clientLoader() {
   const festivals = await getFestivals();
   return { festivals };
+}
+
+/**
+ * 이 라우트의 필터/모달 상태(q, region, status, date, festival, openInterestRegion, new 등)는
+ * 전부 클라이언트에서 URL 쿼리 파라미터로만 다루고 clientLoader는 그중 어떤 것도 읽지 않는데,
+ * React Router 기본 동작상 같은 경로에서 쿼리스트링만 바뀌어도 로더가 재실행(=Supabase 재조회)
+ * 된다. 축제 상세를 열 때마다(?festival= 추가) 재조회가 걸려 응답이 오는 데 걸리는 시간만큼
+ * 늦게 allFestivals가 새 참조로 바뀌면서 카드->모달 애니메이션 값이 뒤늦게 다시 계산돼
+ * 플리커가 났다 - 같은 경로 안에서는 재검증하지 않도록 막는다.
+ */
+export function shouldRevalidate({ currentUrl, nextUrl, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
+  if (currentUrl.pathname === nextUrl.pathname) return false;
+  return defaultShouldRevalidate;
 }
 
 type PreferenceFilter = "all" | "favorite" | "not_interested";
