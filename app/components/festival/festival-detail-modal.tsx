@@ -61,6 +61,15 @@ function naverSearchUrl(query: string): string {
   return `https://search.naver.com/search.naver?query=${encodeURIComponent(query)}`;
 }
 
+/** 진행 기간 달력은 이번 달~다음 달 2개월치만 보여주는데, 축제 기간이 그 범위와 아예
+ * 안 겹치면(너무 이르거나 늦으면) 빈 달력만 보여주는 꼴이라 의미가 없다 - 그럴 땐 달력 대신
+ * 모바일처럼 날짜 텍스트만 보여준다. */
+function isWithinCalendarWindow(startDate: string, endDate: string, referenceDate: Date = new Date()): boolean {
+  const windowStart = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), 1);
+  const windowEnd = new Date(referenceDate.getFullYear(), referenceDate.getMonth() + 2, 0);
+  return parseIsoDate(startDate) <= windowEnd && parseIsoDate(endDate) >= windowStart;
+}
+
 /** 네이버 지도 길찾기 - 행사 위치를 출발지, 주변 장소를 도착지로 하는 경로 링크. v5 경로는 WGS84 경위도(lng,lat)를 그대로 받는다. */
 function naverDirectionsUrl(params: {
   fromLat: number;
@@ -116,13 +125,16 @@ export function FestivalDetailModal({
     const finalRect = contentRef.current.getBoundingClientRect();
     const dx = originRect.left + originRect.width / 2 - (finalRect.left + finalRect.width / 2);
     const dy = originRect.top + originRect.height / 2 - (finalRect.top + finalRect.height / 2);
-    const sx = originRect.width / finalRect.width;
-    const sy = originRect.height / finalRect.height;
+    // 가로/세로 비율이 다른 카드(예: 좁고 긴 티커 카드)에서 시작하면 sx/sy를 각각 다르게 쓸
+    // 때 모달 안의 실제 텍스트/이미지가 시작 지점에서 가로세로 다르게 눌려 보여 어색했다.
+    // 카드 비율을 벗어나지 않는 선(둘 중 작은 값)에서 균일하게 스케일해 찌그러짐 없이
+    // 커지도록 한다.
+    const scale = Math.min(originRect.width / finalRect.width, originRect.height / finalRect.height);
     setFlipStyle({
       "--flip-dx": `${dx}px`,
       "--flip-dy": `${dy}px`,
-      "--flip-sx": `${sx}`,
-      "--flip-sy": `${sy}`,
+      "--flip-sx": `${scale}`,
+      "--flip-sy": `${scale}`,
     });
   }, [festival, originRect]);
   const [error, setError] = useState<string | null>(null);
@@ -228,6 +240,7 @@ export function FestivalDetailModal({
 
   const status = festival ? getFestivalStatus(festival) : null;
   const region = festival ? getRegionByCode(festival.regionCode) : null;
+  const showCalendar = festival ? isWithinCalendarWindow(festival.startDate, festival.endDate) : false;
   // festival.latitude/longitude를 .map() 콜백 안에서 다시 접근하면 TS가 narrowing을 못
   // 지켜줘서(클로저 경계를 넘으면 좁혀진 타입이 유지 안 됨) 여기서 로컬 상수로 뽑아둔다.
   const festivalCoords =
@@ -398,20 +411,23 @@ export function FestivalDetailModal({
               <p className="text-season-muted">{formatDateRange(festival.startDate, festival.endDate)}</p>
             </div>
 
-            {/* 진행 기간을 달력으로 - 오늘이 속한 달과 다음 달까지만 보여준다(그 이후는 표시 안 함).
-                모바일은 2개월 달력이 들어갈 폭이 부족해 기존처럼 텍스트만 보여주고, 데스크탑(sm+)에서만 표시한다. */}
-            <div className="mt-3 hidden justify-center overflow-x-auto rounded-2xl border border-season-border bg-season-surface p-2 pointer-events-none sm:flex">
-              <Calendar
-                mode="range"
-                numberOfMonths={2}
-                defaultMonth={new Date()}
-                disableNavigation
-                selected={{
-                  from: parseIsoDate(festival.startDate),
-                  to: parseIsoDate(festival.endDate),
-                }}
-              />
-            </div>
+            {/* 진행 기간을 달력으로 - 이번 달~다음 달과 겹칠 때만 보여준다(그 외엔 빈 달력만
+                보이는 꼴이라 의미가 없어 위의 날짜 텍스트로 충분히 대체됨). 모바일은 2개월
+                달력이 들어갈 폭이 부족해 텍스트만 보여주고, 데스크탑(sm+)에서만 표시한다. */}
+            {showCalendar && (
+              <div className="mt-3 hidden justify-center overflow-x-auto rounded-2xl border border-season-border bg-season-surface p-2 pointer-events-none sm:flex">
+                <Calendar
+                  mode="range"
+                  numberOfMonths={2}
+                  defaultMonth={new Date()}
+                  disableNavigation
+                  selected={{
+                    from: parseIsoDate(festival.startDate),
+                    to: parseIsoDate(festival.endDate),
+                  }}
+                />
+              </div>
+            )}
 
             {festival.tags.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-1">
