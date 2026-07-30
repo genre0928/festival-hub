@@ -2,6 +2,7 @@ import { Calendar, MapPin, PlayCircle } from "lucide-react";
 import { Marquee } from "~/components/magicui/marquee";
 import { Card } from "~/components/ui/card";
 import { getRegionByCode } from "~/components/map/region-data";
+import { isFestivalNewToday } from "~/lib/festivals";
 import type { Festival } from "~/lib/data/festivals.mock";
 
 /** festival.startDate/endDate는 항상 "YYYY-MM-DD"라 문자열만 잘라 "MM/DD~MM/DD"로 표시한다. */
@@ -36,13 +37,21 @@ export function InterestRegionTicker({
         {festivals.map((festival) => {
           const region = getRegionByCode(festival.regionCode);
           const address = `${region?.name ?? ""}${festival.sigungu ? ` ${festival.sigungu}` : ""}`;
+          const isNew = isFestivalNewToday(festival);
           return (
             <button
               key={festival.id}
               type="button"
               onClick={(e) => onSelectFestival(festival, e.currentTarget.getBoundingClientRect())}
-              className="w-28 shrink-0 overflow-hidden rounded-2xl border border-season-border bg-season-surface text-left shadow-sm transition-shadow hover:shadow-md sm:w-32"
+              className="relative w-28 shrink-0 overflow-hidden rounded-2xl border border-season-border bg-season-surface text-left shadow-sm transition-shadow hover:shadow-md sm:w-32"
             >
+              {isNew && (
+                // 이 카드는 overflow-hidden이라 FestivalCard처럼 바깥으로 뺄 수 없어서,
+                // 사진 위 안쪽 모서리에 작게 배지로 얹는다.
+                <span className="absolute left-1 top-1 z-10 rounded-full bg-rose-500 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white shadow-sm">
+                  New
+                </span>
+              )}
               <div className="aspect-[4/3] w-full overflow-hidden bg-season-secondary">
                 {festival.imageUrl ? (
                   <img src={festival.imageUrl} alt="" className="h-full w-full object-cover" />

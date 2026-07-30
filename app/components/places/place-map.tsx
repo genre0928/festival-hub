@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { Place, PlaceCategory } from "~/lib/places";
 import { PLACE_CATEGORY_LABELS } from "~/lib/places";
+import { DotLabel } from "~/components/map/dot-label";
 import { cn } from "~/lib/utils";
 
 const CATEGORY_COLORS: Record<PlaceCategory, string> = {
@@ -30,6 +31,10 @@ interface PlottedPlace extends Place {
 
 /** 검색 좌표를 중심으로 그 지역 장소들을 상대 위치의 점으로 찍어 보여준다(NearbyMap과 같은 방식). */
 export function PlaceMap({ centerLat, centerLng, places, selectedPlaceId, onSelectPlace, className }: PlaceMapProps) {
+  // <title>만으로는 브라우저 기본 툴팁이라 뜨는 데 시간이 걸리고 스타일도 못 맞춰서,
+  // hover한 도트의 이름을 지도 위에 바로 보이는 라벨로 띄운다(RegionMap과 같은 방식).
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+
   const plotted = useMemo<PlottedPlace[]>(() => {
     const cosLat = Math.cos((centerLat * Math.PI) / 180);
     const withOffsets = places
@@ -97,6 +102,8 @@ export function PlaceMap({ centerLat, centerLng, places, selectedPlaceId, onSele
                   onSelectPlace(p.id);
                 }
               }}
+              onMouseEnter={() => setHoveredId(p.id)}
+              onMouseLeave={() => setHoveredId((prev) => (prev === p.id ? null : prev))}
               className="cursor-pointer outline-none"
             >
               <title>{p.name}</title>
@@ -116,6 +123,11 @@ export function PlaceMap({ centerLat, centerLng, places, selectedPlaceId, onSele
         {/* 검색한 위치(중심) */}
         <circle cx={CENTER} cy={CENTER} r={8} className="fill-season-primary" stroke="white" strokeWidth={2} />
         <circle cx={CENTER} cy={CENTER} r={3} fill="white" />
+
+        {(() => {
+          const hovered = plotted.find((p) => p.id === hoveredId);
+          return hovered && <DotLabel x={hovered.x} y={hovered.y} label={hovered.name} mapSize={SIZE} />;
+        })()}
       </svg>
 
       {/* 4개 항목이 좁은 폭에서 flex-wrap으로 줄바꿈되면 2+1+1처럼 삐뚤빼뚤해 보여서,

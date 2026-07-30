@@ -1,5 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { NearbyCategory, NearbyPlaceWithCategory } from "~/lib/nearby";
+import { DotLabel } from "~/components/map/dot-label";
 import { cn } from "~/lib/utils";
 
 const CATEGORY_COLORS: Record<NearbyCategory, string> = {
@@ -41,6 +42,10 @@ export function NearbyMap({
   onSelectPlace,
   className,
 }: NearbyMapProps) {
+  // <title>만으로는 브라우저 기본 툴팁이라 뜨는 데 시간이 걸려서, hover한 도트의 이름을
+  // 지도 위에 바로 보이는 라벨로 띄운다(RegionMap과 같은 방식).
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+
   const plotted = useMemo<PlottedPlace[]>(() => {
     const cosLat = Math.cos((festivalLat * Math.PI) / 180);
     const withOffsets = places
@@ -96,6 +101,8 @@ export function NearbyMap({
                   onSelectPlace(p.contentId);
                 }
               }}
+              onMouseEnter={() => setHoveredId(p.contentId)}
+              onMouseLeave={() => setHoveredId((prev) => (prev === p.contentId ? null : prev))}
               className="cursor-pointer outline-none"
             >
               <title>{p.title}</title>
@@ -115,6 +122,11 @@ export function NearbyMap({
         {/* 축제 위치(중심) */}
         <circle cx={CENTER} cy={CENTER} r={8} className="fill-season-primary" stroke="white" strokeWidth={2} />
         <circle cx={CENTER} cy={CENTER} r={3} fill="white" />
+
+        {(() => {
+          const hovered = plotted.find((p) => p.contentId === hoveredId);
+          return hovered && <DotLabel x={hovered.x} y={hovered.y} label={hovered.title} mapSize={SIZE} />;
+        })()}
       </svg>
 
       <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-season-muted">
